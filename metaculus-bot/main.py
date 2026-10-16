@@ -8,6 +8,7 @@ from typing import Literal
 import dotenv
 
 # Runtime helpers (env validation, banners, dependency-warning suppression).
+from budget import BudgetedLlm, RunBudget
 from bot_config import (
     BotSettings,
     load_settings,
@@ -16,12 +17,17 @@ from bot_config import (
 )
 from bot_helpers import (
     check_environment,
+    drop_blank_env_vars,
     print_run_summary_banner,
     print_startup_banner,
     silence_noisy_dependencies,
 )
 
 silence_noisy_dependencies()
+# GitHub passes secrets that were never created as empty strings. An empty
+# ASKNEWS_API_KEY would make the AskNews SDK send a blank key instead of using
+# the client ID and secret, so blanks are removed before anything reads them.
+drop_blank_env_vars()
 
 from forecasting_tools import (
     AskNewsSearcher,
@@ -30,7 +36,6 @@ from forecasting_tools import (
     GeneralLlm,
     MetaculusClient,
     MetaculusQuestion,
-    MonetaryCostManager,
     MultipleChoiceQuestion,
     NumericDistribution,
     NumericQuestion,
@@ -691,18 +696,25 @@ class FallTemplateBot2026(ForecastBot):
         )
 
 
-def build_llms(settings: BotSettings) -> dict[str, str | GeneralLlm]:
+def build_llms(
+    settings: BotSettings, budget: RunBudget
+) -> dict[str, str | GeneralLlm]:
     return {
-        "default": GeneralLlm(
+        "default": BudgetedLlm(
             model=settings.forecast_model,
+            budget=budget,
             temperature=0.3,
             timeout=180,
             allowed_tries=2,
             **reasoning_kwargs(settings),
         ),
-        "summarizer": GeneralLlm(model=settings.parser_model, temperature=0.3),
+        "summarizer": BudgetedLlm(
+            model=settings.parser_model, budget=budget, temperature=0.3
+        ),
         "researcher": settings.researcher,
-        "parser": GeneralLlm(model=settings.parser_model, temperature=0.0),
+        "parser": BudgetedLlm(
+            model=settings.parser_model, budget=budget, temperature=0.0
+        ),
     }
 
 
@@ -722,6 +734,25 @@ def collect_questions(
             logger.exception(f"Could not load questions from tournament {tournament_id}")
             errors.append(e)
     return questions, errors
+
+
+async def forecast_in_batches(
+    bot: ForecastBot,
+    questions: list[MetaculusQuestion],
+    batch_size: int,
+    budget: RunBudget,
+) -> tuple[list, list[MetaculusQuestion]]:
+    """
+    Forecast `batch_size` questions at a time, stopping before the next batch
+    once the run budget is spent. Returns (reports, questions not attempted).
+    """
+    reports: list = []
+    for start in range(0, len(questions), batch_size):
+        if budget.exhausted:
+            return reports, list(questions[start:])
+        batch = questions[start : start + batch_size]
+        reports.extend(await bot.forecast_questions(batch, return_exceptions=True))
+    return reports, []
 
 
 if __name__ == "__main__":
@@ -751,6 +782,7 @@ if __name__ == "__main__":
     publish_to_metaculus = not args.dry_run
     print_startup_banner(run_mode, will_publish=publish_to_metaculus)
     logger.info(f"Settings: {settings}")
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
 
     template_bot = FallTemplateBot2026(
         research_reports_per_question=1,
@@ -760,7 +792,7 @@ if __name__ == "__main__":
         folder_to_save_reports_to=None,
         skip_previously_forecasted_questions=True,
         extra_metadata_in_explanation=True,
-        llms=build_llms(settings),
+        llms=build_llms(settings, budget),
     )
 
     TOURNAMENT_URLS = {
@@ -797,26 +829,38 @@ if __name__ == "__main__":
         f"{len(deferred)} deferred to the next run"
     )
 
-    with MonetaryCostManager(settings.max_cost_per_run_usd) as cost_manager:
-        forecast_reports = asyncio.run(
-            template_bot.forecast_questions(chosen, return_exceptions=True)
+    forecast_reports, not_attempted = asyncio.run(
+        forecast_in_batches(
+            template_bot, chosen, settings.questions_in_parallel, budget
         )
+    )
 
-    template_bot.log_report_summary(forecast_reports)
+    # raise_errors=False so the summary lines below still print when a question
+    # failed; the exit code at the end reports the failure.
+    template_bot.log_report_summary(forecast_reports, raise_errors=False)
     print_run_summary_banner(
         forecast_reports,
         will_publish=publish_to_metaculus,
         tournament_url=TOURNAMENT_URLS.get(run_mode),
     )
     print(
-        f"💰  AI cost this run: ${cost_manager.current_usage:.4f} "
+        f"💰  AI cost this run: ${budget.spent_usd:.4f} over {budget.calls} call(s) "
         f"(limit ${settings.max_cost_per_run_usd:.2f})"
     )
+    if budget.calls_without_cost:
+        print(
+            f"⚠️   {budget.calls_without_cost} call(s) had no price; the cost above is too low."
+        )
+    if not_attempted:
+        print(
+            f"🛑  Run budget used up; {len(not_attempted)} question(s) not attempted. "
+            "They will be tried on the next run."
+        )
     if deferred:
         print(f"⏭️   {len(deferred)} question(s) left for the next run.")
 
     # A failed question makes the GitHub Actions run show as failed, which
     # emails the repository owner. The next run retries it automatically.
     failures = [r for r in forecast_reports if isinstance(r, BaseException)]
-    if failures or load_errors:
+    if failures or load_errors or not_attempted:
         sys.exit(1)

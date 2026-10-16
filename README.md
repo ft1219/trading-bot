@@ -21,11 +21,11 @@ You only do this once. Nothing here needs any coding.
    - `OPENROUTER_API_KEY`
    - `ASKNEWS_CLIENT_ID` and `ASKNEWS_SECRET` (or `ASKNEWS_API_KEY` if AskNews gives you a single key)
 5. **Practice run.** Open the **Actions** tab → **Metaculus - test on practice questions** → **Run workflow**. After a few minutes, the run should end with "Bot submitted N forecast(s)". These practice questions don't count for prizes.
-6. After that, **Metaculus - forecast new questions** runs by itself every 30 minutes.
+6. After that, **Metaculus - forecast new questions** runs by itself every 40 minutes.
 
 If a run fails, GitHub emails you; the bot retries on the next run. To pause the bot: **Actions → Metaculus - forecast new questions → ⋯ → Disable workflow**.
 
 ## Costs
 
-- **AI:** roughly 1-2 US cents per question with the default model (an estimate until the first live runs report real costs). The OpenRouter key limit caps the season total, and each run stops itself after $1.
-- **GitHub:** free. Private repositories get 2,000 free Actions minutes a month; the 30-minute schedule uses roughly 1,500-1,900 of them. If you ever see a minutes warning, change the schedule in `.github/workflows/metaculus-forecast.yaml` to every 40 minutes.
+- **AI:** roughly 1-2 US cents per question with the default model (an estimate until the first live runs report real costs). The OpenRouter key limit caps the season total. Each run also stops starting new questions once it has spent $1, and every run's log ends with what it spent.
+- **GitHub:** free. Private repositories get 2,000 free Actions minutes a month. The schedule runs 36 times a day; a quick check first asks Metaculus whether any question is open, and when none is the run ends in under a minute. That is about 1,100 minutes a month plus the runs that actually forecast. If GitHub warns about minutes, the workflow file says how to switch to hourly runs.

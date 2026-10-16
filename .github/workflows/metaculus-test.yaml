@@ -1,5 +1,7 @@
 name: Metaculus - test on practice questions
 
+# Manual only. Forecasts on the unscored bot-testing-area tournament to check
+# the keys and models work end to end.
 on:
   workflow_dispatch:
 
@@ -41,10 +43,12 @@ jobs:
           ASKNEWS_CLIENT_ID: ${{ secrets.ASKNEWS_CLIENT_ID }}
           ASKNEWS_SECRET: ${{ secrets.ASKNEWS_SECRET }}
           ASKNEWS_API_KEY: ${{ secrets.ASKNEWS_API_KEY }}
-          # Optional overrides, set under Settings -> Secrets and variables -> Actions -> Variables.
           FORECAST_MODEL: ${{ vars.FORECAST_MODEL }}
           PARSER_MODEL: ${{ vars.PARSER_MODEL }}
+          RESEARCHER: ${{ vars.RESEARCHER }}
           FORECAST_REASONING: ${{ vars.FORECAST_REASONING }}
           PREDICTIONS_PER_QUESTION: ${{ vars.PREDICTIONS_PER_QUESTION }}
           MAX_QUESTIONS_PER_RUN: ${{ vars.MAX_QUESTIONS_PER_RUN }}
           MAX_COST_PER_RUN_USD: ${{ vars.MAX_COST_PER_RUN_USD }}
+          MAX_LLM_CALLS_PER_RUN: ${{ vars.MAX_LLM_CALLS_PER_RUN }}
+          QUESTIONS_IN_PARALLEL: ${{ vars.QUESTIONS_IN_PARALLEL }}

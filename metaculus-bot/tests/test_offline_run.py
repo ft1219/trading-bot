@@ -1,22 +1,22 @@
 """
-Runs the bot end to end on made-up questions with the AI calls replaced by
-fakes, so nothing touches Metaculus, OpenRouter or AskNews.
+Runs the bot end to end on made-up questions with the network calls replaced,
+so nothing touches Metaculus, OpenRouter or AskNews.
+
+The model call is stubbed at litellm's `acompletion`, below forecasting-tools,
+so the real GeneralLlm/BudgetedLlm code (and its cost accounting) runs.
 """
 import asyncio
 
+import litellm
 import pytest
-from forecasting_tools import (
-    BinaryPrediction,
-    BinaryQuestion,
-    GeneralLlm,
-    MonetaryCostManager,
-)
-from forecasting_tools.ai_models.resource_managers.hard_limit_manager import (
-    HardLimitExceededError,
-)
+from forecasting_tools import BinaryPrediction, BinaryQuestion
+from forecasting_tools.ai_models import general_llm
 
 import main
 from bot_config import load_settings
+from budget import RunBudget, RunBudgetExceeded
+
+COST_PER_CALL = 0.01
 
 
 def _questions(count):
@@ -34,8 +34,8 @@ def _questions(count):
     ]
 
 
-def _bot(settings):
-    llms = main.build_llms(settings)
+def _bot(settings, budget):
+    llms = main.build_llms(settings, budget)
     llms["researcher"] = "no_research"
     return main.FallTemplateBot2026(
         research_reports_per_question=1,
@@ -49,26 +49,30 @@ def _bot(settings):
 
 
 @pytest.fixture
-def fake_ai(monkeypatch):
-    calls = {"invoke": 0}
+def fake_model(monkeypatch):
+    seen = {"calls": 0, "kwargs": []}
+    real_acompletion = litellm.acompletion
 
-    async def fake_invoke(self, prompt):
-        # Mimic litellm's pre-call hook and its per-call cost tracking.
-        MonetaryCostManager.raise_error_if_limit_would_be_reached()
-        calls["invoke"] += 1
-        MonetaryCostManager.increase_current_usage_in_parent_managers(0.01)
-        return "Reasoning... Probability: 37%"
+    async def fake_acompletion(**kwargs):
+        seen["calls"] += 1
+        seen["kwargs"].append(dict(kwargs))
+        kwargs.pop("extra_body", None)
+        response = await real_acompletion(
+            mock_response="Reasoning... Probability: 37%", **kwargs
+        )
+        response._hidden_params["response_cost"] = COST_PER_CALL
+        return response
 
     async def fake_structure_output(*args, **kwargs):
         return BinaryPrediction(prediction_in_decimal=0.37)
 
-    monkeypatch.setattr(GeneralLlm, "invoke", fake_invoke)
+    monkeypatch.setattr(general_llm, "acompletion", fake_acompletion)
     monkeypatch.setattr(main, "structure_output", fake_structure_output)
-    return calls
+    return seen
 
 
 def test_build_llms_turns_on_reasoning_for_the_forecaster():
-    llms = main.build_llms(load_settings({}))
+    llms = main.build_llms(load_settings({}), RunBudget(1.0, 100))
     assert llms["default"].litellm_kwargs["extra_body"] == {
         "reasoning": {"enabled": True}
     }
@@ -76,31 +80,56 @@ def test_build_llms_turns_on_reasoning_for_the_forecaster():
     assert llms["researcher"] == "asknews/news-summaries"
 
 
-def test_forecasts_every_question_within_budget(fake_ai):
+def test_forecasts_every_question_and_counts_real_cost_once(fake_model):
     settings = load_settings({"PREDICTIONS_PER_QUESTION": "5"})
-    bot = _bot(settings)
-    with MonetaryCostManager(settings.max_cost_per_run_usd) as cost:
-        reports = asyncio.run(bot.forecast_questions(_questions(3), return_exceptions=True))
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
+    bot = _bot(settings, budget)
+    reports = asyncio.run(bot.forecast_questions(_questions(3), return_exceptions=True))
     assert not [r for r in reports if isinstance(r, BaseException)]
     assert [r.prediction for r in reports] == [0.37, 0.37, 0.37]
-    # 5 forecasts per question, plus the framework's own summary call.
-    assert fake_ai["invoke"] >= 15
-    assert cost.current_usage == pytest.approx(fake_ai["invoke"] * 0.01)
+    assert budget.calls == fake_model["calls"]
+    assert budget.spent_usd == pytest.approx(fake_model["calls"] * COST_PER_CALL)
+    forecaster_calls = [k for k in fake_model["kwargs"] if "extra_body" in k]
+    assert len(forecaster_calls) == 15
 
 
-def test_cost_cap_stops_ai_calls_once_spent(fake_ai):
-    # 0.05 allows five 1-cent calls: one question's worth of forecasts.
-    settings = load_settings({"MAX_COST_PER_RUN_USD": "0.05"})
-    bot = _bot(settings)
-    with MonetaryCostManager(settings.max_cost_per_run_usd):
-        reports = asyncio.run(bot.forecast_questions(_questions(4), return_exceptions=True))
-    failures = [r for r in reports if isinstance(r, BaseException)]
-    assert failures, "the cap should have stopped some questions"
-    assert fake_ai["invoke"] <= 6
-    assert any(
-        isinstance(f, HardLimitExceededError) or "hard limit" in str(f).lower()
-        for f in failures
+def test_spending_limit_stops_the_run_between_batches(fake_model):
+    settings = load_settings(
+        {"MAX_COST_PER_RUN_USD": "0.05", "QUESTIONS_IN_PARALLEL": "1"}
     )
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
+    bot = _bot(settings, budget)
+    reports, not_attempted = asyncio.run(
+        main.forecast_in_batches(bot, _questions(4), 1, budget)
+    )
+    # The first question's calls start before the limit is reached and finish;
+    # after that the run stops instead of starting more questions.
+    assert len(reports) == 1
+    assert [q.id_of_post for q in not_attempted] == [1001, 1002, 1003]
+    assert budget.spent_usd >= 0.05
+    assert fake_model["calls"] == budget.calls
+
+
+def test_a_call_starting_after_the_limit_is_refused(fake_model):
+    budget = RunBudget(max_cost_usd=0.015, max_calls=100)
+    llm = main.build_llms(load_settings({}), budget)["parser"]
+    llm.allowed_tries = 1
+    asyncio.run(llm.invoke("hi"))
+    asyncio.run(llm.invoke("hi"))
+    with pytest.raises(RunBudgetExceeded, match="spending limit"):
+        asyncio.run(llm.invoke("hi"))
+    assert fake_model["calls"] == 2
+
+
+def test_call_limit_stops_model_calls(fake_model):
+    budget = RunBudget(max_cost_usd=100.0, max_calls=3)
+    llm = main.build_llms(load_settings({}), budget)["parser"]
+    llm.allowed_tries = 1
+    for _ in range(3):
+        asyncio.run(llm.invoke("hi"))
+    with pytest.raises(RunBudgetExceeded):
+        asyncio.run(llm.invoke("hi"))
+    assert fake_model["calls"] == 3
 
 
 def test_one_tournament_failing_to_load_does_not_block_the_other():
@@ -110,6 +139,6 @@ def test_one_tournament_failing_to_load_does_not_block_the_other():
                 raise RuntimeError("between rounds")
             return _questions(2)
 
-    questions, errors = main.collect_questions(FakeClient(), [32813, "minibench"])
+    questions, errors = main.collect_questions(FakeClient(), [33121, "minibench"])
     assert len(questions) == 2
     assert len(errors) == 1

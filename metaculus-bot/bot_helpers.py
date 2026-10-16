@@ -31,6 +31,32 @@ def _is_real_env(name: str) -> bool:
     return bool(val and val.strip() and val.strip() not in _PLACEHOLDER_ENV_VALUES)
 
 
+_KEYS_TO_DROP_WHEN_BLANK = (
+    "METACULUS_TOKEN",
+    "OPENROUTER_API_KEY",
+    "ASKNEWS_CLIENT_ID",
+    "ASKNEWS_SECRET",
+    "ASKNEWS_API_KEY",
+    "PERPLEXITY_API_KEY",
+    "EXA_API_KEY",
+    "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY",
+)
+
+
+def drop_blank_env_vars(names: Sequence[str] = _KEYS_TO_DROP_WHEN_BLANK) -> list[str]:
+    """
+    Remove API-key variables that are set but empty, so libraries that test
+    `is not None` treat them as absent. Returns the names removed.
+    """
+    removed = []
+    for name in names:
+        if name in os.environ and not os.environ[name].strip():
+            del os.environ[name]
+            removed.append(name)
+    return removed
+
+
 def silence_noisy_dependencies() -> None:
     """
     Quiet warnings from transitive deps that fire on import and confuse new

@@ -29,6 +29,14 @@ DEFAULT_MAX_QUESTIONS_PER_RUN = 12
 # About 100x the expected cost of a normal run. The season-wide cap is the
 # spending limit set on the OpenRouter key itself.
 DEFAULT_MAX_COST_PER_RUN_USD = 1.00
+# Backstop for models litellm cannot price. A normal question takes about
+# 15-20 calls (5 forecasts, their parsing, a summary); conditional questions
+# take about 4 times that.
+DEFAULT_MAX_LLM_CALLS_PER_RUN = 400
+# Questions forecast at the same time. The spending limit is checked before
+# each AI call, so the most a run can overshoot it is the calls already in
+# flight: about this many questions' worth.
+DEFAULT_QUESTIONS_IN_PARALLEL = 3
 
 
 class SettingsError(ValueError):
@@ -44,6 +52,8 @@ class BotSettings:
     predictions_per_question: int
     max_questions_per_run: int
     max_cost_per_run_usd: float
+    max_llm_calls_per_run: int
+    questions_in_parallel: int
 
 
 def _text(env: Mapping[str, str], name: str, default: str) -> str:
@@ -72,8 +82,7 @@ def _float(env: Mapping[str, str], name: str, default: float) -> float:
         value = float(raw)
     except ValueError as e:
         raise SettingsError(f"{name} must be a number, got {raw!r}") from e
-    # Zero would mean "no limit" to forecasting-tools' cost manager, so it is
-    # refused rather than silently removing the cap.
+    # A limit of zero or less would stop every call; refuse it as a typo.
     if value <= 0:
         raise SettingsError(f"{name} must be greater than 0, got {value}")
     return value
@@ -105,6 +114,12 @@ def load_settings(env: Mapping[str, str] | None = None) -> BotSettings:
         ),
         max_cost_per_run_usd=_float(
             env, "MAX_COST_PER_RUN_USD", DEFAULT_MAX_COST_PER_RUN_USD
+        ),
+        max_llm_calls_per_run=_int(
+            env, "MAX_LLM_CALLS_PER_RUN", DEFAULT_MAX_LLM_CALLS_PER_RUN, 1
+        ),
+        questions_in_parallel=_int(
+            env, "QUESTIONS_IN_PARALLEL", DEFAULT_QUESTIONS_IN_PARALLEL, 1
         ),
     )
 
