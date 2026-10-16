@@ -1,12 +1,19 @@
 import argparse
 import asyncio
 import logging
+import sys
 from datetime import datetime, timezone
 from typing import Literal
 
 import dotenv
 
 # Runtime helpers (env validation, banners, dependency-warning suppression).
+from bot_config import (
+    BotSettings,
+    load_settings,
+    pick_questions_to_forecast,
+    reasoning_kwargs,
+)
 from bot_helpers import (
     check_environment,
     print_run_summary_banner,
@@ -23,6 +30,7 @@ from forecasting_tools import (
     GeneralLlm,
     MetaculusClient,
     MetaculusQuestion,
+    MonetaryCostManager,
     MultipleChoiceQuestion,
     NumericDistribution,
     NumericQuestion,
@@ -683,13 +691,46 @@ class FallTemplateBot2026(ForecastBot):
         )
 
 
+def build_llms(settings: BotSettings) -> dict[str, str | GeneralLlm]:
+    return {
+        "default": GeneralLlm(
+            model=settings.forecast_model,
+            temperature=0.3,
+            timeout=180,
+            allowed_tries=2,
+            **reasoning_kwargs(settings),
+        ),
+        "summarizer": GeneralLlm(model=settings.parser_model, temperature=0.3),
+        "researcher": settings.researcher,
+        "parser": GeneralLlm(model=settings.parser_model, temperature=0.0),
+    }
+
+
+def collect_questions(
+    client: MetaculusClient, tournament_ids: list[int | str]
+) -> tuple[list[MetaculusQuestion], list[Exception]]:
+    """
+    Fetch open questions from each tournament. One tournament failing to load
+    (e.g. MiniBench between rounds) must not stop forecasts on the others.
+    """
+    questions: list[MetaculusQuestion] = []
+    errors: list[Exception] = []
+    for tournament_id in tournament_ids:
+        try:
+            questions.extend(client.get_all_open_questions_from_tournament(tournament_id))
+        except Exception as e:
+            logger.exception(f"Could not load questions from tournament {tournament_id}")
+            errors.append(e)
+    return questions, errors
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
-    parser = argparse.ArgumentParser(description="Run the template forecasting bot")
+    parser = argparse.ArgumentParser(description="Run the forecasting bot")
     parser.add_argument(
         "--mode",
         type=str,
@@ -697,82 +738,68 @@ if __name__ == "__main__":
         default="tournament",
         help="What to forecast on (default: tournament)",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Make forecasts but do not submit them to Metaculus",
+    )
     args = parser.parse_args()
     run_mode: Literal["tournament", "metaculus_cup", "test_questions"] = args.mode
 
-    check_environment(strict=True)
-    publish_to_metaculus = True
+    settings = load_settings()
+    check_environment(strict=True, researcher=settings.researcher)
+    publish_to_metaculus = not args.dry_run
     print_startup_banner(run_mode, will_publish=publish_to_metaculus)
+    logger.info(f"Settings: {settings}")
 
-    # Configure the bot. The `llms=` block below is commented out to use
-    # whichever default models forecasting-tools picks based on your env vars;
-    # uncomment and edit to pin specific models.
     template_bot = FallTemplateBot2026(
         research_reports_per_question=1,
-        predictions_per_research_report=5,
+        predictions_per_research_report=settings.predictions_per_question,
         use_research_summary_to_forecast=False,
         publish_reports_to_metaculus=publish_to_metaculus,
         folder_to_save_reports_to=None,
         skip_previously_forecasted_questions=True,
         extra_metadata_in_explanation=True,
-        # llms={
-        #     "default": GeneralLlm(
-        #         model="openrouter/openai/gpt-4o",
-        #         temperature=0.3,
-        #         timeout=40,
-        #         allowed_tries=2,
-        #     ),
-        #     "summarizer": "openai/gpt-4o-mini",
-        #     "researcher": "asknews/news-summaries",
-        #     "parser": "openai/gpt-4o-mini",
-        # },
+        llms=build_llms(settings),
     )
 
-    # Per-mode tournament URL shown in the summary banner footer. These
-    # piggyback on the forecasting_tools SDK constants and need updating
-    # whenever those rotate seasons.
     TOURNAMENT_URLS = {
         "tournament": "https://www.metaculus.com/tournament/fall-futureeval-2026/",
         "metaculus_cup": "https://www.metaculus.com/tournament/metaculus-cup-fall-2026/",
         "test_questions": "https://www.metaculus.com/tournament/bot-testing-area/",
     }
 
-    # Dispatch on mode. Each branch produces a list of ForecastReport (or
-    # exceptions, since return_exceptions=True) which then flows into the
-    # summary printers below.
     client = MetaculusClient()
     if run_mode == "tournament":
-        seasonal_tournament_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_AI_COMPETITION_ID, return_exceptions=True
-            )
+        open_questions, load_errors = collect_questions(
+            client, [client.CURRENT_AI_COMPETITION_ID, client.CURRENT_MINIBENCH_ID]
         )
-        minibench_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_MINIBENCH_ID, return_exceptions=True
-            )
-        )
-        forecast_reports = seasonal_tournament_reports + minibench_reports
     elif run_mode == "metaculus_cup":
-        # The Metaculus Cup may be uninitialized near the start of a season
-        # (Jan/May/Sep). MetaculusClient.ACX_2025_TOURNAMENT = 32564 and
-        # MetaculusClient.AI_2027_TOURNAMENT_ID = "ai-2027" are also valid
-        # targets here.
+        # The Metaculus Cup may be uninitialized near the start of a season.
         template_bot.skip_previously_forecasted_questions = False
-        forecast_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                client.CURRENT_METACULUS_CUP_ID, return_exceptions=True
-            )
+        open_questions, load_errors = collect_questions(
+            client, [client.CURRENT_METACULUS_CUP_ID]
         )
-    elif run_mode == "test_questions":
+    else:
         # The bot-testing-area tournament contains all question types and is
-        # the recommended target for smoke-testing your bot.
-        # https://www.metaculus.com/tournament/bot-testing-area/
+        # the recommended target for smoke-testing the bot.
         template_bot.skip_previously_forecasted_questions = False
+        open_questions, load_errors = collect_questions(client, ["bot-testing-area"])
+
+    if not template_bot.skip_previously_forecasted_questions:
+        for question in open_questions:
+            question.already_forecasted = False
+    chosen, deferred = pick_questions_to_forecast(
+        open_questions, settings.max_questions_per_run
+    )
+    logger.info(
+        f"{len(open_questions)} open questions, {len(chosen)} to forecast now, "
+        f"{len(deferred)} deferred to the next run"
+    )
+
+    with MonetaryCostManager(settings.max_cost_per_run_usd) as cost_manager:
         forecast_reports = asyncio.run(
-            template_bot.forecast_on_tournament(
-                "bot-testing-area", return_exceptions=True
-            )
+            template_bot.forecast_questions(chosen, return_exceptions=True)
         )
 
     template_bot.log_report_summary(forecast_reports)
@@ -781,3 +808,15 @@ if __name__ == "__main__":
         will_publish=publish_to_metaculus,
         tournament_url=TOURNAMENT_URLS.get(run_mode),
     )
+    print(
+        f"💰  AI cost this run: ${cost_manager.current_usage:.4f} "
+        f"(limit ${settings.max_cost_per_run_usd:.2f})"
+    )
+    if deferred:
+        print(f"⏭️   {len(deferred)} question(s) left for the next run.")
+
+    # A failed question makes the GitHub Actions run show as failed, which
+    # emails the repository owner. The next run retries it automatically.
+    failures = [r for r in forecast_reports if isinstance(r, BaseException)]
+    if failures or load_errors:
+        sys.exit(1)

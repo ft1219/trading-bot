@@ -55,10 +55,11 @@ def silence_noisy_dependencies() -> None:
     litellm_logger.propagate = False
 
 
-def check_environment(strict: bool = True) -> None:
+def check_environment(strict: bool = True, researcher: str | None = None) -> None:
     """
-    Verify METACULUS_TOKEN is set; warn if no LLM key is configured. On
-    failure with strict=True, exits the process with a non-zero status.
+    Verify METACULUS_TOKEN and OPENROUTER_API_KEY are set, and the AskNews
+    keys when AskNews does the research. On failure with strict=True, exits
+    the process with a non-zero status.
     """
     problems: list[str] = []
 
@@ -68,16 +69,22 @@ def check_environment(strict: bool = True) -> None:
             "Get one at https://www.metaculus.com/futureeval/participate/"
         )
 
-    has_llm_key = any(
-        _is_real_env(k)
-        for k in ("OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY")
-    )
-    if not has_llm_key:
-        print(
-            "⚠️  No LLM key set (OPENROUTER/OPENAI/ANTHROPIC). The bot will fall back\n"
-            "    to the Metaculus LLM proxy. Free OpenRouter credits: "
-            "https://forms.gle/aQdYMq9Pisrf1v7d8\n"
+    # Our models all go through OpenRouter, whose key carries the season's
+    # spending limit. Falling back to another provider would bypass it.
+    if not _is_real_env("OPENROUTER_API_KEY"):
+        problems.append(
+            "OPENROUTER_API_KEY is missing or still a placeholder. "
+            "Create one at https://openrouter.ai/keys with a spending limit."
         )
+
+    if researcher and researcher.startswith("asknews/"):
+        has_oauth = _is_real_env("ASKNEWS_CLIENT_ID") and _is_real_env("ASKNEWS_SECRET")
+        if not (has_oauth or _is_real_env("ASKNEWS_API_KEY")):
+            problems.append(
+                "AskNews keys are missing (ASKNEWS_CLIENT_ID + ASKNEWS_SECRET, "
+                "or ASKNEWS_API_KEY). "
+                "Create a free AskNews account at https://asknews.app/"
+            )
 
     if problems:
         print("❌  Setup problems:")
