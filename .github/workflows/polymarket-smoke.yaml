@@ -1,0 +1,28 @@
+name: Polymarket - smoke test (throwaway)
+on:
+  push:
+    branches: [polymarket-smoke]
+permissions:
+  contents: write
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: First run (picks the watchlist)
+        working-directory: polymarket-shadow
+        run: time bash run.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PM_DATA_BRANCH: polymarket-shadow-data-test6
+      - name: Wait for some trades
+        run: sleep 240
+      - name: Second run (replays trades since the first)
+        working-directory: polymarket-shadow
+        run: time bash run.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PM_DATA_BRANCH: polymarket-shadow-data-test6
