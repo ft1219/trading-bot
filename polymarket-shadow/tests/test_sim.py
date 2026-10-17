@@ -86,6 +86,30 @@ def test_selling_what_we_hold_needs_no_cash():
     assert sim.active_sides(pos, 0.53, 0.56, P) == (False, True)
 
 
+def test_round_trip_losses_shrink_the_budget_until_rewards_make_them_up():
+    # Two round trips bought at 0.58 and sold at 0.55, each merged back into $1: $1.20 lost.
+    pos = sim.Position(cash=-1.2)
+    assert pos.held_cost() == 0 and pos.capital(20) == pytest.approx(18.8)
+    assert sim.active_sides(pos, 0.57, 0.60, P) == (True, False)  # the pair needs 20 * 0.57 + 20 * 0.40 = $19.40
+    pos.rebates, pos.reward_credit = 0.2, 0.5
+    assert pos.capital(20) == pytest.approx(19.5) and sim.active_sides(pos, 0.57, 0.60, P) == (True, True)
+    assert sim.Position(cash=3.0).capital(20) == 20  # gains do not raise the budget
+
+
+def test_a_midpoint_move_after_a_hole_in_the_history_is_counted():
+    history = [(0, 0.585), (60, 0.585), (800, 0.50), (860, 0.50)]
+    stats = {}
+    assert sim.replay(sim.Position(), [], history, YES, P, 0, stats=stats) == []
+    assert stats == {"unquoted_moves": 1}
+
+
+def test_unusable_records():
+    good = {"timestamp": 5, "side": "BUY", "price": "0.5", "size": "3", "token_id": YES}
+    assert sim.usable(good)
+    for bad in ({"price": None}, {"timestamp": "x"}, {"side": "HOLD"}, {"price": 1.5}, {"token_id": ""}):
+        assert not sim.usable(dict(good, **bad))
+
+
 def test_requote_waits_for_the_next_minute():
     pos = sim.Position()
     p = sim.MarketParams(tick=0.01, size=10, budget_usd=100, max_spread_c=5.5)

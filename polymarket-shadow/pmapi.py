@@ -141,17 +141,27 @@ def trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> 
         rows = body.get("data") if isinstance(body, dict) else None
         if not isinstance(rows, list):
             raise ApiError("/v2/trades: unexpected shape")
-        found += [t for t in rows if int(t["timestamp"]) > since_ts]
+        stamps = [_timestamp(t) for t in rows]
+        # A record without a readable time is kept, so the caller sees it and marks a gap.
+        found += [t for t, ts in zip(rows, stamps) if ts is None or ts > since_ts]
         paging = body.get("pagination") or {}
         cursor = paging.get("next_cursor")
-        if not rows or int(rows[-1]["timestamp"]) <= since_ts or not cursor:
+        oldest = min((ts for ts in stamps if ts is not None), default=None)
+        if not rows or (oldest is not None and oldest <= since_ts) or not cursor:
             complete = bool(cursor) or not paging.get("has_more")  # more pages but no way to reach them
             break
         query["cursor"] = cursor  # the cursor carries only the position, so the filters are sent again
     else:
         complete = False
-    found.sort(key=lambda t: (int(t["timestamp"]), t.get("transaction_hash") or ""))
+    found.sort(key=lambda t: (_timestamp(t) or 0, str(t.get("transaction_hash") or "")))
     return found, complete
+
+
+def _timestamp(record: dict) -> int | None:
+    try:
+        return int(record["timestamp"])
+    except (KeyError, TypeError, ValueError):
+        return None
 
 
 def parallel(calls: dict[str, Callable[[], Any]], workers: int = 8) -> dict[str, Any]:

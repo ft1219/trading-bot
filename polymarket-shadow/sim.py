@@ -21,6 +21,8 @@ filled. The rules lean towards making us look worse than reality:
   locks the cost of minting what it would sell, except the part covered by
   shares we already hold (selling YES we own needs no cash). Bought shares
   keep their cost locked until a YES and a NO are merged back into $1.
+  Money lost on round trips leaves the budget, net of the rebates and
+  cautious rewards the market has earned so far.
 - Holdings are valued at what selling them into the current book would
   fetch, level by level, after Polymarket's taker fee.
 
@@ -50,6 +52,7 @@ class Position:
     no_cost: float = 0.0
     cash: float = 0.0  # starts at 0: P&L is measured from here
     rebates: float = 0.0
+    reward_credit: float = 0.0  # cautious liquidity rewards earned so far (added by the caller)
     fills: int = 0
     # The order resting on each side: the midpoint time it was quoted from,
     # and how many of its shares have not filled yet.
@@ -60,6 +63,11 @@ class Position:
 
     def held_cost(self) -> float:
         return self.yes_cost + self.no_cost
+
+    def capital(self, budget: float) -> float:
+        """The budget less realized trading losses not yet made up by rebates and rewards."""
+        realized = self.cash + self.held_cost()  # cash = realized P&L - cost of what is still held
+        return budget + min(0.0, realized + self.rebates + self.reward_credit)
 
     def value(self, mid: float) -> float:
         return self.cash + self.yes * mid + self.no * (1 - mid)
@@ -105,11 +113,11 @@ def active_sides(pos: Position, bid: float | None, ask: float | None, p: MarketP
     lock_ask = max(0.0, ask_shares - pos.yes) * (1 - ask) if want_ask else 0.0
     # The order that shrinks our holdings gets the budget first.
     order = ("ask", "bid") if pos.yes > pos.no else ("bid", "ask")
-    used = pos.held_cost()
+    used, capital = pos.held_cost(), pos.capital(p.budget_usd)
     result = {"bid": False, "ask": False}
     for side in order:
         lock, want = (lock_bid, want_bid) if side == "bid" else (lock_ask, want_ask)
-        if want and used + lock <= p.budget_usd + EPS:
+        if want and used + lock <= capital + EPS:
             result[side] = True
             used += lock
     return result["bid"], result["ask"]
@@ -117,9 +125,9 @@ def active_sides(pos: Position, bid: float | None, ask: float | None, p: MarketP
 
 def in_band(mid: float, bid: float | None, ask: float | None, max_spread_c: float) -> tuple[float | None, float | None]:
     """Drop a quote that would sit outside the reward band (we would not post it)."""
-    if bid is not None and (bid <= 0 or (mid - bid) * 100 >= max_spread_c):
+    if bid is not None and (bid <= 0 or rewards.cents(mid - bid) >= max_spread_c):
         bid = None
-    if ask is not None and (ask >= 1 or (ask - mid) * 100 >= max_spread_c):
+    if ask is not None and (ask >= 1 or rewards.cents(ask - mid) >= max_spread_c):
         ask = None
     return bid, ask
 
@@ -134,6 +142,17 @@ def taker_fee_equivalent(shares: float, price: float, p: MarketParams) -> float:
     if p.fee_rate <= 0:
         return 0.0
     return shares * p.fee_rate * (price * (1 - price)) ** p.fee_exponent
+
+
+def usable(record: dict) -> bool:
+    """A trade record with every field the replay reads, in range."""
+    try:
+        int(record["timestamp"])
+        price, size = float(record["price"]), float(record["size"])
+    except (KeyError, TypeError, ValueError):
+        return False
+    return (0 < price < 1 and size >= 0 and bool(record.get("token_id"))
+            and str(record.get("side", "")).upper() in ("BUY", "SELL"))
 
 
 def leg_side(record: dict, yes_token: str) -> tuple[str, float] | None:
@@ -198,7 +217,9 @@ def replay(pos: Position, records: list[dict], history: list[tuple[int, float]],
     Apply trade records (every party's leg, oldest first) and midpoint moves
     to our paper position; returns our fills. Midpoint moves count only
     inside (start, end], so consecutive runs do not count the same move twice.
-    stats["unquoted_trades"] counts trades skipped for want of a recent midpoint.
+    stats["unquoted_trades"] and stats["unquoted_moves"] count trades and
+    midpoint moves skipped for want of a recent midpoint before them (a
+    hole in the history), which the caller should treat as a gap.
     """
     times = [t for t, _ in history]
     fills: list[Fill] = []
@@ -208,8 +229,9 @@ def replay(pos: Position, records: list[dict], history: list[tuple[int, float]],
         else:
             i = item - 1  # the quote that rested until this midpoint arrived
         if i < 0 or ts - times[i] > MAX_QUOTE_AGE_S:
-            if kind == 0 and stats is not None:
-                stats["unquoted_trades"] = stats.get("unquoted_trades", 0) + 1
+            if stats is not None:
+                name = "unquoted_trades" if kind == 0 else "unquoted_moves"
+                stats[name] = stats.get(name, 0) + 1
             continue
         mid = history[i][1]
         bid, ask = quotes(mid, p, level)

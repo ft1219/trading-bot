@@ -2,16 +2,22 @@
 Turns the recorded practice data into a daily table and the go/no-go check.
 
 Gate A (fixed before any data, in the project plan): go live with a small
-pilot only if, over at least 14 well-covered days, the cautious estimate for
-the pilot markets of
+pilot (2 markets, $20 each, orders 1 tick behind the closest prices) only
+if, over at least 14 well-covered days, the cautious estimate for the pilot
+markets of
     liquidity rewards + maker rebates + paper trading result
 averages more than $1.50 a day.
 
 "Cautious" means: competitors are assumed as strong as the order book allows
-(and to move up to our price), a thin market earns nothing, holdings are
-valued at what they would sell for, and the $1 minimum payout is applied to
-each market separately (it may in fact apply to the whole account, which is
-the "optimistic" column).
+(and to move up to our price), a thin market earns nothing, time without a
+sample (or without a usable book) earns nothing, holdings are valued at what
+they would sell for, and the $1 minimum payout is applied to each market
+separately (it may in fact apply to the whole account, which is the
+"optimistic" column).
+
+Rewards and rebates are averaged over the well-covered days only, but the
+paper trading result is averaged over every day since the first pilot, so
+losses on a badly covered day still count.
 """
 from __future__ import annotations
 
@@ -22,6 +28,7 @@ from pathlib import Path
 
 GATE_A_USD_PER_DAY = 1.50
 GATE_A_MIN_DAYS = 14
+PLAN = {"pilot_markets": 2, "budget_per_market_usd": 20.0, "pilot_level": 1}  # what the $1.50 bar was set for
 MIN_COVERAGE = 0.5
 MIN_PAYOUT_USD = 1.0
 REPORT_DAYS = 35
@@ -55,9 +62,9 @@ def _final_pilots(watchlist: list[dict]) -> set[str] | None:
 
 def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
     """
-    One row per UTC day. Values and rebates in the data are running totals per
-    market, so every day since the first is read to take differences; only the
-    last REPORT_DAYS are returned. Each sample and closeout counts towards the
+    One row per UTC day since the first. Values and rebates in the data are
+    running totals per market, so every day is read to take differences. Each
+    sample and closeout counts towards the
     pilot or not according to its own flag, because a market's role can change
     during a day (its paper position is closed out and restarted when it does).
     """
@@ -80,7 +87,8 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
 
         # (condition_id, level, counted as pilot) -> the day's totals
         per: dict[tuple[str, int, bool], dict] = defaultdict(
-            lambda: {"low": 0.0, "high": 0.0, "dt": 0, "thin_dt": 0, "rebates": 0.0, "trading": 0.0})
+            lambda: {"low": 0.0, "high": 0.0, "dt": 0, "thin_dt": 0, "rebates": 0.0, "trading": 0.0,
+                     "closeout_thin": False})
         events = [(c["ts"], 0, c) for c in closeouts] + [(r["ts"], 1, r) for r in samples]
         for _, kind, row in sorted(events, key=lambda e: (e[0], e[1])):
             role = bool(row.get("pilot", False))
@@ -89,6 +97,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 agg = per[key + (role,)]
                 agg["trading"] += row["value_after"] - last_value.get(key, 0.0)
                 agg["rebates"] += row.get("rebates", 0.0) - last_rebates.get(key, 0.0)
+                agg["closeout_thin"] = bool(row.get("thin"))
                 last_value[key] = last_rebates[key] = 0.0
                 continue
             for lv, d in row["levels"].items():
@@ -98,9 +107,11 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 agg["high"] += d["est_high"]
                 agg["dt"] += row["dt"]
                 agg["thin_dt"] += row["dt"] if row.get("thin") else 0
-                agg["trading"] += d["value"] - last_value.get(key, 0.0)
                 agg["rebates"] += d["rebates"] - last_rebates.get(key, 0.0)
-                last_value[key], last_rebates[key] = d["value"], d["rebates"]
+                last_rebates[key] = d["rebates"]
+                if d.get("value") is not None:  # None: no book to value the holdings against this run
+                    agg["trading"] += d["value"] - last_value.get(key, 0.0)
+                    last_value[key] = d["value"]
 
         result = {"day": day, "levels": {}}
         for level in sorted({k[1] for k in per} | {pilot_level}):
@@ -108,11 +119,11 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
             for (cid, lv, role), agg in per.items():
                 if lv != level:
                     continue
-                coverage = agg["dt"] / 86400
-                scale = 1 / coverage if coverage >= MIN_COVERAGE else 1.0
-                thin = not role and agg["thin_dt"] * 2 > agg["dt"]  # thin for most of the day
+                coverage = agg["dt"] / 86400  # time not covered by a sample earns nothing (no scaling up)
+                # thin for most of the day, or (only closed out today) when it left the list
+                thin = not role and (agg["thin_dt"] * 2 > agg["dt"] if agg["dt"] else agg["closeout_thin"])
                 mk.append({"condition_id": cid, "pilot": role, "thin": thin, "coverage": coverage,
-                           "rewards_low": agg["low"] * scale, "rewards_high": agg["high"] * scale,
+                           "rewards_low": agg["low"], "rewards_high": agg["high"],
                            "rebates": agg["rebates"], "trading": agg["trading"]})
             pilot = [x for x in mk if x["pilot"]]
             est = [x for x in mk if not x["thin"]]
@@ -130,6 +141,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 "markets": len({x["condition_id"] for x in mk}),
                 "pilot_markets": len({x["condition_id"] for x in pilot}),
                 "pilot_covered": covered,
+                "pilot_income": sum(_floor(x["rewards_low"]) + _floor(x["rebates"]) for x in pilot),
                 "pilot_cautious": sum(_floor(x["rewards_low"]) + _floor(x["rebates"]) + x["trading"] for x in pilot),
                 "pilot_optimistic": _floor(sum(x["rewards_high"] for x in pilot)) + _floor(sum(x["rebates"] for x in pilot))
                 + sum(x["trading"] for x in pilot),
@@ -148,21 +160,34 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 "markout_24h": sum(m["markout_usd"] for m in markouts if int(m["level"]) == level and m["horizon"] == 86400),
             }
         out.append(result)
-    return out[-REPORT_DAYS:]
+    return out
 
 
-def gate_a(rows: list[dict], level: int, today: str) -> dict:
-    full = [r for r in rows if r["day"] < today and r["levels"].get(str(level), {}).get("pilot_covered")]
-    values = [r["levels"][str(level)]["pilot_cautious"] for r in full]
-    mean = sum(values) / len(values) if values else None
-    if len(values) < GATE_A_MIN_DAYS:
+def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
+    """
+    The go/no-go check over every finished day: rewards and rebates averaged
+    over the well-covered days, plus the paper trading result averaged over
+    every day since the pilot first held a position.
+    """
+    done = [r["levels"][str(level)] for r in rows if r["day"] < today and str(level) in r["levels"]]
+    started = next((i for i, lv in enumerate(done) if lv["pilot_markets"] or lv["pilot_trading"]), len(done))
+    period = done[started:]
+    full = [lv for lv in period if lv["pilot_covered"]]
+    mean = None
+    if full:
+        income = sum(lv["pilot_income"] for lv in full) / len(full)
+        mean = income + sum(lv["pilot_trading"] for lv in period) / len(period)
+    plan_ok = settings is None or all(getattr(settings, k) == v for k, v in PLAN.items())
+    if len(full) < GATE_A_MIN_DAYS:
         verdict = "NOT ENOUGH DATA YET"
+    elif not plan_ok:
+        verdict = "NO VERDICT: the pilot settings differ from the plan the bar was set for"
     elif mean > GATE_A_USD_PER_DAY:
         verdict = "PASS"
     else:
         verdict = "FAIL"
-    return {"days": len(values), "needed_days": GATE_A_MIN_DAYS, "mean_cautious_usd_per_day": mean,
-            "threshold_usd_per_day": GATE_A_USD_PER_DAY, "verdict": verdict}
+    return {"days": len(full), "days_since_start": len(period), "needed_days": GATE_A_MIN_DAYS,
+            "mean_cautious_usd_per_day": mean, "threshold_usd_per_day": GATE_A_USD_PER_DAY, "verdict": verdict}
 
 
 def _usd(x: float | None) -> str:
@@ -175,7 +200,7 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
     level = settings.pilot_level
     today = dt.datetime.fromtimestamp(now, dt.timezone.utc).strftime("%Y-%m-%d")
     rows = daily_rows(data_dir, level, now)
-    gate = gate_a(rows, level, today)
+    gate = gate_a(rows, level, today, settings)
     lines = [
         "# Polymarket practice mode",
         "",
@@ -183,7 +208,8 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         "",
         f"**Go/no-go check (Gate A): {gate['verdict']}.** "
         + (f"Pilot markets averaged {_usd(gate['mean_cautious_usd_per_day'])} a day on the cautious estimate over "
-           f"{gate['days']} full day(s). " if gate["days"] else "No full day recorded yet. ")
+           f"{gate['days']} full day(s) (paper trading over all {gate['days_since_start']} day(s)). "
+           if gate["days"] else "No full day recorded yet. ")
         + f"It needs more than {_usd(GATE_A_USD_PER_DAY)} a day over at least {GATE_A_MIN_DAYS} days.",
         "",
         f"Pilot: the top {settings.pilot_markets} markets each day where others already quote near the middle, "
@@ -229,5 +255,5 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
             ]
     else:
         lines.append("- No full day recorded yet.")
-    summary = {"generated": int(now), "gate_a": gate, "days": rows}
+    summary = {"generated": int(now), "gate_a": gate, "days": rows[-REPORT_DAYS:]}
     return "\n".join(lines) + "\n", summary

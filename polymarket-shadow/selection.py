@@ -97,7 +97,8 @@ def prefilter(sampling: list[dict], configs: dict[str, dict], now: dt.datetime, 
             tick = float(m.get("minimum_tick_size") or 0.01)
         except (TypeError, ValueError):
             continue
-        if rate < s.min_daily_rate_usd or max_spread <= 0 or not (s.min_mid <= price <= s.max_mid):
+        # An unknown minimum reward size (0) would also switch off the thin-market check.
+        if rate < s.min_daily_rate_usd or max_spread <= 0 or min_size <= 0 or not (s.min_mid <= price <= s.max_mid):
             continue
         if min_size > s.budget_per_market_usd:  # a two-sided pair of min-size orders costs about min_size dollars
             continue
@@ -115,12 +116,13 @@ def prefilter(sampling: list[dict], configs: dict[str, dict], now: dt.datetime, 
     return out
 
 
-def order_size(c: Candidate, bid: float, ask: float, budget: float) -> float:
-    """Shares per order: as many as the budget allows for one bid and one ask."""
-    pair_cost = bid + (1 - ask)
-    if pair_cost <= 0:
-        return 0.0
-    size = float(int(budget / pair_cost))
+def order_size(c: Candidate, budget: float) -> float:
+    """
+    Shares per order: as many as the budget allows for one bid and one ask
+    wherever the midpoint goes. A pair costs at most 1 - tick (closest
+    prices, midpoint between ticks), so the size is fixed for the day.
+    """
+    size = float(int(budget / (1 - c.tick) + 1e-9))
     return size if size >= max(c.min_size, c.order_min) else 0.0
 
 
@@ -137,7 +139,7 @@ def score_candidates(cands: list[Candidate], books: dict[str, dict], s: Settings
             continue
         bid, ask = rewards.quote_prices(mid, book.tick, s.pilot_level)
         c.tick = book.tick
-        size = order_size(c, bid, ask, s.budget_per_market_usd)
+        size = order_size(c, s.budget_per_market_usd)
         if size <= 0:
             continue
         sc = rewards.score_quotes(book, bid, ask, size, c.max_spread_c, c.min_size)
@@ -168,7 +170,9 @@ def choose(scored: list[Candidate], s: Settings) -> list[Candidate]:
     """Watchlist: the best established markets (the top ones are the pilot), then a few thin ones."""
     established = [c for c in scored if not c.thin]
     thin = [c for c in scored if c.thin]
-    n_thin = min(len(thin), max(s.thin_markets, s.watch_markets - len(established)), s.watch_markets)
+    # Thin markets fill the slots established ones leave, but never the pilot slots.
+    pilot_slots = min(s.pilot_markets, len(established))
+    n_thin = min(len(thin), max(s.thin_markets, s.watch_markets - len(established)), max(0, s.watch_markets - pilot_slots))
     chosen = established[: s.watch_markets - n_thin] + thin[:n_thin]
     for i, c in enumerate(chosen):
         c.rank = i + 1

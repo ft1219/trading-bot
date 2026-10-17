@@ -76,8 +76,10 @@ def test_running_totals_older_than_the_report_window_are_not_counted_again(tmp_p
         d = (dt.date(2026, 9, 1) + dt.timedelta(days=i)).isoformat()
         write_day(tmp_path, d, 1788220800 + i * 86400, rewards_low=1.4, value=0, rebates=0.5 * (i + 1))
     rows = report.daily_rows(tmp_path, 1, 1788220800 + 50 * 86400)
-    assert len(rows) == report.REPORT_DAYS
+    assert len(rows) == 40
     assert all(abs(r["levels"]["1"]["pilot_cautious"] - 1.4) < 1e-9 for r in rows)  # rebates stay under $1
+    _, summary = report.build(tmp_path, Settings(), now=1788220800 + 50 * 86400)
+    assert len(summary["days"]) == report.REPORT_DAYS
 
 
 def test_a_market_counts_as_pilot_only_while_it_is_one(tmp_path):
@@ -97,7 +99,7 @@ def test_a_market_counts_as_pilot_only_while_it_is_one(tmp_path):
         json.dumps({"ts": base + 2820, "condition_id": "0xnew", "pilot": True}) + "\n"
         + json.dumps({"ts": base + 2820, "condition_id": "0xold", "pilot": False}) + "\n")
     lv = report.daily_rows(tmp_path, 1, base + 86400)[0]["levels"]["1"]
-    assert abs(lv["pilot_rewards_low"] - (0.5 + 3.5 * 86400 / (35 * 2400))) < 1e-9
+    assert abs(lv["pilot_rewards_low"] - (0.5 + 3.5)) < 1e-9  # each pilot only for the time it was one
     assert lv["pilot_covered"]  # judged on the day's final pilot set
 
 
@@ -119,3 +121,52 @@ def test_today_is_labelled_as_unfinished(tmp_path):
     write_day(tmp_path, "2026-10-01", 1790812800, rewards_low=5, value=0)
     text, _ = report.build(tmp_path, Settings(), now=1790812800 + 3600)
     assert "2026-10-01 (today, so far)" in text
+
+
+def test_trading_losses_on_badly_covered_days_still_count(tmp_path):
+    for i, d in enumerate(days(15)):
+        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0)
+    write_day(tmp_path, "2026-10-16", 1790000000 + 15 * 86400, rewards_low=9, value=-20, samples=10)  # partial
+    _, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
+    gate = summary["gate_a"]
+    assert gate["days"] == 15 and gate["days_since_start"] == 16
+    assert abs(gate["mean_cautious_usd_per_day"] - (2.0 - 20 / 16)) < 1e-9 and gate["verdict"] == "FAIL"
+
+
+def test_the_check_covers_every_day_not_just_the_report_window(tmp_path):
+    # Loses $3 a day for the first 10 of 40 days: -$30 over 40 days takes $2.00 of rewards to $1.25.
+    for i in range(40):
+        d = (dt.date(2026, 9, 1) + dt.timedelta(days=i)).isoformat()
+        write_day(tmp_path, d, 1788220800 + i * 86400, rewards_low=2.0, value=-3.0 * min(i + 1, 10))
+    _, summary = report.build(tmp_path, Settings(), now=1788220800 + 50 * 86400)
+    assert abs(summary["gate_a"]["mean_cautious_usd_per_day"] - 1.25) < 1e-9
+    assert summary["gate_a"]["verdict"] == "FAIL"
+
+
+def test_no_verdict_when_the_pilot_settings_differ_from_the_plan(tmp_path):
+    for i, d in enumerate(days(15)):
+        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0)
+    _, summary = report.build(tmp_path, Settings(budget_per_market_usd=50), now=1790000000 + 30 * 86400)
+    assert summary["gate_a"]["verdict"].startswith("NO VERDICT")
+
+
+def test_a_sample_without_a_book_counts_no_reward_and_leaves_the_value_alone(tmp_path):
+    folder = tmp_path / "days" / "2026-10-05"
+    folder.mkdir(parents=True)
+    base = 1791158400
+    row = lambda ts, low, value: {"ts": ts, "condition_id": "0xm", "pilot": True, "dt": 2400,
+                                  "levels": {"1": {"est_low": low, "est_high": low, "value": value, "rebates": 0}}}
+    rows = [row(base + 2400, 0.1, -1.0), row(base + 4800, 0.0, None), row(base + 7200, 0.1, -1.5)]
+    (folder / "samples.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    lv = report.daily_rows(tmp_path, 1, base + 86400)[0]["levels"]["1"]
+    assert abs(lv["pilot_rewards_low"] - 0.2) < 1e-9 and abs(lv["pilot_trading"] + 1.5) < 1e-9
+
+
+def test_a_thin_market_closed_out_after_leaving_the_list_stays_thin(tmp_path):
+    folder = tmp_path / "days" / "2026-10-05"
+    folder.mkdir(parents=True)
+    closeout = {"ts": 1791158820, "condition_id": "0xthin", "level": 1, "pilot": False, "thin": True,
+                "value_after": -2.0, "rebates": 0}
+    (folder / "closeouts.jsonl").write_text(json.dumps(closeout) + "\n")
+    lv = report.daily_rows(tmp_path, 1, 1791158400 + 86400)[0]["levels"]["1"]
+    assert lv["thin_markets"] == 1 and lv["all_markets"] == 0 and abs(lv["thin_trading"] + 2.0) < 1e-9

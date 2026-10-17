@@ -103,6 +103,11 @@ def with_orders(book: Book, bid: float | None, ask: float | None, size: float) -
     return Book(tuple(sorted(bids, key=lambda l: -l.price)), tuple(sorted(asks, key=lambda l: l.price)), book.tick)
 
 
+def cents(price_gap: float) -> float:
+    """A price difference in cents, rounded so that a level exactly v cents away compares equal to v."""
+    return round(price_gap * 100, 6)
+
+
 def order_score(max_spread_c: float, distance_c: float, multiplier: float = 1.0) -> float:
     """S(v, s); zero at or beyond the max spread."""
     if max_spread_c <= 0 or distance_c < 0 or distance_c >= max_spread_c:
@@ -127,7 +132,7 @@ def side_score(levels: tuple[Level, ...], midpoint: float, max_spread_c: float, 
     for level in levels:
         if level.size < min_level_size:
             continue
-        score = order_score(max_spread_c, abs(level.price - midpoint) * 100)
+        score = order_score(max_spread_c, cents(abs(level.price - midpoint)))
         if score > 0:
             score = max(score, floor)
         total += score * level.size
@@ -135,13 +140,14 @@ def side_score(levels: tuple[Level, ...], midpoint: float, max_spread_c: float, 
 
 
 def depth_in_band(levels: tuple[Level, ...], midpoint: float, max_spread_c: float) -> float:
-    return sum(l.size for l in levels if abs(l.price - midpoint) * 100 < max_spread_c)
+    return sum(l.size for l in levels if cents(abs(l.price - midpoint)) < max_spread_c)
 
 
 def is_thin(book: Book, midpoint: float, max_spread_c: float, min_size: float) -> bool:
-    """True when other makers leave either side of the reward band without min_size of depth."""
-    return (depth_in_band(book.bids, midpoint, max_spread_c) < min_size
-            or depth_in_band(book.asks, midpoint, max_spread_c) < min_size)
+    """True when other makers leave either side of the reward band without min_size of depth (an empty band is always thin)."""
+    need = max(min_size, 1e-9)
+    return (depth_in_band(book.bids, midpoint, max_spread_c) < need
+            or depth_in_band(book.asks, midpoint, max_spread_c) < need)
 
 
 @dataclass(frozen=True)
@@ -197,8 +203,8 @@ def our_score(bid: float | None, ask: float | None, size: float, midpoint: float
               max_spread_c: float, min_size: float, comp: Competition) -> OurScore:
     """Score of our hypothetical orders; pass None for a side we are not quoting."""
     ok = size >= min_size
-    q_one = order_score(max_spread_c, (midpoint - bid) * 100) * size if ok and bid is not None else 0.0
-    q_two = order_score(max_spread_c, (ask - midpoint) * 100) * size if ok and ask is not None else 0.0
+    q_one = order_score(max_spread_c, cents(midpoint - bid)) * size if ok and bid is not None else 0.0
+    q_two = order_score(max_spread_c, cents(ask - midpoint)) * size if ok and ask is not None else 0.0
     q = q_min(q_one, q_two, midpoint)
     share_low = q / (q + comp.high) if q > 0 else 0.0
     share_high = q / (q + comp.low) if q > 0 else 0.0
@@ -226,7 +232,7 @@ def score_quotes(book: Book, bid: float | None, ask: float | None, size: float,
     if mid is None:
         return Scored(None, True, Competition(0.0, 0.0), NO_SCORE)
     comp = competition(book, mid, max_spread_c, min_size,
-                       bid_c=(mid - bid) * 100 if bid is not None else None,
-                       ask_c=(ask - mid) * 100 if ask is not None else None)
+                       bid_c=cents(mid - bid) if bid is not None else None,
+                       ask_c=cents(ask - mid) if ask is not None else None)
     ours = our_score(bid, ask, size, mid, max_spread_c, min_size, comp)
     return Scored(mid, is_thin(book, mid, max_spread_c, min_size), comp, ours)

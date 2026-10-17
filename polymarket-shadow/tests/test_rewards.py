@@ -93,3 +93,15 @@ def test_makers_in_the_band_are_moved_up_to_our_price_for_the_high_bound():
     close = book([(0.584, 100)], [(0.70, 100)])
     m = rewards.competition(close, 0.585, 5.5, 20, bid_c=1.5, ask_c=1.5)
     assert m.high == pytest.approx(100 * rewards.order_score(5.5, 0.1) / 3)
+
+
+def test_makers_exactly_at_the_band_edge_are_outside_it():
+    # 0.315 - 0.28 and 0.35 - 0.315 are 3.5 cents, which floats compute as a hair under 3.5.
+    edge = book([(0.28, 500)], [(0.35, 500)])
+    assert rewards.depth_in_band(edge.bids, 0.315, 3.5) == 0
+    assert rewards.is_thin(edge, 0.315, 3.5, 20)
+    assert rewards.score_quotes(edge, 0.30, 0.33, 20, 3.5, 20).thin
+
+
+def test_an_unknown_minimum_size_still_finds_an_empty_band_thin():
+    assert rewards.is_thin(book([(0.31, 500)], [(0.89, 500)]), 0.60, 4.5, 0)

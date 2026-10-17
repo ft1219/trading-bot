@@ -73,3 +73,10 @@ def test_more_pages_without_a_cursor_is_cut_short():
 def test_unexpected_shape_raises():
     with pytest.raises(pmapi.ApiError):
         pmapi.trades_since(CID, 0, lambda url, body: [])
+
+
+def test_a_record_without_a_readable_time_is_passed_on():
+    rows = [{"timestamp": 1000, "transaction_hash": "0xa"}, {"timestamp": None, "transaction_hash": "0xb"},
+            {"timestamp": 990, "transaction_hash": "0xc"}]
+    found, complete = pmapi.trades_since(CID, 995, Pages(rows, size=10))
+    assert complete and [r["transaction_hash"] for r in found] == ["0xb", "0xa"]

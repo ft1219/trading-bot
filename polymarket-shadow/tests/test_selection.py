@@ -23,9 +23,10 @@ def config(rate=500, min_size=20, spread=5.5):
 def test_prefilter_keeps_a_good_market_and_drops_bad_ones():
     markets = [market("0xgood"), market("0xsoon", end="2026-10-20T00:00:00Z"), market("0xedge", price=0.95),
                market("0xgame", game_start_time="2026-10-17T18:00:00Z"), market("0xclosed", closed=True),
-               market("0xbig"), market("0xpoor"), market("0xnocfg")]
+               market("0xbig"), market("0xpoor"), market("0xnocfg"), market("0xnomin")]
     configs = {m["condition_id"]: config() for m in markets}
     configs["0xbig"] = config(min_size=200)
+    configs["0xnomin"] = config(min_size=None)
     configs["0xpoor"] = config(rate=3)
     del configs["0xnocfg"]
     out = selection.prefilter(markets, configs, NOW, S)
@@ -35,8 +36,10 @@ def test_prefilter_keeps_a_good_market_and_drops_bad_ones():
 
 def test_order_size_fits_the_budget():
     c = selection.prefilter([market()], {"0xabc": config()}, NOW, S)[0]
-    assert selection.order_size(c, 0.58, 0.59, 20) == 20
-    assert selection.order_size(c, 0.58, 0.59, 15) == 0  # cannot reach the 20-share minimum
+    assert selection.order_size(c, 20) == 20
+    assert selection.order_size(c, 15) == 0  # cannot reach the 20-share minimum
+    # Sized for the dearest pair (closest prices, midpoint between ticks), so both sides always fit.
+    assert selection.order_size(c, 25) == 25
 
 
 def test_scoring_and_choice_use_the_live_book(fx):
@@ -83,3 +86,12 @@ def test_a_thin_book_scores_no_cautious_reward():
     raw = {"bids": [{"price": "0.31", "size": "51"}], "asks": [{"price": "0.89", "size": "66"}], "tick_size": "0.01"}
     scored = selection.score_candidates([c], {"0xabc-y": raw}, selection.Settings(min_mid=0.1, max_mid=0.9))
     assert scored and scored[0].thin and scored[0].expected_low == 0 and scored[0].expected_high == 60
+
+
+def test_thin_markets_never_take_the_pilot_slots():
+    s = selection.Settings(watch_markets=3, pilot_markets=2, thin_markets=5)
+    scored = [_cand("0xe1", 5, 9, False), _cand("0xe2", 4, 8, False), _cand("0xe3", 3, 7, False)] + \
+             [_cand(f"0xt{i}", 0, 20, True) for i in range(5)]
+    chosen = selection.choose(scored, s)
+    assert [c.condition_id for c in chosen if c.pilot] == ["0xe1", "0xe2"]
+    assert len(chosen) == 3
