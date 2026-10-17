@@ -5,50 +5,50 @@
    "levels": {
     "0": {
      "all_rebates": 0.0,
-     "all_rewards_high": 37.909487493737146,
-     "all_rewards_low": 37.903189677693625,
+     "all_rewards_high": 41.81227278090681,
+     "all_rewards_low": 41.7674715421281,
      "all_trading": 0.0,
      "fills": 0,
      "markets": 25,
      "markout_1h": 0,
      "markout_24h": 0,
-     "pilot_cautious": 5.180967455471402,
+     "pilot_cautious": 5.68557685538528,
      "pilot_covered": false,
      "pilot_markets": 2,
-     "pilot_optimistic": 5.187265271514924,
-     "pilot_rewards_low": 5.180967455471402,
+     "pilot_optimistic": 5.70906100039854,
+     "pilot_rewards_low": 5.68557685538528,
      "pilot_trading": 0.0
     },
     "1": {
      "all_rebates": 0.0,
-     "all_rewards_high": 37.90839079359635,
-     "all_rewards_low": 37.90189815457918,
+     "all_rewards_high": 41.79372262920112,
+     "all_rewards_low": 41.74004746387302,
      "all_trading": 0.0,
      "fills": 0,
      "markets": 25,
      "markout_1h": 0,
      "markout_24h": 0,
-     "pilot_cautious": 5.179675932356959,
+     "pilot_cautious": 5.683184260525442,
      "pilot_covered": false,
      "pilot_markets": 2,
-     "pilot_optimistic": 5.1861685713741235,
-     "pilot_rewards_low": 5.179675932356959,
+     "pilot_optimistic": 5.707304895116855,
+     "pilot_rewards_low": 5.683184260525442,
      "pilot_trading": 0.0
     },
     "2": {
      "all_rebates": 0.0,
-     "all_rewards_high": 37.90724187879539,
-     "all_rewards_low": 37.9005453206893,
+     "all_rewards_high": 41.75708798162346,
+     "all_rewards_low": 41.6922845546195,
      "all_trading": 0.0,
      "fills": 0,
      "markets": 25,
      "markout_1h": 0,
      "markout_24h": 0,
-     "pilot_cautious": 5.178323098467074,
+     "pilot_cautious": 5.6806858548559,
      "pilot_covered": false,
      "pilot_markets": 2,
-     "pilot_optimistic": 5.185019656573171,
-     "pilot_rewards_low": 5.178323098467074,
+     "pilot_optimistic": 5.705467529399665,
+     "pilot_rewards_low": 5.6806858548559,
      "pilot_trading": 0.0
     }
    }
@@ -61,5 +61,5 @@
   "threshold_usd_per_day": 1.5,
   "verdict": "NOT ENOUGH DATA YET"
  },
- "generated": 1792210279
+ "generated": 1792210529
 }

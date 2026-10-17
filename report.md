@@ -8,7 +8,7 @@ Pilot: the top 2 markets each day, $20 each, orders 1 tick(s) behind the closest
 
 | Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | All-market rewards low-high | Fills | 1h markouts |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-17 (partial day) | $5.18 | $5.19 | $5.18 | $0.00 | $37.90-$37.91 | 0 | $0.00 |
+| 2026-10-17 (partial day) | $5.68 | $5.71 | $5.68 | $0.00 | $41.74-$41.79 | 0 | $0.00 |
 
 Other distances from the midpoint, latest full day:
 
