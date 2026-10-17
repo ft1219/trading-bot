@@ -132,7 +132,7 @@ def score_candidates(cands: list[Candidate], books: dict[str, dict], s: Settings
         if not raw:
             continue
         book = rewards.parse_book(raw)
-        mid = rewards.adjusted_midpoint(book, c.min_size)
+        mid = rewards.raw_midpoint(book)  # the same midpoint the paper fills use
         if mid is None or not (s.min_mid <= mid <= s.max_mid):
             continue
         bid, ask = rewards.quote_prices(mid, book.tick, s.pilot_level)
@@ -140,15 +140,12 @@ def score_candidates(cands: list[Candidate], books: dict[str, dict], s: Settings
         size = order_size(c, bid, ask, s.budget_per_market_usd)
         if size <= 0:
             continue
-        comp = rewards.competition(book, mid, c.max_spread_c, c.min_size,
-                                   bid_c=(mid - bid) * 100, ask_c=(ask - mid) * 100)
-        ours = rewards.our_score(bid, ask, size, mid, c.max_spread_c, c.min_size, comp)
-        if ours.q_min <= 0:
+        sc = rewards.score_quotes(book, bid, ask, size, c.max_spread_c, c.min_size)
+        if sc.ours.q_min <= 0:
             continue
-        c.mid, c.size = mid, size
-        c.thin = rewards.is_thin(book, mid, c.max_spread_c, c.min_size)
-        c.expected_low = 0.0 if c.thin else c.daily_rate * ours.share_low
-        c.expected_high = c.daily_rate * ours.share_high
+        c.mid, c.size, c.thin = mid, size, sc.thin
+        c.expected_low = 0.0 if sc.thin else c.daily_rate * sc.ours.share_low
+        c.expected_high = c.daily_rate * sc.ours.share_high
         scored.append(c)
     scored.sort(key=lambda c: (-c.expected_low, -c.expected_high))
     return scored

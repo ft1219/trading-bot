@@ -10,8 +10,10 @@ tests/fixtures/), including:
   as strings.
 - /prices-history points are {"t": unix seconds, "p": midpoint}, about one a
   minute with fidelity=1.
-- data-api /trades with the default takerOnly=true returns one record per
-  taker fill: "side" is the taker's side on "asset", "price" is in dollars.
+- data-api /trades with takerOnly=false returns one record per party per
+  fill, the taker's and each maker's: "side" is that party's side on
+  "asset" and "price" its own price in dollars (the taker's is an average).
+  Records of one fill share a transactionHash.
 """
 from __future__ import annotations
 
@@ -124,16 +126,16 @@ def price_history(token_id: str, start_ts: int, end_ts: int, fetch: Fetch = http
     return sorted((int(p["t"]), float(p["p"])) for p in points)
 
 
-def taker_trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> tuple[list[dict], bool]:
+def trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> tuple[list[dict], bool]:
     """
-    Taker fills in a market newer than since_ts, oldest first.
+    Trade records (taker and maker legs) in a market newer than since_ts, oldest first.
     Returns (trades, complete); complete is False when the page limit cut the
     history short, so the caller can mark that window as partial.
     """
     found: list[dict] = []
     offset = 0
     while offset <= TRADES_MAX_OFFSET:
-        url = f"{DATA}/trades?market={condition_id}&limit={TRADES_PAGE}&offset={offset}"
+        url = f"{DATA}/trades?market={condition_id}&takerOnly=false&limit={TRADES_PAGE}&offset={offset}"
         page = fetch(url, None)
         if not isinstance(page, list):
             raise ApiError("/trades: unexpected shape")

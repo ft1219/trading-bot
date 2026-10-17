@@ -86,7 +86,21 @@ def adjusted_midpoint(book: Book, min_size: float) -> float | None:
     ask = _cutoff_price(book.asks, min_size)
     if bid is None or ask is None or bid >= ask:
         return None
-    return (bid + ask) / 2
+    return round((bid + ask) / 2, 6)  # so 0.10 and 0.90 compare exactly
+
+
+def raw_midpoint(book: Book) -> float | None:
+    """(best bid + best ask) / 2, the midpoint Polymarket's price history records."""
+    if book.best_bid is None or book.best_ask is None or book.best_bid >= book.best_ask:
+        return None
+    return round((book.best_bid + book.best_ask) / 2, 6)
+
+
+def with_orders(book: Book, bid: float | None, ask: float | None, size: float) -> Book:
+    """The book with our own orders added, as the reward sampler would see it."""
+    bids = list(book.bids) + ([Level(bid, size)] if bid is not None and size > 0 else [])
+    asks = list(book.asks) + ([Level(ask, size)] if ask is not None and size > 0 else [])
+    return Book(tuple(sorted(bids, key=lambda l: -l.price)), tuple(sorted(asks, key=lambda l: l.price)), book.tick)
 
 
 def order_score(max_spread_c: float, distance_c: float, multiplier: float = 1.0) -> float:
@@ -189,3 +203,30 @@ def our_score(bid: float | None, ask: float | None, size: float, midpoint: float
     share_low = q / (q + comp.high) if q > 0 else 0.0
     share_high = q / (q + comp.low) if q > 0 else 0.0
     return OurScore(q_one, q_two, q, share_low, share_high)
+
+
+@dataclass(frozen=True)
+class Scored:
+    reward_mid: float | None  # size-cutoff midpoint with our orders in the book
+    thin: bool
+    comp: Competition
+    ours: OurScore
+
+
+NO_SCORE = OurScore(0.0, 0.0, 0.0, 0.0, 0.0)
+
+
+def score_quotes(book: Book, bid: float | None, ask: float | None, size: float,
+                 max_spread_c: float, min_size: float) -> Scored:
+    """
+    Our reward share for orders at bid/ask (None: not posted), measured the
+    way Polymarket's sampler would see the book with our orders in it.
+    """
+    mid = adjusted_midpoint(with_orders(book, bid, ask, size), min_size)
+    if mid is None:
+        return Scored(None, True, Competition(0.0, 0.0), NO_SCORE)
+    comp = competition(book, mid, max_spread_c, min_size,
+                       bid_c=(mid - bid) * 100 if bid is not None else None,
+                       ask_c=(ask - mid) * 100 if ask is not None else None)
+    ours = our_score(bid, ask, size, mid, max_spread_c, min_size, comp)
+    return Scored(mid, is_thin(book, mid, max_spread_c, min_size), comp, ours)

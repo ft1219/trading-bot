@@ -12,9 +12,10 @@ T_END = 1792209018    # when the fixture book was taken
 class FakeApi:
     """Serves the recorded live responses in tests/fixtures."""
 
-    def __init__(self, fx, fail_trades=False):
+    def __init__(self, fx, fail_trades=False, cut_short=False):
         self.fx = fx
         self.fail_trades = fail_trades
+        self.cut_short = cut_short
         m = fx("clob_market")
         m.update({"active": True, "closed": False, "accepting_orders": True, "enable_order_book": True})
         self.market = m
@@ -38,32 +39,36 @@ class FakeApi:
     def price_history(self, token, start, end):
         return [(int(p["t"]), float(p["p"])) for p in self.fx("history")["history"] if start <= p["t"] <= end]
 
-    def taker_trades_since(self, cid, since):
+    def trades_since(self, cid, since):
         if self.fail_trades:
             raise pmapi.ApiError("boom")
-        trades = [t for t in self.fx("trades_taker") if t["timestamp"] > since]
-        return sorted(trades, key=lambda t: t["timestamp"]), True
+        trades = [t for t in self.fx("trades_all") if t["timestamp"] > since]
+        return sorted(trades, key=lambda t: t["timestamp"]), not self.cut_short
 
 
 def test_two_runs_record_samples_fills_and_a_report(tmp_path, fx):
     api = FakeApi(fx)
     s = Settings(pilot_markets=1)
     log1 = snapshot.run(tmp_path, now=T_START, api=api, s=s)
-    assert log1["errors"] == [] and log1["markets"] == 1 and log1["samples"] == 1
+    # The run that picks the watchlist takes no reward sample from the same books.
+    assert log1["errors"] == [] and log1["markets"] == 1 and log1["samples"] == 0
     state = json.loads((tmp_path / "state.json").read_text())
     assert state["watchlist_day"] == snapshot.utc_day(T_START)
     assert state["markets"][CID]["info"]["fee_rate"] == 0.04
 
-    log2 = snapshot.run(tmp_path, now=T_END, api=api, s=s)
-    assert log2["errors"] == []
-    samples = [json.loads(line) for d in sorted((tmp_path / "days").iterdir())
+    log2 = snapshot.run(tmp_path, now=T_START + 2400, api=api, s=s)
+    assert log2["errors"] == [] and log2["samples"] == 1
+    log3 = snapshot.run(tmp_path, now=T_END, api=api, s=s)  # the next UTC day: a new watchlist, so no sample
+    assert log3["errors"] == [] and log3["samples"] == 0
+    samples = [json.loads(line) for d in sorted((tmp_path / "days").iterdir()) if (d / "samples.jsonl").exists()
                for line in (d / "samples.jsonl").read_text().splitlines()]
-    assert len(samples) == 2 and samples[1]["dt"] == snapshot.MAX_SAMPLE_DT_S
-    for lv in samples[1]["levels"].values():
+    assert len(samples) == 1 and samples[0]["dt"] == 2400
+    for lv in samples[0]["levels"].values():
         assert 0 <= lv["share_low"] <= lv["share_high"] <= 1
+        assert lv["reward_mid"] is not None and not lv["thin"]
     state = json.loads((tmp_path / "state.json").read_text())
     assert state["markets"][CID]["trades_until"] == T_END - snapshot.TRADE_SETTLE_S
-    replayed = [t for t in fx("trades_taker") if T_START - 120 < t["timestamp"] <= T_END - 120]
+    replayed = [t for t in fx("trades_all") if T_START - 120 < t["timestamp"] <= T_END - 120]
     assert replayed, "fixture should contain trades in the replay window"
     report = (tmp_path / "report.md").read_text()
     assert "Gate A" in report and "NOT ENOUGH DATA YET" in report
@@ -88,7 +93,7 @@ def test_a_market_leaving_the_list_is_sold_at_the_touch(tmp_path, fx):
     day = snapshot.utc_day(T_START + 86400)
     rows = [json.loads(line) for line in (tmp_path / "days" / day / "closeouts.jsonl").read_text().splitlines()]
     row0 = next(r for r in rows if r["level"] == 0)
-    assert row0["received"] == 20 * 0.58  # best bid in the fixture book
+    assert row0["received"] == round(20 * 0.58 - 20 * 0.04 * 0.58 * 0.42, 6)  # best bid, less the taker fee
     assert CID not in json.loads((tmp_path / "state.json").read_text())["markets"]
 
 
@@ -118,7 +123,8 @@ class ThinBookApi(FakeApi):
 
 
 def test_a_thin_market_is_watched_but_never_the_pilot(tmp_path, fx):
-    log = snapshot.run(tmp_path, now=T_START, api=ThinBookApi(fx), s=Settings())
+    snapshot.run(tmp_path, now=T_START, api=ThinBookApi(fx), s=Settings())
+    log = snapshot.run(tmp_path, now=T_START + 2400, api=ThinBookApi(fx), s=Settings())
     assert log["errors"] == [] and log["samples"] == 1
     state = json.loads((tmp_path / "state.json").read_text())
     info = state["markets"][CID]["info"]
@@ -140,5 +146,16 @@ def test_positions_are_valued_at_the_touch(tmp_path, fx):
     rows = [json.loads(line) for line in
             (tmp_path / "days" / snapshot.utc_day(T_START) / "samples.jsonl").read_text().splitlines()]
     lv = rows[-1]["levels"]["1"]
-    assert lv["value"] == round(-11.6 + 20 * 0.58, 6)  # best bid in the fixture book
+    assert lv["value"] == round(-11.6 + 20 * 0.58 - 20 * 0.04 * 0.58 * 0.42, 6)  # sold at the bid, after the fee
     assert lv["value_mid"] > lv["value"]
+
+
+def test_a_cut_short_trade_history_keeps_the_day_out_of_the_check(tmp_path, fx):
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings(pilot_markets=1))
+    log = snapshot.run(tmp_path, now=T_START + 2400, api=FakeApi(fx, cut_short=True), s=Settings(pilot_markets=1))
+    assert any("cut short" in e for e in log["errors"])
+    gaps = (tmp_path / "days" / snapshot.utc_day(T_START) / "gaps.jsonl").read_text().splitlines()
+    assert len(gaps) == 1 and json.loads(gaps[0])["pilot"]
+    import report
+    rows = report.daily_rows(tmp_path, 1, T_START + 2400)
+    assert not rows[-1]["levels"]["1"]["pilot_covered"]

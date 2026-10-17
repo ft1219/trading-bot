@@ -58,6 +58,8 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
         closeouts = _read_jsonl(days_dir / day / "closeouts.jsonl")
         fills = _read_jsonl(days_dir / day / "fills.jsonl")
         markouts = _read_jsonl(days_dir / day / "markouts.jsonl")
+        gaps = _read_jsonl(days_dir / day / "gaps.jsonl")
+        gap_ids = {g["condition_id"] for g in gaps}
         per: dict[tuple[str, int], dict] = defaultdict(lambda: {"low": 0.0, "high": 0.0, "dt": 0, "value": None,
                                                                  "rebates": None, "pilot": False, "thin_dt": 0})
         trading: dict[tuple[str, int], float] = defaultdict(float)
@@ -100,12 +102,15 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                     last_value[key] = agg["value"]
                 thin = not agg["pilot"] and agg["thin_dt"] * 2 > agg["dt"]  # thin for most of the day
                 mk.append({"condition_id": key[0], "pilot": agg["pilot"], "thin": thin, "coverage": coverage,
+                           "gap": key[0] in gap_ids,
                            "rewards_low": low, "rewards_high": high, "rebates": reb, "trading": trade})
             pilot = [x for x in mk if x["pilot"]]
             est = [x for x in mk if not x["thin"]]
             thin_mk = [x for x in mk if x["thin"]]
             sampled = [x for x in pilot if x["coverage"] > 0]  # closeout-only rows have no samples
-            covered = bool(sampled) and min(x["coverage"] for x in sampled) >= MIN_COVERAGE
+            covered = (bool(sampled) and min(x["coverage"] for x in sampled) >= MIN_COVERAGE
+                       and not any(x["gap"] for x in pilot)  # some trades were never replayed
+                       and not any(g.get("pilot") for g in gaps))
             result["levels"][str(level)] = {
                 "markets": len(mk),
                 "pilot_markets": len(pilot),
