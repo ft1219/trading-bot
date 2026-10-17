@@ -87,6 +87,7 @@ def test_a_market_leaving_the_list_is_sold_at_the_touch(tmp_path, fx):
     snapshot.run(tmp_path, now=T_START, api=api, s=Settings())
     state = json.loads((tmp_path / "state.json").read_text())
     state["markets"][CID]["positions"]["0"].update({"yes": 20, "yes_cost": 11.6, "cash": -11.6})
+    state["markets"][CID]["trades_until"] = T_START + 86400 - snapshot.TRADE_SETTLE_S  # nothing left to replay
     (tmp_path / "state.json").write_text(json.dumps(state))
     api.market["accepting_orders"] = False  # gone from tomorrow's list
     snapshot.run(tmp_path, now=T_START + 86400, api=api, s=Settings())
@@ -159,3 +160,53 @@ def test_a_cut_short_trade_history_keeps_the_day_out_of_the_check(tmp_path, fx):
     import report
     rows = report.daily_rows(tmp_path, 1, T_START + 2400)
     assert not rows[-1]["levels"]["1"]["pilot_covered"]
+
+
+def test_a_dropped_market_is_replayed_before_it_is_sold(tmp_path, fx):
+    api = FakeApi(fx)
+    snapshot.run(tmp_path, now=T_START - 20000, api=api, s=Settings())
+    api.market["accepting_orders"] = False
+    log = snapshot.run(tmp_path, now=T_START + 86400 - 20000, api=api, s=Settings())
+    assert log["fills"] > 0  # the last day of trades was replayed first
+    day = snapshot.utc_day(T_START + 86400 - 20000)
+    rows = [json.loads(line) for line in (tmp_path / "days" / day / "closeouts.jsonl").read_text().splitlines()]
+    assert {r["level"] for r in rows} == {0, 1, 2}
+    assert CID not in json.loads((tmp_path / "state.json").read_text())["markets"]
+
+
+def test_leaving_the_pilot_closes_the_position_as_pilot_and_restarts_it(tmp_path, fx):
+    api = FakeApi(fx)
+    snapshot.run(tmp_path, now=T_START, api=api, s=Settings(pilot_markets=1))
+    state = json.loads((tmp_path / "state.json").read_text())
+    assert state["markets"][CID]["info"]["pilot"]
+    state["markets"][CID]["positions"]["1"].update({"yes": 20, "yes_cost": 11.6, "cash": -11.6})
+    state["markets"][CID]["trades_until"] = T_START + 86400 - snapshot.TRADE_SETTLE_S
+    (tmp_path / "state.json").write_text(json.dumps(state))
+    snapshot.run(tmp_path, now=T_START + 86400, api=api, s=Settings(pilot_markets=0))
+    day = snapshot.utc_day(T_START + 86400)
+    rows = [json.loads(line) for line in (tmp_path / "days" / day / "closeouts.jsonl").read_text().splitlines()]
+    assert all(r["pilot"] for r in rows) and len(rows) == 3
+    m = json.loads((tmp_path / "state.json").read_text())["markets"][CID]
+    assert not m["info"]["pilot"] and m["positions"]["1"]["yes"] == 0 and m["positions"]["1"]["cash"] == 0
+
+
+def test_trades_without_a_recent_midpoint_mark_a_gap(tmp_path, fx):
+    class NoHistoryApi(FakeApi):
+        def price_history(self, token, start, end):
+            return []
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings())
+    log = snapshot.run(tmp_path, now=T_START + 2400, api=NoHistoryApi(fx), s=Settings())
+    assert any("no recent midpoint" in e for e in log["errors"])
+    assert (tmp_path / "days" / snapshot.utc_day(T_START) / "gaps.jsonl").exists()
+
+
+def test_one_bad_record_does_not_stop_the_other_markets(tmp_path, fx):
+    class BadTradeApi(FakeApi):
+        def trades_since(self, cid, since):
+            trades, ok = super().trades_since(cid, since)
+            return trades + [dict(trades[0], price=None, transactionHash="0xbad")], ok
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings())
+    log = snapshot.run(tmp_path, now=T_START + 2400, api=BadTradeApi(fx), s=Settings())
+    assert any("0xb0ea6c2f" in e for e in log["errors"])
+    state = json.loads((tmp_path / "state.json").read_text())
+    assert state["markets"][CID]["trades_until"] == T_START - snapshot.TRADE_SETTLE_S  # retried next run

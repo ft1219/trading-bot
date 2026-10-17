@@ -45,87 +45,102 @@ def _floor(x: float) -> float:
     return x if x >= MIN_PAYOUT_USD else 0.0
 
 
+def _final_pilots(watchlist: list[dict]) -> set[str] | None:
+    """The pilot markets of the day's last successful watchlist refresh (None: no refresh that day)."""
+    if not watchlist:
+        return None
+    last = max(r["ts"] for r in watchlist)
+    return {r["condition_id"] for r in watchlist if r["ts"] == last and r.get("pilot")}
+
+
 def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
+    """
+    One row per UTC day. Values and rebates in the data are running totals per
+    market, so every day since the first is read to take differences; only the
+    last REPORT_DAYS are returned. Each sample and closeout counts towards the
+    pilot or not according to its own flag, because a market's role can change
+    during a day (its paper position is closed out and restarted when it does).
+    """
     days_dir = data_dir / "days"
     if not days_dir.exists():
         return []
-    day_names = sorted(p.name for p in days_dir.iterdir() if p.is_dir())[-REPORT_DAYS:]
+    day_names = sorted(p.name for p in days_dir.iterdir() if p.is_dir())
     last_value: dict[tuple[str, int], float] = {}
     last_rebates: dict[tuple[str, int], float] = {}
     out = []
     for day in day_names:
-        samples = _read_jsonl(days_dir / day / "samples.jsonl")
-        closeouts = _read_jsonl(days_dir / day / "closeouts.jsonl")
-        fills = _read_jsonl(days_dir / day / "fills.jsonl")
-        markouts = _read_jsonl(days_dir / day / "markouts.jsonl")
-        gaps = _read_jsonl(days_dir / day / "gaps.jsonl")
+        folder = days_dir / day
+        samples = _read_jsonl(folder / "samples.jsonl")
+        closeouts = _read_jsonl(folder / "closeouts.jsonl")
+        fills = _read_jsonl(folder / "fills.jsonl")
+        markouts = _read_jsonl(folder / "markouts.jsonl")
+        gaps = _read_jsonl(folder / "gaps.jsonl")
         gap_ids = {g["condition_id"] for g in gaps}
-        per: dict[tuple[str, int], dict] = defaultdict(lambda: {"low": 0.0, "high": 0.0, "dt": 0, "value": None,
-                                                                 "rebates": None, "pilot": False, "thin_dt": 0})
-        trading: dict[tuple[str, int], float] = defaultdict(float)
-        for c in closeouts:  # positions sold at the touch when a market left the watchlist
-            key = (c["condition_id"], int(c["level"]))
-            trading[key] += c["value_after"] - last_value.get(key, 0.0)
-            last_value[key] = 0.0
-            per[key]["pilot"] = per[key]["pilot"] or c.get("pilot", False)
-            rebate_gain = c.get("rebates", 0.0) - last_rebates.get(key, 0.0)
-            per[key]["closeout_rebates"] = rebate_gain
-            last_rebates[key] = 0.0
-        for srow in sorted(samples, key=lambda r: r["ts"]):
-            for lv, d in srow["levels"].items():
-                key = (srow["condition_id"], int(lv))
-                agg = per[key]
+        final_pilots = _final_pilots(_read_jsonl(folder / "watchlist.jsonl"))
+
+        # (condition_id, level, counted as pilot) -> the day's totals
+        per: dict[tuple[str, int, bool], dict] = defaultdict(
+            lambda: {"low": 0.0, "high": 0.0, "dt": 0, "thin_dt": 0, "rebates": 0.0, "trading": 0.0})
+        events = [(c["ts"], 0, c) for c in closeouts] + [(r["ts"], 1, r) for r in samples]
+        for _, kind, row in sorted(events, key=lambda e: (e[0], e[1])):
+            role = bool(row.get("pilot", False))
+            if kind == 0:  # a paper position sold off when the market left the list or changed role
+                key = (row["condition_id"], int(row["level"]))
+                agg = per[key + (role,)]
+                agg["trading"] += row["value_after"] - last_value.get(key, 0.0)
+                agg["rebates"] += row.get("rebates", 0.0) - last_rebates.get(key, 0.0)
+                last_value[key] = last_rebates[key] = 0.0
+                continue
+            for lv, d in row["levels"].items():
+                key = (row["condition_id"], int(lv))
+                agg = per[key + (role,)]
                 agg["low"] += d["est_low"]
                 agg["high"] += d["est_high"]
-                agg["dt"] += srow["dt"]
-                agg["value"] = d["value"]
-                agg["rebates"] = d["rebates"]
-                agg["pilot"] = agg["pilot"] or srow.get("pilot", False)
-                if srow.get("thin"):
-                    agg["thin_dt"] += srow["dt"]
+                agg["dt"] += row["dt"]
+                agg["thin_dt"] += row["dt"] if row.get("thin") else 0
+                agg["trading"] += d["value"] - last_value.get(key, 0.0)
+                agg["rebates"] += d["rebates"] - last_rebates.get(key, 0.0)
+                last_value[key], last_rebates[key] = d["value"], d["rebates"]
+
         result = {"day": day, "levels": {}}
         for level in sorted({k[1] for k in per} | {pilot_level}):
-            keys = [k for k in per if k[1] == level]
             mk = []
-            for key in keys:
-                agg = per[key]
+            for (cid, lv, role), agg in per.items():
+                if lv != level:
+                    continue
                 coverage = agg["dt"] / 86400
                 scale = 1 / coverage if coverage >= MIN_COVERAGE else 1.0
-                low, high = agg["low"] * scale, agg["high"] * scale
-                reb = agg.get("closeout_rebates", 0.0)
-                if agg["rebates"] is not None:
-                    reb += agg["rebates"] - last_rebates.get(key, 0.0)
-                    last_rebates[key] = agg["rebates"]
-                trade = trading.get(key, 0.0)
-                if agg["value"] is not None:
-                    trade += agg["value"] - last_value.get(key, 0.0)
-                    last_value[key] = agg["value"]
-                thin = not agg["pilot"] and agg["thin_dt"] * 2 > agg["dt"]  # thin for most of the day
-                mk.append({"condition_id": key[0], "pilot": agg["pilot"], "thin": thin, "coverage": coverage,
-                           "gap": key[0] in gap_ids,
-                           "rewards_low": low, "rewards_high": high, "rebates": reb, "trading": trade})
+                thin = not role and agg["thin_dt"] * 2 > agg["dt"]  # thin for most of the day
+                mk.append({"condition_id": cid, "pilot": role, "thin": thin, "coverage": coverage,
+                           "rewards_low": agg["low"] * scale, "rewards_high": agg["high"] * scale,
+                           "rebates": agg["rebates"], "trading": agg["trading"]})
             pilot = [x for x in mk if x["pilot"]]
             est = [x for x in mk if not x["thin"]]
             thin_mk = [x for x in mk if x["thin"]]
-            sampled = [x for x in pilot if x["coverage"] > 0]  # closeout-only rows have no samples
-            covered = (bool(sampled) and min(x["coverage"] for x in sampled) >= MIN_COVERAGE
-                       and not any(x["gap"] for x in pilot)  # some trades were never replayed
+            if final_pilots is None:
+                final_pilots_lv = {x["condition_id"] for x in pilot}
+            else:
+                final_pilots_lv = final_pilots
+            coverage_of = {x["condition_id"]: x["coverage"] for x in pilot}
+            covered = (bool(final_pilots_lv)
+                       and all(coverage_of.get(cid, 0.0) >= MIN_COVERAGE for cid in final_pilots_lv)
+                       and not (gap_ids & {x["condition_id"] for x in pilot})  # some trades were never replayed
                        and not any(g.get("pilot") for g in gaps))
             result["levels"][str(level)] = {
-                "markets": len(mk),
-                "pilot_markets": len(pilot),
+                "markets": len({x["condition_id"] for x in mk}),
+                "pilot_markets": len({x["condition_id"] for x in pilot}),
                 "pilot_covered": covered,
                 "pilot_cautious": sum(_floor(x["rewards_low"]) + _floor(x["rebates"]) + x["trading"] for x in pilot),
                 "pilot_optimistic": _floor(sum(x["rewards_high"] for x in pilot)) + _floor(sum(x["rebates"] for x in pilot))
                 + sum(x["trading"] for x in pilot),
                 "pilot_rewards_low": sum(x["rewards_low"] for x in pilot),
                 "pilot_trading": sum(x["trading"] for x in pilot),
-                "all_markets": len(est),
+                "all_markets": len({x["condition_id"] for x in est}),
                 "all_rewards_low": sum(x["rewards_low"] for x in est),
                 "all_rewards_high": sum(x["rewards_high"] for x in est),
                 "all_rebates": sum(x["rebates"] for x in est),
                 "all_trading": sum(x["trading"] for x in est),
-                "thin_markets": len(thin_mk),
+                "thin_markets": len({x["condition_id"] for x in thin_mk}),
                 "thin_rewards_high": sum(x["rewards_high"] for x in thin_mk),
                 "thin_trading": sum(x["trading"] for x in thin_mk),
                 "fills": sum(1 for f in fills if int(f["level"]) == level),
@@ -133,7 +148,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 "markout_24h": sum(m["markout_usd"] for m in markouts if int(m["level"]) == level and m["horizon"] == 86400),
             }
         out.append(result)
-    return out
+    return out[-REPORT_DAYS:]
 
 
 def gate_a(rows: list[dict], level: int, today: str) -> dict:
@@ -181,7 +196,7 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         lv = r["levels"].get(str(level))
         if not lv:
             continue
-        mark = "" if lv["pilot_covered"] else " (partial day)"
+        mark = " (today, so far)" if r["day"] >= today else ("" if lv["pilot_covered"] else " (partial day)")
         lines.append(
             f"| {r['day']}{mark} | {_usd(lv['pilot_cautious'])} | {_usd(lv['pilot_optimistic'])} | "
             f"{_usd(lv['pilot_rewards_low'])} | {_usd(lv['pilot_trading'])} | "
@@ -192,7 +207,7 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         "Other distances from the midpoint, latest full day:",
         "",
     ]
-    full = [r for r in rows if r["day"] < today]
+    full = [r for r in rows if r["day"] < today and r["levels"].get(str(level), {}).get("pilot_covered")]
     if full:
         last = full[-1]
         for lv_name, lv in sorted(last["levels"].items()):

@@ -35,7 +35,7 @@ from dataclasses import asdict, dataclass, field
 import rewards
 
 REQUOTE_DELAY_S = 60
-MAX_QUOTE_AGE_S = 300  # no midpoint this recent: assume we were not quoting
+MAX_QUOTE_AGE_S = 600  # no midpoint this recent: assume we were not quoting (the caller marks a gap)
 EPS = 1e-9
 # Trade prices are USDC / shares, each rounded to 6 decimals, so a trade at a
 # tick can print a few millionths off it. Ticks are at least 0.001 apart.
@@ -192,11 +192,13 @@ def _fill(pos: Position, side: str, price: float, shares: float) -> None:
 
 
 def replay(pos: Position, records: list[dict], history: list[tuple[int, float]], yes_token: str,
-           p: MarketParams, level: int, start: float | None = None, end: float | None = None) -> list[Fill]:
+           p: MarketParams, level: int, start: float | None = None, end: float | None = None,
+           stats: dict | None = None) -> list[Fill]:
     """
     Apply trade records (every party's leg, oldest first) and midpoint moves
     to our paper position; returns our fills. Midpoint moves count only
     inside (start, end], so consecutive runs do not count the same move twice.
+    stats["unquoted_trades"] counts trades skipped for want of a recent midpoint.
     """
     times = [t for t, _ in history]
     fills: list[Fill] = []
@@ -206,6 +208,8 @@ def replay(pos: Position, records: list[dict], history: list[tuple[int, float]],
         else:
             i = item - 1  # the quote that rested until this midpoint arrived
         if i < 0 or ts - times[i] > MAX_QUOTE_AGE_S:
+            if kind == 0 and stats is not None:
+                stats["unquoted_trades"] = stats.get("unquoted_trades", 0) + 1
             continue
         mid = history[i][1]
         bid, ask = quotes(mid, p, level)

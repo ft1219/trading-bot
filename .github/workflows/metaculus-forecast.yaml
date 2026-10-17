@@ -1,8 +1,11 @@
 name: Bots - every 40 minutes
 
-# One job runs both bots so each run is billed as one GitHub Actions minute
-# when there is nothing to forecast. Repository variables can pause either
-# bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
+# The first job runs both bots' quick parts with nothing but the runner's
+# built-in Python, so a run with nothing to forecast is billed as one GitHub
+# Actions minute. It alone may write to the repository (the Polymarket data
+# branch). The forecast job, which installs third-party packages, starts only
+# when a question needs a forecast and can only read. Repository variables
+# can pause either bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
 
 on:
   workflow_dispatch:
@@ -20,15 +23,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  forecast:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     permissions:
-      # Only the Polymarket step gets the token, to save its data branch.
-      contents: write
-    defaults:
-      run:
-        working-directory: metaculus-bot
+      contents: write  # for the Polymarket practice data branch only
+    outputs:
+      to_forecast: ${{ steps.precheck.outputs.to_forecast }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,37 +46,46 @@ jobs:
           PM_BUDGET_PER_MARKET_USD: ${{ vars.PM_BUDGET_PER_MARKET_USD }}
           PM_WATCH_MARKETS: ${{ vars.PM_WATCH_MARKETS }}
           PM_PILOT_MARKETS: ${{ vars.PM_PILOT_MARKETS }}
-      # Uses the runner's built-in Python and no packages, so a run with
-      # nothing to do ends here in well under a minute.
       - name: Any open questions?
         id: precheck
         if: vars.METACULUS_BOT != 'off'
+        working-directory: metaculus-bot
         run: python3 precheck.py
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+
+  forecast:
+    needs: check
+    if: needs.check.outputs.to_forecast == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: metaculus-bot
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
-        if: steps.precheck.outputs.to_forecast == 'true'
         id: setup-python
         with:
           python-version: "3.11"
       - name: Install poetry
-        if: steps.precheck.outputs.to_forecast == 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
       - name: Load cached dependencies
-        if: steps.precheck.outputs.to_forecast == 'true'
         uses: actions/cache@v4
         with:
           path: metaculus-bot/.venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('metaculus-bot/poetry.lock') }}
       - name: Install dependencies
-        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry install --no-interaction --no-root
       - name: Run bot
-        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry run python main.py --mode tournament
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}

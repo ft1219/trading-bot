@@ -116,27 +116,20 @@ def refresh_watchlist(state: dict, store: Store, s: selection.Settings, now: flo
         selection.apply_fees(c, gamma.get(c.condition_id))
 
     chosen_ids = {c.condition_id for c in chosen}
+    # Markets leaving the list are sold off by run() after their last trades are replayed.
     dropped = [cid for cid in state["markets"] if cid not in chosen_ids]
-    closeouts: list[dict] = []
-    if dropped:
-        drop_books = api.books([state["markets"][cid]["info"]["yes_token"] for cid in dropped])
-        for cid in dropped:
-            m = state["markets"].pop(cid)
-            raw = drop_books.get(m["info"]["yes_token"])
-            book = rewards.parse_book(raw) if raw else None
-            for level, pd in m["positions"].items():
-                pos = sim.Position.from_dict(pd)
-                before = pos.cash
-                sim.close_out(pos, book, params_for(m["info"], s))
-                closeouts.append({
-                    "ts": int(now), "condition_id": cid, "level": int(level), "pilot": m["info"].get("pilot", False),
-                    "value_after": round(pos.cash, 6), "received": round(pos.cash - before, 6),
-                    "unsold_yes": pos.yes, "unsold_no": pos.no, "rebates": round(pos.rebates, 6),
-                })
+    for cid in dropped:
+        state["markets"][cid]["closing"] = True
     for c in chosen:
         info = c.to_dict()
-        if c.condition_id in state["markets"]:
-            state["markets"][c.condition_id]["info"].update(
+        m = state["markets"].get(c.condition_id)
+        if m is not None:
+            m.pop("closing", None)
+            if bool(m["info"].get("pilot")) != c.pilot and "close_role" not in m:
+                # Entering or leaving the pilot: sell off and restart the paper position, so the
+                # pilot's result has only what it did while it was the pilot.
+                m["close_role"] = bool(m["info"].get("pilot"))
+            m["info"].update(
                 {k: info[k] for k in ("pilot", "rank", "daily_rate", "max_spread_c", "min_size", "expected_low",
                                       "expected_high", "thin", "fee_rate", "fee_exponent", "rebate_rate",
                                       "end_date")})
@@ -148,7 +141,6 @@ def refresh_watchlist(state: dict, store: Store, s: selection.Settings, now: flo
             }
     state["watchlist_day"] = today
     store.append(today, "watchlist", [dict(c.to_dict(), ts=int(now)) for c in chosen])
-    store.append(today, "closeouts", closeouts)
     stats = {"candidates": len(cands), "scored": len(scored), "chosen": len(chosen), "dropped": len(dropped)}
     return stats, chosen_ids
 
@@ -160,6 +152,107 @@ def mid_at(history: list[tuple[int, float]], target: int, tolerance: int = 900) 
         return after[0]
     before = [p for t, p in history if target - tolerance <= t < target]
     return before[-1] if before else None
+
+
+def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], history: list[tuple[int, float]],
+                    books: dict, state: dict, out: dict, log: dict, s: selection.Settings, now: float,
+                    just_chosen: bool) -> bool:
+    """Replay, close out or sample one market. Returns True when the market has left the list."""
+    info = m["info"]
+    trades, complete = trades_result
+    cutoff = int(now) - TRADE_SETTLE_S
+    since = int(m["trades_until"])
+    gap_reasons = []
+    if not complete:
+        gap_reasons.append("trade history cut short")
+    trades = [t for t in trades if int(t["timestamp"]) <= cutoff]
+    p = params_for(info, s)
+    stats = {"unquoted_trades": 0}
+    positions, fills = {}, []
+    for level in LEVELS:  # replay on copies; nothing is stored unless every level succeeds
+        pos = sim.Position.from_dict(m["positions"][str(level)])
+        for f in sim.replay(pos, trades, history, info["yes_token"], p, level, start=since, end=cutoff, stats=stats):
+            fills.append({"condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
+                          "ts": f.ts, "level": level, "side": f.side, "price": f.price, "shares": f.shares,
+                          "mid_before": f.mid_before, "trade_price": f.trade_price, "rebate": round(f.rebate, 6),
+                          "tx": f.tx})
+        positions[str(level)] = pos.to_dict()
+    if stats["unquoted_trades"]:
+        gap_reasons.append(f"{stats['unquoted_trades']} trade(s) with no recent midpoint")
+    if cutoff - since > sim.MAX_QUOTE_AGE_S and not any(since < t <= cutoff for t, _ in history):
+        gap_reasons.append("no midpoint history for the window")
+    m["positions"] = positions
+    m["trades_until"] = max(since, cutoff)
+    out["fills"].extend(fills)
+    for row in fills:
+        for h in MARKOUT_HORIZONS_S:
+            state["pending_markouts"].append(dict(row, horizon=h, target=row["ts"] + h, yes_token=info["yes_token"]))
+    if gap_reasons:  # some of this window was not replayed: the day does not count for this market
+        log["errors"].append(f"{cid[:10]}: " + "; ".join(gap_reasons))
+        out["gaps"].append({"ts": int(now), "condition_id": cid, "pilot": info.get("pilot", False),
+                            "reason": "; ".join(gap_reasons)})
+
+    raw = books.get(info["yes_token"])
+    book = rewards.parse_book(raw) if raw else None
+    if m.get("closing") or "close_role" in m:
+        if book is None:
+            log["errors"].append(f"{cid[:10]}: no book to close out with, trying next run")
+            return False
+        role = m.get("close_role", info.get("pilot", False))
+        rows = []
+        for level, pd in m["positions"].items():
+            pos = sim.Position.from_dict(pd)
+            received = sim.close_out(pos, book, p)  # shares nobody would buy are left behind, worth nothing
+            rows.append({
+                "ts": int(now), "condition_id": cid, "level": int(level), "pilot": role,
+                "value_after": round(pos.cash, 6), "received": round(received, 6),
+                "unsold_yes": pos.yes, "unsold_no": pos.no, "rebates": round(pos.rebates, 6),
+            })
+        out["closeouts"].extend(rows)
+        m.pop("close_role", None)
+        if m.get("closing"):
+            return True
+        m["positions"] = {str(level): sim.Position().to_dict() for level in LEVELS}
+        m["last_sample_ts"] = int(now)
+        return False
+
+    if just_chosen:
+        # This run's books picked the watchlist; scoring them too would credit the
+        # pilots with the moment they looked best. The next run takes the first sample.
+        m["last_sample_ts"] = int(now)
+        return False
+    if book is None:
+        log["errors"].append(f"{cid[:10]}: no book")
+        return False
+    mid = rewards.raw_midpoint(book)  # the same midpoint the paper fills are quoted from
+    if mid is None:
+        log["errors"].append(f"{cid[:10]}: no usable midpoint")
+        return False
+    last = m.get("last_sample_ts")
+    dt_s = FIRST_SAMPLE_DT_S if last is None else min(int(now) - int(last), MAX_SAMPLE_DT_S)
+    v, min_size = float(info["max_spread_c"]), float(info["min_size"])
+    row = {"ts": int(now), "condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
+           "rate": info["daily_rate"], "mid": mid, "dt": dt_s, "levels": {}}
+    for level in LEVELS:
+        pos = sim.Position.from_dict(m["positions"][str(level)])
+        bid, ask = sim.quotes(mid, p, level)
+        bid_on, ask_on = sim.active_sides(pos, bid, ask, p)
+        sc = rewards.score_quotes(book, bid if bid_on else None, ask if ask_on else None, p.size, v, min_size)
+        share_low = 0.0 if sc.thin else sc.ours.share_low
+        row["levels"][str(level)] = {
+            "bid": bid if bid_on else None, "ask": ask if ask_on else None, "reward_mid": sc.reward_mid,
+            "thin": sc.thin, "q": round(sc.ours.q_min, 4), "comp_low": round(sc.comp.low, 3),
+            "comp_high": round(sc.comp.high, 3), "share_low": share_low, "share_high": sc.ours.share_high,
+            "est_low": info["daily_rate"] * share_low * dt_s / 86400,
+            "est_high": info["daily_rate"] * sc.ours.share_high * dt_s / 86400,
+            "value": round(sim.liquidation_value(pos, book, p), 6),
+            "value_mid": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
+            "yes": pos.yes, "no": pos.no,
+        }
+    row["thin"] = row["levels"].get(str(s.pilot_level), row["levels"]["1"])["thin"]
+    out["samples"].append(row)
+    m["last_sample_ts"] = int(now)
+    return False
 
 
 def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settings | None = None) -> dict:
@@ -179,7 +272,6 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
             log["errors"].append(f"refresh: {e!r}")
 
     markets = state["markets"]
-    cutoff = int(now) - TRADE_SETTLE_S
     calls = {}
     for cid, m in markets.items():
         info, since = m["info"], int(m["trades_until"])
@@ -192,74 +284,25 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
         log["errors"].append(f"books: {books!r}")
         books = {}
 
-    fills_out, samples_out, markouts_out, gaps_out = [], [], [], []
+    out = {"fills": [], "samples": [], "gaps": [], "closeouts": []}
     histories: dict[str, list[tuple[int, float]]] = {}
+    finished: list[str] = []
     for cid, m in markets.items():
-        info = m["info"]
         trades = fetched.get(f"trades:{cid}")
         history = fetched.get(f"hist:{cid}")
         if isinstance(trades, Exception) or isinstance(history, Exception):
             log["errors"].append(f"{cid[:10]}: {trades if isinstance(trades, Exception) else history!r}")
             continue  # timestamps stay put, so the next run covers this window
-        trades, complete = trades
-        if not complete:  # the oldest trades of this window are lost: the day does not count for this market
-            log["errors"].append(f"{cid[:10]}: trade history cut short")
-            gaps_out.append({"ts": int(now), "condition_id": cid, "pilot": info.get("pilot", False)})
         histories[cid] = history
-        trades = [t for t in trades if int(t["timestamp"]) <= cutoff]
-        p = params_for(info, s)
-        since = int(m["trades_until"])
-        for level in LEVELS:
-            pos = sim.Position.from_dict(m["positions"][str(level)])
-            for f in sim.replay(pos, trades, history, info["yes_token"], p, level, start=since, end=cutoff):
-                row = {"condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
-                       "ts": f.ts, "level": level, "side": f.side, "price": f.price, "shares": f.shares,
-                       "mid_before": f.mid_before, "trade_price": f.trade_price, "rebate": round(f.rebate, 6),
-                       "tx": f.tx}
-                fills_out.append(row)
-                for h in MARKOUT_HORIZONS_S:
-                    state["pending_markouts"].append(dict(row, horizon=h, target=f.ts + h, yes_token=info["yes_token"]))
-            m["positions"][str(level)] = pos.to_dict()
-        m["trades_until"] = max(int(m["trades_until"]), cutoff)
-
-        if cid in just_chosen:
-            # This run's books picked the watchlist; scoring them too would credit the
-            # pilots with the moment they looked best. The next run takes the first sample.
-            m["last_sample_ts"] = int(now)
-            continue
-        raw = books.get(info["yes_token"])
-        if not raw:
-            log["errors"].append(f"{cid[:10]}: no book")
-            continue
-        book = rewards.parse_book(raw)
-        mid = rewards.raw_midpoint(book)  # the same midpoint the paper fills are quoted from
-        if mid is None:
-            log["errors"].append(f"{cid[:10]}: no usable midpoint")
-            continue
-        last = m.get("last_sample_ts")
-        dt_s = FIRST_SAMPLE_DT_S if last is None else min(int(now) - int(last), MAX_SAMPLE_DT_S)
-        v, min_size = float(info["max_spread_c"]), float(info["min_size"])
-        row = {"ts": int(now), "condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
-               "rate": info["daily_rate"], "mid": mid, "dt": dt_s, "levels": {}}
-        for level in LEVELS:
-            pos = sim.Position.from_dict(m["positions"][str(level)])
-            bid, ask = sim.quotes(mid, p, level)
-            bid_on, ask_on = sim.active_sides(pos, bid, ask, p)
-            sc = rewards.score_quotes(book, bid if bid_on else None, ask if ask_on else None, p.size, v, min_size)
-            share_low = 0.0 if sc.thin else sc.ours.share_low
-            row["levels"][str(level)] = {
-                "bid": bid if bid_on else None, "ask": ask if ask_on else None, "reward_mid": sc.reward_mid,
-                "thin": sc.thin, "q": round(sc.ours.q_min, 4), "comp_low": round(sc.comp.low, 3),
-                "comp_high": round(sc.comp.high, 3), "share_low": share_low, "share_high": sc.ours.share_high,
-                "est_low": info["daily_rate"] * share_low * dt_s / 86400,
-                "est_high": info["daily_rate"] * sc.ours.share_high * dt_s / 86400,
-                "value": round(sim.liquidation_value(pos, book, p), 6),
-                "value_mid": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
-                "yes": pos.yes, "no": pos.no,
-            }
-        row["thin"] = row["levels"].get(str(s.pilot_level), row["levels"]["1"])["thin"]
-        samples_out.append(row)
-        m["last_sample_ts"] = int(now)
+        try:
+            if _process_market(cid, m, trades, history, books, state, out, log, s, now, cid in just_chosen):
+                finished.append(cid)
+        except Exception as e:  # one market's bad data must not stop the others
+            log["errors"].append(f"{cid[:10]}: {e!r}")
+    for cid in finished:
+        markets.pop(cid)
+    fills_out, samples_out, gaps_out = out["fills"], out["samples"], out["gaps"]
+    markouts_out: list[dict] = []
 
     # Markouts: an hour and a day after each paper fill.
     still_pending = []
@@ -288,6 +331,7 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
                     still_pending.append(item)  # try again next run
     state["pending_markouts"] = still_pending
 
+    store.append(today, "closeouts", out["closeouts"])
     store.append(today, "fills", fills_out)
     store.append(today, "samples", samples_out)
     store.append(today, "markouts", markouts_out)
