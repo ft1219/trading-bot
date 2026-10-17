@@ -110,7 +110,7 @@ def has_questions_to_forecast(tournaments, token, fetch=fetch_json) -> bool:
 
 def main(argv: list[str]) -> int:
     tournaments = argv or list(DEFAULT_TOURNAMENTS)
-    to_forecast = has_questions_to_forecast(tournaments, os.getenv("METACULUS_TOKEN"))
+    to_forecast = has_questions_to_forecast(tournaments, (os.getenv("METACULUS_TOKEN") or "").strip() or None)
     line = f"to_forecast={'true' if to_forecast else 'false'}"
     print(line)
     output_path = os.getenv("GITHUB_OUTPUT")
