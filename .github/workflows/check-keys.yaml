@@ -1,0 +1,30 @@
+name: Check my keys
+
+# Run this from the Actions tab after adding or changing a secret. It says
+# which keys are missing or rejected, without ever printing a key.
+on:
+  workflow_dispatch:
+  push:
+    branches: [check-keys]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: metaculus-bot
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the keys saved as secrets
+        run: python3 check_keys.py
+        env:
+          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ASKNEWS_CLIENT_ID: ${{ secrets.ASKNEWS_CLIENT_ID }}
+          ASKNEWS_SECRET: ${{ secrets.ASKNEWS_SECRET }}
+          ASKNEWS_API_KEY: ${{ secrets.ASKNEWS_API_KEY }}
+          RESEARCHER: ${{ vars.RESEARCHER }}
