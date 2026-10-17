@@ -1,0 +1,20 @@
+name: Bot timer - one-off setup (throwaway)
+
+on:
+  push:
+    branches: [bot-timer-setup]
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create the cron-job.org timer
+        run: python3 .github/timer_setup.py
+        env:
+          BOT_TIMER_TOKEN: ${{ secrets.BOT_TIMER_TOKEN }}
+          CRONJOB_API_KEY: ${{ secrets.CRONJOB_API_KEY }}
