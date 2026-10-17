@@ -32,28 +32,28 @@ jobs:
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
       - uses: actions/setup-python@v5
-        if: steps.precheck.outputs.has_open == 'true'
+        if: steps.precheck.outputs.to_forecast == 'true'
         id: setup-python
         with:
           python-version: "3.11"
       - name: Install poetry
-        if: steps.precheck.outputs.has_open == 'true'
+        if: steps.precheck.outputs.to_forecast == 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
       - name: Load cached dependencies
-        if: steps.precheck.outputs.has_open == 'true'
+        if: steps.precheck.outputs.to_forecast == 'true'
         uses: actions/cache@v4
         with:
           path: metaculus-bot/.venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('metaculus-bot/poetry.lock') }}
       - name: Install dependencies
-        if: steps.precheck.outputs.has_open == 'true'
+        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry install --no-interaction --no-root
       - name: Run bot
-        if: steps.precheck.outputs.has_open == 'true'
+        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry run python main.py --mode tournament
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
