@@ -7,16 +7,14 @@ name: Bots - every 40 minutes
 # when a question needs a forecast and can only read. Repository variables
 # can pause either bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
 
+# Started every 40 minutes (:07 and :47 of even hours, :27 of odd hours, UTC)
+# by two cron-job.org jobs that call this workflow's dispatch endpoint; see
+# "Metaculus - set up the outside timer". Tournament questions stay open for
+# 1.5 to 3 hours, so each gets at least two chances. GitHub's own `schedule`
+# trigger first fired more than six hours late for this repository and then
+# ran irregularly, and a second starter would double the Actions minutes.
 on:
   workflow_dispatch:
-  schedule:
-    # Every 40 minutes (:07 and :47 of even hours, :27 of odd hours), 36 runs
-    # a day. Tournament questions stay open for 1.5 to 3 hours, so each gets
-    # at least two chances. To run hourly instead, replace these three lines with
-    #   - cron: "7 * * * *"
-    - cron: "7 */2 * * *"
-    - cron: "47 */2 * * *"
-    - cron: "27 1-23/2 * * *"
 
 concurrency:
   group: ${{ github.workflow }}
