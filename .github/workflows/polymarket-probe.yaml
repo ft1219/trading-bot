@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Probe public read-only endpoints
-        run: python3 probe/probe.py out
+        run: python3 probe/books_probe.py out
       - name: Save results to the polymarket-probe-data branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
