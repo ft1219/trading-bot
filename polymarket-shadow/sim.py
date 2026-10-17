@@ -13,7 +13,9 @@ filled. The rules lean towards making us look worse than reality:
   ignored: we might have been behind others in the queue.
 - When the midpoint itself moves through our price, whatever is left of the
   order fills at our price, even with no trade: a resting order the market
-  moves past gets picked off. These fills earn no fee rebate.
+  moves past gets picked off. These fills earn no fee rebate. This rule is
+  harsh in jumpy books, where the midpoint also moves when makers cancel and
+  re-post, so a "trades only" replay without it is kept for comparison.
 - Quotes come from the midpoint of the minute *before* each event, so a fast
   move hits our stale quote, as it would hit a slow real bot. A filled order
   is only replaced, at full size, at the next minute's midpoint.
@@ -183,15 +185,17 @@ class Fill:
     extra: dict = field(default_factory=dict)
 
 
-def _events(records: list[dict], times: list[int], start: float | None, end: float | None) -> list[tuple]:
-    """Trades grouped by transaction, and midpoint updates inside (start, end], in time order."""
+def _events(records: list[dict], times: list[int], start: float | None, end: float | None,
+            moves: bool = True) -> list[tuple]:
+    """Trades grouped by transaction, and (with moves) midpoint updates inside (start, end], in time order."""
     groups: dict[str, list[dict]] = {}
     for n, r in enumerate(records):
         groups.setdefault(str(r.get("transaction_hash") or f"row{n}"), []).append(r)
     events = [(min(int(r["timestamp"]) for r in rs), 0, tx, rs) for tx, rs in groups.items()]
     lo = float("-inf") if start is None else start
     hi = float("inf") if end is None else end
-    events += [(times[j], 1, "midpoint-move", j) for j in range(1, len(times)) if lo < times[j] <= hi]
+    if moves:
+        events += [(times[j], 1, "midpoint-move", j) for j in range(1, len(times)) if lo < times[j] <= hi]
     events.sort(key=lambda e: (e[0], e[1], e[2]))  # a trade in the same second as a new midpoint goes first
     return events
 
@@ -212,18 +216,19 @@ def _fill(pos: Position, side: str, price: float, shares: float) -> None:
 
 def replay(pos: Position, records: list[dict], history: list[tuple[int, float]], yes_token: str,
            p: MarketParams, level: int, start: float | None = None, end: float | None = None,
-           stats: dict | None = None) -> list[Fill]:
+           stats: dict | None = None, midpoint_fills: bool = True) -> list[Fill]:
     """
     Apply trade records (every party's leg, oldest first) and midpoint moves
     to our paper position; returns our fills. Midpoint moves count only
-    inside (start, end], so consecutive runs do not count the same move twice.
+    inside (start, end], so consecutive runs do not count the same move twice;
+    midpoint_fills=False replays trades only.
     stats["unquoted_trades"] and stats["unquoted_moves"] count trades and
     midpoint moves skipped for want of a recent midpoint before them (a
     hole in the history), which the caller should treat as a gap.
     """
     times = [t for t, _ in history]
     fills: list[Fill] = []
-    for ts, kind, tx, item in _events(records, times, start, end):
+    for ts, kind, tx, item in _events(records, times, start, end, moves=midpoint_fills):
         if kind == 0:
             i = bisect.bisect_left(times, ts) - 1  # last midpoint strictly before the trade
         else:

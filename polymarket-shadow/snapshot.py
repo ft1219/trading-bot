@@ -6,6 +6,8 @@ Each run (every 40 minutes, inside the scheduled GitHub Actions job):
 2. For each watched market, replays the public trades and midpoint moves
    since the last run against our paper quotes (see sim.py) at three
    distances from the midpoint, and records any fills.
+   A second set of paper positions replays the trades only (no fills from
+   midpoint moves), for comparison; the go/no-go check uses the first.
 3. Reads the live order book and records what share of the market's daily
    reward pool our paper orders would be earning now (see rewards.py). In a
    thin market the cautious estimate counts no reward at all.
@@ -140,12 +142,16 @@ def refresh_watchlist(state: dict, store: Store, s: selection.Settings, now: flo
             state["markets"][c.condition_id] = {
                 "info": info, "added_ts": int(now),
                 "trades_until": int(now) - TRADE_SETTLE_S, "last_sample_ts": None,
-                "positions": {str(level): sim.Position().to_dict() for level in LEVELS},
+                "positions": _fresh(), "positions_trades_only": _fresh(),
             }
     state["watchlist_day"] = today
     store.append(today, "watchlist", [dict(c.to_dict(), ts=int(now)) for c in chosen])
     stats = {"candidates": len(cands), "scored": len(scored), "chosen": len(chosen), "dropped": len(dropped)}
     return stats, chosen_ids
+
+
+def _fresh() -> dict:
+    return {str(level): sim.Position().to_dict() for level in LEVELS}
 
 
 def mid_at(history: list[tuple[int, float]], target: int, tolerance: int = 900) -> float | None:
@@ -177,15 +183,18 @@ def resolved_yes_value(gamma: dict | None, yes_token: str) -> float | None:
 
 
 def _closeout_rows(cid: str, m: dict, now: float, role: bool, settle) -> list[dict]:
-    """Sell off (or settle) every level's paper position; settle(pos) returns the cash received."""
+    """Sell off (or settle) every level's paper positions; settle(pos) returns the cash received."""
     rows = []
     for level, pd in m["positions"].items():
         pos = sim.Position.from_dict(pd)
         received = settle(pos)
+        alt = sim.Position.from_dict(m.get("positions_trades_only", {}).get(level, {}))
+        settle(alt)
         rows.append({
             "ts": int(now), "condition_id": cid, "level": int(level), "pilot": role,
             "thin": bool(m["info"].get("thin")), "value_after": round(pos.cash, 6), "received": round(received, 6),
             "unsold_yes": pos.yes, "unsold_no": pos.no, "rebates": round(pos.rebates, 6),
+            "value_after_trades_only": round(alt.cash, 6),
         })
     return rows
 
@@ -224,7 +233,8 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
     trades = [t for t in readable if int(t["timestamp"]) <= end]
     p = params_for(info, s)
     stats: dict = {}
-    positions, fills = {}, []
+    positions, alt_positions, fills = {}, {}, []
+    old_alt = m.get("positions_trades_only") or _fresh()  # (missing in state from before it existed)
     for level in LEVELS:  # replay on copies; nothing is stored unless every level succeeds
         pos = sim.Position.from_dict(m["positions"][str(level)])
         for f in sim.replay(pos, trades, history, info["yes_token"], p, level, start=since, end=end,
@@ -234,6 +244,9 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
                           "mid_before": f.mid_before, "trade_price": f.trade_price, "rebate": round(f.rebate, 6),
                           "tx": f.tx})
         positions[str(level)] = pos.to_dict()
+        alt = sim.Position.from_dict(old_alt[str(level)])
+        sim.replay(alt, trades, history, info["yes_token"], p, level, start=since, end=end, midpoint_fills=False)
+        alt_positions[str(level)] = alt.to_dict()
     if stats.get("unquoted_trades"):
         gap_reasons.append(f"{stats['unquoted_trades']} trade(s) with no recent midpoint")
     if stats.get("unquoted_moves"):
@@ -241,7 +254,7 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
     if yes_value is None and end - since > sim.MAX_QUOTE_AGE_S and (
             last_mid_ts is None or last_mid_ts < end - sim.MAX_QUOTE_AGE_S):
         gap_reasons.append("no midpoint history for the end of the window")
-    m["positions"] = positions
+    m["positions"], m["positions_trades_only"] = positions, alt_positions
     m["trades_until"] = max(since, end)
     out["fills"].extend(fills)
     for row in fills:
@@ -274,7 +287,7 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
         m.pop("closeout_tries", None)
         if m.get("closing"):
             return True
-        m["positions"] = {str(level): sim.Position().to_dict() for level in LEVELS}
+        m["positions"], m["positions_trades_only"] = _fresh(), _fresh()
         m["last_sample_ts"] = int(now)
         return False
 
@@ -298,13 +311,15 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
         for level in LEVELS:
             pos = sim.Position.from_dict(m["positions"][str(level)])
             row["levels"][str(level)] = {"est_low": 0.0, "est_high": 0.0, "share_low": 0.0, "share_high": 0.0,
-                                         "thin": row["thin"], "value": None, "rebates": round(pos.rebates, 6),
-                                         "fills": pos.fills, "yes": pos.yes, "no": pos.no}
+                                         "thin": row["thin"], "value": None, "value_trades_only": None,
+                                         "rebates": round(pos.rebates, 6), "fills": pos.fills,
+                                         "yes": pos.yes, "no": pos.no}
         out["samples"].append(row)
         return False
     v, min_size = float(info["max_spread_c"]), float(info["min_size"])
     for level in LEVELS:
         pos = sim.Position.from_dict(m["positions"][str(level)])
+        alt = sim.Position.from_dict(m["positions_trades_only"][str(level)])
         bid, ask = sim.quotes(mid, p, level)
         bid_on, ask_on = sim.active_sides(pos, bid, ask, p)
         sc = rewards.score_quotes(book, bid if bid_on else None, ask if ask_on else None, p.size, v, min_size)
@@ -318,10 +333,11 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
             "est_high": info["daily_rate"] * sc.ours.share_high * dt_s / 86400,
             "value": round(sim.liquidation_value(pos, book, p), 6),
             "value_mid": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
-            "yes": pos.yes, "no": pos.no,
+            "yes": pos.yes, "no": pos.no, "value_trades_only": round(sim.liquidation_value(alt, book, p), 6),
         }
         pos.reward_credit += est_low  # what the market has earned counts towards the budget (see sim.py)
-        m["positions"][str(level)] = pos.to_dict()
+        alt.reward_credit += est_low
+        m["positions"][str(level)], m["positions_trades_only"][str(level)] = pos.to_dict(), alt.to_dict()
     row["thin"] = row["levels"].get(str(s.pilot_level), row["levels"]["1"])["thin"]
     out["samples"].append(row)
     return False

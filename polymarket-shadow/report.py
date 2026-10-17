@@ -18,6 +18,11 @@ separately (it may in fact apply to the whole account, which is the
 Rewards and rebates are averaged over the well-covered days only, but the
 paper trading result is averaged over every day since the first pilot, so
 losses on a badly covered day still count.
+
+The "trades only" figures replay the same quotes with fills from trades
+alone (no fills when only the midpoint moves through our price). They are
+shown for comparison: the truth is likely between the two, and the check
+uses the stricter one.
 """
 from __future__ import annotations
 
@@ -73,6 +78,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
         return []
     day_names = sorted(p.name for p in days_dir.iterdir() if p.is_dir())
     last_value: dict[tuple[str, int], float] = {}
+    last_alt: dict[tuple[str, int], float] = {}  # the trades-only replay
     last_rebates: dict[tuple[str, int], float] = {}
     out = []
     for day in day_names:
@@ -88,7 +94,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
         # (condition_id, level, counted as pilot) -> the day's totals
         per: dict[tuple[str, int, bool], dict] = defaultdict(
             lambda: {"low": 0.0, "high": 0.0, "dt": 0, "thin_dt": 0, "rebates": 0.0, "trading": 0.0,
-                     "closeout_thin": False})
+                     "trading_alt": 0.0, "closeout_thin": False})
         events = [(c["ts"], 0, c) for c in closeouts] + [(r["ts"], 1, r) for r in samples]
         for _, kind, row in sorted(events, key=lambda e: (e[0], e[1])):
             role = bool(row.get("pilot", False))
@@ -98,7 +104,9 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 agg["trading"] += row["value_after"] - last_value.get(key, 0.0)
                 agg["rebates"] += row.get("rebates", 0.0) - last_rebates.get(key, 0.0)
                 agg["closeout_thin"] = bool(row.get("thin"))
-                last_value[key] = last_rebates[key] = 0.0
+                if row.get("value_after_trades_only") is not None:
+                    agg["trading_alt"] += row["value_after_trades_only"] - last_alt.get(key, 0.0)
+                last_value[key] = last_rebates[key] = last_alt[key] = 0.0
                 continue
             for lv, d in row["levels"].items():
                 key = (row["condition_id"], int(lv))
@@ -112,6 +120,9 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 if d.get("value") is not None:  # None: no book to value the holdings against this run
                     agg["trading"] += d["value"] - last_value.get(key, 0.0)
                     last_value[key] = d["value"]
+                if d.get("value_trades_only") is not None:
+                    agg["trading_alt"] += d["value_trades_only"] - last_alt.get(key, 0.0)
+                    last_alt[key] = d["value_trades_only"]
 
         result = {"day": day, "levels": {}}
         for level in sorted({k[1] for k in per} | {pilot_level}):
@@ -124,7 +135,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 thin = not role and (agg["thin_dt"] * 2 > agg["dt"] if agg["dt"] else agg["closeout_thin"])
                 mk.append({"condition_id": cid, "pilot": role, "thin": thin, "coverage": coverage,
                            "rewards_low": agg["low"], "rewards_high": agg["high"],
-                           "rebates": agg["rebates"], "trading": agg["trading"]})
+                           "rebates": agg["rebates"], "trading": agg["trading"], "trading_alt": agg["trading_alt"]})
             pilot = [x for x in mk if x["pilot"]]
             est = [x for x in mk if not x["thin"]]
             thin_mk = [x for x in mk if x["thin"]]
@@ -147,11 +158,13 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 + sum(x["trading"] for x in pilot),
                 "pilot_rewards_low": sum(x["rewards_low"] for x in pilot),
                 "pilot_trading": sum(x["trading"] for x in pilot),
+                "pilot_trading_trades_only": sum(x["trading_alt"] for x in pilot),
                 "all_markets": len({x["condition_id"] for x in est}),
                 "all_rewards_low": sum(x["rewards_low"] for x in est),
                 "all_rewards_high": sum(x["rewards_high"] for x in est),
                 "all_rebates": sum(x["rebates"] for x in est),
                 "all_trading": sum(x["trading"] for x in est),
+                "all_trading_trades_only": sum(x["trading_alt"] for x in est),
                 "thin_markets": len({x["condition_id"] for x in thin_mk}),
                 "thin_rewards_high": sum(x["rewards_high"] for x in thin_mk),
                 "thin_trading": sum(x["trading"] for x in thin_mk),
@@ -173,10 +186,11 @@ def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
     started = next((i for i, lv in enumerate(done) if lv["pilot_markets"] or lv["pilot_trading"]), len(done))
     period = done[started:]
     full = [lv for lv in period if lv["pilot_covered"]]
-    mean = None
+    mean = mean_alt = None
     if full:
         income = sum(lv["pilot_income"] for lv in full) / len(full)
         mean = income + sum(lv["pilot_trading"] for lv in period) / len(period)
+        mean_alt = income + sum(lv.get("pilot_trading_trades_only", 0.0) for lv in period) / len(period)
     plan_ok = settings is None or all(getattr(settings, k) == v for k, v in PLAN.items())
     if len(full) < GATE_A_MIN_DAYS:
         verdict = "NOT ENOUGH DATA YET"
@@ -187,7 +201,8 @@ def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
     else:
         verdict = "FAIL"
     return {"days": len(full), "days_since_start": len(period), "needed_days": GATE_A_MIN_DAYS,
-            "mean_cautious_usd_per_day": mean, "threshold_usd_per_day": GATE_A_USD_PER_DAY, "verdict": verdict}
+            "mean_cautious_usd_per_day": mean, "mean_trades_only_usd_per_day": mean_alt,
+            "threshold_usd_per_day": GATE_A_USD_PER_DAY, "verdict": verdict}
 
 
 def _usd(x: float | None) -> str:
@@ -210,13 +225,16 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         + (f"Pilot markets averaged {_usd(gate['mean_cautious_usd_per_day'])} a day on the cautious estimate over "
            f"{gate['days']} full day(s) (paper trading over all {gate['days_since_start']} day(s)). "
            if gate["days"] else "No full day recorded yet. ")
-        + f"It needs more than {_usd(GATE_A_USD_PER_DAY)} a day over at least {GATE_A_MIN_DAYS} days.",
+        + f"It needs more than {_usd(GATE_A_USD_PER_DAY)} a day over at least {GATE_A_MIN_DAYS} days."
+        + (f" If only trades could fill paper orders (no fills from midpoint moves alone), the same days would "
+           f"average {_usd(gate['mean_trades_only_usd_per_day'])} a day; the check uses the stricter figure."
+           if gate["days"] else ""),
         "",
         f"Pilot: the top {settings.pilot_markets} markets each day where others already quote near the middle, "
         f"${settings.budget_per_market_usd:.0f} each, orders {level} tick(s) behind the closest prices to the midpoint.",
         "",
-        "| Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Watched markets (not thin), rewards low-high | Fills | 1h markouts |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Pilot trading (trades only) | Watched markets (not thin), rewards low-high | Fills | 1h markouts |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in reversed(rows[-14:]):
         lv = r["levels"].get(str(level))
@@ -226,6 +244,7 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         lines.append(
             f"| {r['day']}{mark} | {_usd(lv['pilot_cautious'])} | {_usd(lv['pilot_optimistic'])} | "
             f"{_usd(lv['pilot_rewards_low'])} | {_usd(lv['pilot_trading'])} | "
+            f"{_usd(lv.get('pilot_trading_trades_only'))} | "
             f"{_usd(lv['all_rewards_low'])}-{_usd(lv['all_rewards_high'])} | {lv['fills']} | {_usd(lv['markout_1h'])} |"
         )
     lines += [
@@ -241,7 +260,8 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
                 f"- {lv_name} tick(s) back: pilot cautious {_usd(lv['pilot_cautious'])}, "
                 f"{lv.get('all_markets', lv['markets'])} watched markets (not thin), rewards "
                 f"{_usd(lv['all_rewards_low'])}-{_usd(lv['all_rewards_high'])}, "
-                f"trading {_usd(lv['all_trading'])}, rebates {_usd(lv['all_rebates'])}, fills {lv['fills']}, "
+                f"trading {_usd(lv['all_trading'])} ({_usd(lv.get('all_trading_trades_only'))} trades only), "
+                f"rebates {_usd(lv['all_rebates'])}, fills {lv['fills']}, "
                 f"24h markouts {_usd(lv['markout_24h'])}"
             )
         thin = last["levels"].get(str(level), {})

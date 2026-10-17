@@ -170,3 +170,19 @@ def test_a_thin_market_closed_out_after_leaving_the_list_stays_thin(tmp_path):
     (folder / "closeouts.jsonl").write_text(json.dumps(closeout) + "\n")
     lv = report.daily_rows(tmp_path, 1, 1791158400 + 86400)[0]["levels"]["1"]
     assert lv["thin_markets"] == 1 and lv["all_markets"] == 0 and abs(lv["thin_trading"] + 2.0) < 1e-9
+
+
+def test_the_trades_only_comparison_is_reported_but_not_judged(tmp_path):
+    for i, d in enumerate(days(15)):
+        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=-1.0 * (i + 1))
+        path = tmp_path / "days" / d / "samples.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        for r in rows:
+            r["levels"]["1"]["value_trades_only"] = -0.2 * (i + 1)
+        path.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    text, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
+    gate = summary["gate_a"]
+    assert abs(gate["mean_cautious_usd_per_day"] - 1.0) < 1e-9 and gate["verdict"] == "FAIL"
+    assert abs(gate["mean_trades_only_usd_per_day"] - 1.8) < 1e-9
+    assert abs(summary["days"][3]["levels"]["1"]["pilot_trading_trades_only"] + 0.2) < 1e-9
+    assert "If only trades could fill paper orders" in text and "-$0.20" in text

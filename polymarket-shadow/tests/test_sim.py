@@ -153,6 +153,13 @@ def test_midpoint_moving_through_our_bid_fills_it_without_a_trade():
     assert fills[0].rebate == 0 and fills[0].tx == "midpoint-move"
 
 
+def test_the_trades_only_replay_ignores_midpoint_moves():
+    history = [(0, 0.585), (60, 0.585), (120, 0.555), (180, 0.555)]
+    assert sim.replay(sim.Position(), [], history, YES, P, 0, midpoint_fills=False) == []
+    fills = sim.replay(sim.Position(), trade(150, "SELL", 0.54), history, YES, P, 0, midpoint_fills=False)
+    assert [(f.side, f.price) for f in fills] == [("bid", 0.55)]  # quoted from the 0.555 midpoint at 120
+
+
 def test_midpoint_moves_outside_the_window_are_left_for_the_other_run():
     history = [(0, 0.585), (60, 0.585), (120, 0.555)]
     assert sim.replay(sim.Position(), [], history, YES, P, 0, start=120, end=600) == []  # 120 was counted last run

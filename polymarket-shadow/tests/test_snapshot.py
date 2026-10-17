@@ -303,3 +303,21 @@ def test_a_gap_is_filed_under_every_day_its_window_touches(tmp_path, fx):
     (tmp_path / "state.json").write_text(json.dumps(state))
     snapshot.run(tmp_path, now=midnight + 1200, api=FakeApi(fx, cut_short=True), s=Settings())
     assert _rows(tmp_path, snapshot.utc_day(midnight - 1), "gaps") and _rows(tmp_path, snapshot.utc_day(midnight), "gaps")
+
+
+def test_a_trades_only_replay_is_kept_alongside(tmp_path, fx):
+    api = FakeApi(fx)
+    snapshot.run(tmp_path, now=T_START, api=api, s=Settings(pilot_markets=1))
+    state = json.loads((tmp_path / "state.json").read_text())
+    del state["markets"][CID]["positions_trades_only"]  # state written before the comparison existed
+    (tmp_path / "state.json").write_text(json.dumps(state))
+    log = snapshot.run(tmp_path, now=T_START + 2400, api=api, s=Settings(pilot_markets=1))
+    assert log["errors"] == []
+    m = json.loads((tmp_path / "state.json").read_text())["markets"][CID]
+    assert set(m["positions_trades_only"]) == {"0", "1", "2"}
+    sample = _rows(tmp_path, snapshot.utc_day(T_START), "samples")[-1]
+    assert all(lv["value_trades_only"] is not None for lv in sample["levels"].values())
+    api.market["accepting_orders"] = False
+    snapshot.run(tmp_path, now=T_START + 86400, api=api, s=Settings(pilot_markets=1))
+    rows = _rows(tmp_path, snapshot.utc_day(T_START + 86400), "closeouts")
+    assert len(rows) == 3 and all("value_after_trades_only" in r for r in rows)
