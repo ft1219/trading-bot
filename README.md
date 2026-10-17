@@ -20,8 +20,9 @@ You only do this once. Nothing here needs any coding.
    - `METACULUS_TOKEN`
    - `OPENROUTER_API_KEY`
    - `ASKNEWS_CLIENT_ID` and `ASKNEWS_SECRET` (or `ASKNEWS_API_KEY` if AskNews gives you a single key)
-5. **Practice run.** Open the **Actions** tab → **Metaculus - test on practice questions** → **Run workflow**. After a few minutes, the run should end with "Bot submitted N forecast(s)". These practice questions don't count for prizes.
-6. After that, **Metaculus - forecast new questions** runs by itself every 40 minutes.
+5. **Check the keys.** Open the **Actions** tab → **Check my keys** → **Run workflow**. The run's summary says which keys work, which are missing, and whether the OpenRouter key has a spending limit. It never shows the keys themselves.
+6. **Practice run.** Open the **Actions** tab → **Metaculus - test on practice questions** → **Run workflow**. After a few minutes, the run should end with "Bot submitted N forecast(s)". These practice questions don't count for prizes.
+7. After that, **Metaculus - forecast new questions** runs by itself every 40 minutes.
 
 If a run fails, GitHub emails you; the bot retries on the next run. To pause the bot: **Actions → Metaculus - forecast new questions → ⋯ → Disable workflow**.
 
