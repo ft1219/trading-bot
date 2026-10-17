@@ -204,7 +204,7 @@ def test_one_bad_record_does_not_stop_the_other_markets(tmp_path, fx):
     class BadTradeApi(FakeApi):
         def trades_since(self, cid, since):
             trades, ok = super().trades_since(cid, since)
-            return trades + [dict(trades[0], price=None, transactionHash="0xbad")], ok
+            return trades + [dict(trades[0], price=None, transaction_hash="0xbad")], ok
     snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings())
     log = snapshot.run(tmp_path, now=T_START + 2400, api=BadTradeApi(fx), s=Settings())
     assert any("0xb0ea6c2f" in e for e in log["errors"])

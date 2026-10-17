@@ -10,10 +10,12 @@ tests/fixtures/), including:
   as strings.
 - /prices-history points are {"t": unix seconds, "p": midpoint}, about one a
   minute with fidelity=1.
-- data-api /trades with takerOnly=false returns one record per party per
-  fill, the taker's and each maker's: "side" is that party's side on
-  "asset" and "price" its own price in dollars (the taker's is an average).
-  Records of one fill share a transactionHash.
+- data-api /v2/trades with taker_only=false returns one record per party
+  per fill, the taker's and each maker's: "side" is that party's side on
+  "token_id" and "price" its own price in dollars (the taker's is an
+  average). Records of one fill share a "transaction_hash". Newest first,
+  paged by cursor. Data API v1 /trades retires on 2026-10-24; on 2026-10-17
+  v2 returned exactly the same records as v1 on all 25 watched markets.
 """
 from __future__ import annotations
 
@@ -29,10 +31,10 @@ CLOB = "https://clob.polymarket.com"
 DATA = "https://data-api.polymarket.com"
 GAMMA = "https://gamma-api.polymarket.com"
 USER_AGENT = "trading-bot-shadow/0.1 (read-only)"
-TRADES_PAGE = 500
-# data-api refuses offsets past a few thousand; at 40-minute polling even the
-# busiest market we track trades far fewer than this between runs.
-TRADES_MAX_OFFSET = 3000
+TRADES_PAGE = 1000
+# At 40-minute polling even the busiest market we track trades far fewer than
+# TRADES_PAGE * TRADES_MAX_PAGES records between runs.
+TRADES_MAX_PAGES = 5
 
 
 class ApiError(RuntimeError):
@@ -133,21 +135,23 @@ def trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> 
     history short, so the caller can mark that window as partial.
     """
     found: list[dict] = []
-    offset = 0
-    while offset <= TRADES_MAX_OFFSET:
-        url = f"{DATA}/trades?market={condition_id}&takerOnly=false&limit={TRADES_PAGE}&offset={offset}"
-        page = fetch(url, None)
-        if not isinstance(page, list):
-            raise ApiError("/trades: unexpected shape")
-        for t in page:
-            if int(t["timestamp"]) > since_ts:
-                found.append(t)
-        if len(page) < TRADES_PAGE or int(page[-1]["timestamp"]) <= since_ts:
-            found.sort(key=lambda t: (int(t["timestamp"]), t.get("transactionHash", "")))
-            return found, True
-        offset += TRADES_PAGE
-    found.sort(key=lambda t: (int(t["timestamp"]), t.get("transactionHash", "")))
-    return found, False
+    query = {"condition": condition_id, "taker_only": "false", "limit": TRADES_PAGE}
+    for _ in range(TRADES_MAX_PAGES):
+        body = fetch(f"{DATA}/v2/trades?{urllib.parse.urlencode(query)}", None)
+        rows = body.get("data") if isinstance(body, dict) else None
+        if not isinstance(rows, list):
+            raise ApiError("/v2/trades: unexpected shape")
+        found += [t for t in rows if int(t["timestamp"]) > since_ts]
+        paging = body.get("pagination") or {}
+        cursor = paging.get("next_cursor")
+        if not rows or int(rows[-1]["timestamp"]) <= since_ts or not cursor:
+            complete = bool(cursor) or not paging.get("has_more")  # more pages but no way to reach them
+            break
+        query["cursor"] = cursor  # the cursor carries only the position, so the filters are sent again
+    else:
+        complete = False
+    found.sort(key=lambda t: (int(t["timestamp"]), t.get("transaction_hash") or ""))
+    return found, complete
 
 
 def parallel(calls: dict[str, Callable[[], Any]], workers: int = 8) -> dict[str, Any]:

@@ -145,7 +145,7 @@ def leg_side(record: dict, yes_token: str) -> tuple[str, float] | None:
     if side not in ("BUY", "SELL"):
         return None
     price = float(record["price"])
-    if str(record.get("asset")) == yes_token:
+    if str(record.get("token_id")) == yes_token:
         return ("bid" if side == "BUY" else "ask"), price
     return ("ask" if side == "BUY" else "bid"), 1 - price
 
@@ -168,7 +168,7 @@ def _events(records: list[dict], times: list[int], start: float | None, end: flo
     """Trades grouped by transaction, and midpoint updates inside (start, end], in time order."""
     groups: dict[str, list[dict]] = {}
     for n, r in enumerate(records):
-        groups.setdefault(str(r.get("transactionHash") or f"row{n}"), []).append(r)
+        groups.setdefault(str(r.get("transaction_hash") or f"row{n}"), []).append(r)
     events = [(min(int(r["timestamp"]) for r in rs), 0, tx, rs) for tx, rs in groups.items()]
     lo = float("-inf") if start is None else start
     hi = float("inf") if end is None else end

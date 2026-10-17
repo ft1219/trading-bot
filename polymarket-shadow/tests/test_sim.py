@@ -12,9 +12,9 @@ def hist(mid=0.585, start=0, end=3600):
 
 
 def trade(ts, side, price, asset=YES, size=50):
-    """A taker record plus the maker order it traded with, as data-api lists them with takerOnly=false."""
+    """A taker record plus the maker order it traded with, as /v2/trades lists them with taker_only=false."""
     tx = f"0x{ts}{side}{price}"
-    taker = {"timestamp": ts, "side": side, "price": price, "asset": asset, "size": size, "transactionHash": tx}
+    taker = {"timestamp": ts, "side": side, "price": price, "token_id": asset, "size": size, "transaction_hash": tx}
     maker = dict(taker, side="SELL" if side == "BUY" else "BUY")
     return [taker, maker]
 
@@ -24,9 +24,9 @@ def trades(*groups):
 
 
 def test_no_token_records_map_to_yes():
-    assert sim.leg_side({"side": "BUY", "price": 0.41, "asset": NO}, YES) == ("ask", pytest.approx(0.59))
-    assert sim.leg_side({"side": "SELL", "price": 0.41, "asset": NO}, YES) == ("bid", pytest.approx(0.59))
-    assert sim.leg_side({"side": "BUY", "price": 0.41, "asset": YES}, YES) == ("bid", 0.41)
+    assert sim.leg_side({"side": "BUY", "price": 0.41, "token_id": NO}, YES) == ("ask", pytest.approx(0.59))
+    assert sim.leg_side({"side": "SELL", "price": 0.41, "token_id": NO}, YES) == ("bid", pytest.approx(0.59))
+    assert sim.leg_side({"side": "BUY", "price": 0.41, "token_id": YES}, YES) == ("bid", 0.41)
 
 
 def test_round_trip_captures_the_spread():
@@ -56,10 +56,10 @@ def test_no_side_trade_fills_our_bid():
 
 def test_a_sweep_fills_an_order_behind_the_best_price():
     # Level 1 ask at 0.60. A taker buys 200 YES: 100 at 0.59, 50 at 0.60, 50 at 0.61; its average is 0.5975.
-    sweep = [{"timestamp": 90, "side": "BUY", "price": 0.5975, "asset": YES, "size": 200, "transactionHash": "0xs"},
-             {"timestamp": 90, "side": "SELL", "price": 0.59, "asset": YES, "size": 100, "transactionHash": "0xs"},
-             {"timestamp": 90, "side": "BUY", "price": 0.40, "asset": NO, "size": 50, "transactionHash": "0xs"},
-             {"timestamp": 90, "side": "SELL", "price": 0.61, "asset": YES, "size": 50, "transactionHash": "0xs"}]
+    sweep = [{"timestamp": 90, "side": "BUY", "price": 0.5975, "token_id": YES, "size": 200, "transaction_hash": "0xs"},
+             {"timestamp": 90, "side": "SELL", "price": 0.59, "token_id": YES, "size": 100, "transaction_hash": "0xs"},
+             {"timestamp": 90, "side": "BUY", "price": 0.40, "token_id": NO, "size": 50, "transaction_hash": "0xs"},
+             {"timestamp": 90, "side": "SELL", "price": 0.61, "token_id": YES, "size": 50, "transaction_hash": "0xs"}]
     fills = sim.replay(sim.Position(), sweep, hist(), YES, P, 1)
     assert [(f.side, f.price, f.shares, f.trade_price) for f in fills] == [("ask", 0.60, 20, 0.61)]
 
