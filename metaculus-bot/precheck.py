@@ -76,9 +76,9 @@ def count_to_forecast(payload: dict) -> int:
     if not isinstance(results, list):
         raise ValueError("unexpected 'results' in API response")
     count = payload.get("count")
-    if isinstance(count, int) and count > len(results):
+    if payload.get("next") or (isinstance(count, int) and count > len(results)):
         # More open posts than one page shows; let the bot sort it out.
-        return count
+        return max(count or 0, len(results) + 1)
     return sum(
         1
         for post in results

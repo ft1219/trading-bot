@@ -84,6 +84,9 @@ def test_notebooks_are_ignored():
 def test_more_posts_than_one_page_means_run():
     payload = {"count": 150, "results": [{"id": 1, "question": _question(True)}]}
     assert precheck.count_to_forecast(payload) > 0
+    # The live API leaves out "count" and links the next page instead.
+    payload = {"next": "https://www.metaculus.com/api/posts/?offset=100", "results": [{"id": 1, "question": _question(True)}]}
+    assert precheck.count_to_forecast(payload) > 0
 
 
 def test_errors_fail_open_so_no_question_is_missed():
