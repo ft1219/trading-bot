@@ -1,1 +1,2 @@
 {"errors": [], "fills": 0, "markets": 25, "markouts": 0, "refresh": {"candidates": 680, "chosen": 25, "dropped": 0, "scored": 116}, "samples": 0, "seconds": 20.67, "ts": 1792217909}
+{"errors": [], "fills": 18, "markets": 25, "markouts": 0, "samples": 25, "seconds": 1.62, "ts": 1792218171}
