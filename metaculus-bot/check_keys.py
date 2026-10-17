@@ -73,7 +73,7 @@ def check_forecast_data(token: str | None, get=None) -> tuple[str, str]:
         questions += len(qs)
         visible += sum(1 for q in qs if isinstance(q.get("my_forecasts"), dict)
                        and isinstance(q["my_forecasts"].get("history"), list))
-        if body.get("next"):
+        if precheck.page_is_full(body):
             parts.append(f"{tournament}: more than {len(qs)} open questions")
         else:
             parts.append(f"{tournament}: {len(qs)} open question(s), {waiting} not forecast yet")

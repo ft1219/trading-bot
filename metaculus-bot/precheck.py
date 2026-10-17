@@ -29,6 +29,7 @@ API_URL = "https://www.metaculus.com/api/posts/"
 # CURRENT_MINIBENCH_ID (tests/test_precheck.py checks this).
 DEFAULT_TOURNAMENTS = ("33121", "minibench")
 PAGE_SIZE = 100
+MAX_PAGES = 5
 
 
 def build_url(tournament: str) -> str:
@@ -71,14 +72,16 @@ def _needs_forecast(question: dict) -> bool:
     return not history
 
 
+def page_is_full(payload: dict) -> bool:
+    """True when more open posts may follow this page."""
+    return len(payload["results"]) >= PAGE_SIZE
+
+
 def count_to_forecast(payload: dict) -> int:
+    """Questions on this page of open posts that the bot has not forecast yet."""
     results = payload["results"]
     if not isinstance(results, list):
         raise ValueError("unexpected 'results' in API response")
-    count = payload.get("count")
-    if payload.get("next") or (isinstance(count, int) and count > len(results)):
-        # More open posts than one page shows; let the bot sort it out.
-        return max(count or 0, len(results) + 1)
     return sum(
         1
         for post in results
@@ -95,10 +98,27 @@ def fetch_json(url: str, token: str | None, timeout: float = 20) -> dict:
         return json.loads(response.read().decode("utf-8"))
 
 
+def count_in_tournament(tournament: str, token: str | None, fetch=fetch_json) -> int:
+    """
+    Open questions in a tournament the bot has not forecast yet. The live API
+    leaves out "count" and links a next page even after the last one
+    (checked 2026-10-17), so pages are read until one comes back empty.
+    More than MAX_PAGES pages counts as one, so the bot looks for itself.
+    """
+    url = build_url(tournament)
+    for _ in range(MAX_PAGES):
+        payload = fetch(url, token)
+        waiting = count_to_forecast(payload)
+        url = payload.get("next")
+        if waiting or not payload["results"] or not url:
+            return waiting
+    return 1
+
+
 def has_questions_to_forecast(tournaments, token, fetch=fetch_json) -> bool:
     for tournament in tournaments:
         try:
-            waiting = count_to_forecast(fetch(build_url(tournament), token))
+            waiting = count_in_tournament(tournament, token, fetch)
         except Exception as e:
             print(f"Pre-check could not read tournament {tournament} ({e!r}); running the bot anyway.")
             return True

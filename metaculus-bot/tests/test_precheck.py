@@ -81,12 +81,40 @@ def test_notebooks_are_ignored():
     assert precheck.count_to_forecast(_payload({"id": 40, "notebook": {}})) == 0
 
 
-def test_more_posts_than_one_page_means_run():
-    payload = {"count": 150, "results": [{"id": 1, "question": _question(True)}]}
-    assert precheck.count_to_forecast(payload) > 0
-    # The live API leaves out "count" and links the next page instead.
-    payload = {"next": "https://www.metaculus.com/api/posts/?offset=100", "results": [{"id": 1, "question": _question(True)}]}
-    assert precheck.count_to_forecast(payload) > 0
+def _pages(*pages):
+    """A fetch that serves pages linked the way the live API links them: always a next link, no count."""
+    calls = []
+
+    def fetch(url, token):
+        n = int(url.rsplit("page=", 1)[1]) if "page=" in url else 0
+        calls.append(n)
+        results = list(pages[n]) if n < len(pages) else []
+        return {"next": f"https://www.metaculus.com/api/posts/?page={n + 1}", "previous": None, "results": results}
+
+    return fetch, calls
+
+
+def test_pages_are_read_until_an_empty_one():
+    fetch, calls = _pages([{"id": 1, "question": _question(True)}])
+    assert precheck.count_in_tournament("33121", "t", fetch) == 0
+    assert calls == [0, 1]  # the empty page after the last one ends it
+
+
+def test_new_question_on_a_later_page_is_found():
+    fetch, _ = _pages([{"id": 1, "question": _question(True)}], [{"id": 2, "question": _question(False)}])
+    assert precheck.count_in_tournament("33121", "t", fetch) == 1
+
+
+def test_too_many_pages_means_run():
+    done = [{"id": 1, "question": _question(True)}]
+    fetch, calls = _pages(*([done] * (precheck.MAX_PAGES + 2)))
+    assert precheck.count_in_tournament("33121", "t", fetch) == 1
+    assert len(calls) == precheck.MAX_PAGES
+
+
+def test_all_done_means_skip():
+    fetch, _ = _pages([{"id": 1, "question": _question(True)}])
+    assert precheck.has_questions_to_forecast(["33121", "minibench"], "t", fetch) is False
 
 
 def test_errors_fail_open_so_no_question_is_missed():
