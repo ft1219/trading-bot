@@ -1,0 +1,27 @@
+name: Polymarket - one-off API probe
+
+on:
+  push:
+    branches: [polymarket-probe]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe public read-only endpoints
+        run: python3 probe/probe.py out
+      - name: Save results to the polymarket-probe-data branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd out
+          git init -q -b polymarket-probe-data
+          git add -A
+          git -c user.name="probe" -c user.email="probe@users.noreply.github.com" commit -qm "Probe results $(date -u +%FT%TZ)"
+          git push -qf "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" polymarket-probe-data
