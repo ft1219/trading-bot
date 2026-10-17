@@ -70,3 +70,26 @@ def test_one_sided_and_undersized_quotes():
     one = rewards.our_score(0.57, None, 20, 0.585, 5.5, 20, comp)
     assert one.q_min == pytest.approx(one.q_one / 3)
     assert rewards.our_score(0.57, 0.60, 19, 0.585, 5.5, 20, comp).q_min == 0
+
+
+def test_thin_when_either_side_lacks_depth_in_the_band():
+    full = book([(0.58, 30), (0.40, 500)], [(0.59, 30)])
+    assert not rewards.is_thin(full, 0.585, 5.5, 20)
+    empty_near_mid = book([(0.31, 50)], [(0.89, 60)])  # 58-cent gap: nobody inside a 4.5-cent band
+    assert rewards.is_thin(empty_near_mid, 0.60, 4.5, 20)
+    one_side = book([(0.58, 30)], [(0.59, 5), (0.70, 500)])
+    assert rewards.is_thin(one_side, 0.585, 5.5, 20)
+
+
+def test_makers_in_the_band_are_moved_up_to_our_price_for_the_high_bound():
+    b = book([(0.55, 100)], [(0.62, 100)])  # 3.5 cents out each side, band 5.5 cents
+    plain = rewards.competition(b, 0.585, 5.5, 20)
+    matched = rewards.competition(b, 0.585, 5.5, 20, bid_c=0.5, ask_c=0.5)
+    assert matched.high > plain.high
+    assert matched.low == plain.low  # the optimistic bound stays on the real book
+    s = rewards.order_score(5.5, 0.5)
+    assert matched.high == pytest.approx((100 * s + 100 * s + 100 * s) / 3)
+    # Makers already closer than us keep their own (better) score; makers outside the band stay out.
+    close = book([(0.584, 100)], [(0.70, 100)])
+    m = rewards.competition(close, 0.585, 5.5, 20, bid_c=1.5, ask_c=1.5)
+    assert m.high == pytest.approx(100 * rewards.order_score(5.5, 0.1) / 3)

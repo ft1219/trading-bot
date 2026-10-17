@@ -6,6 +6,12 @@ rewards program, and marks the top few as the "pilot" markets: the ones a
 real pilot with a small budget would have quoted. The go/no-go decision is
 based on the pilot markets only, chosen before their results are known, so
 the result is not flattered by picking winners afterwards.
+
+Pilot markets come only from markets where other makers already quote at
+least the minimum reward size inside the reward band on both sides. In a
+"thin" market our paper order would be alone near the middle and would set
+the price itself, which paper trading cannot test honestly; a few of those
+are watched separately, for information only.
 """
 from __future__ import annotations
 
@@ -20,6 +26,7 @@ class Settings:
     budget_per_market_usd: float = 20.0
     watch_markets: int = 25
     pilot_markets: int = 2
+    thin_markets: int = 5  # watch slots for thin markets (information only)
     pilot_level: int = 1  # ticks behind the closest prices; fixed in advance
     min_daily_rate_usd: float = 10.0
     min_days_to_end: float = 7.0
@@ -43,8 +50,9 @@ class Candidate:
     daily_rate: float
     mid: float | None = None
     size: float = 0.0
-    expected_low: float = 0.0  # $/day for us at pilot_level with competitors at their high bound
+    expected_low: float = 0.0  # $/day for us at pilot_level with competitors at their high bound (0 if thin)
     expected_high: float = 0.0
+    thin: bool = False
     fee_rate: float = 0.0
     fee_exponent: float = 1.0
     rebate_rate: float = 0.0
@@ -132,15 +140,17 @@ def score_candidates(cands: list[Candidate], books: dict[str, dict], s: Settings
         size = order_size(c, bid, ask, s.budget_per_market_usd)
         if size <= 0:
             continue
-        comp = rewards.competition(book, mid, c.max_spread_c, c.min_size)
+        comp = rewards.competition(book, mid, c.max_spread_c, c.min_size,
+                                   bid_c=(mid - bid) * 100, ask_c=(ask - mid) * 100)
         ours = rewards.our_score(bid, ask, size, mid, c.max_spread_c, c.min_size, comp)
         if ours.q_min <= 0:
             continue
         c.mid, c.size = mid, size
-        c.expected_low = c.daily_rate * ours.share_low
+        c.thin = rewards.is_thin(book, mid, c.max_spread_c, c.min_size)
+        c.expected_low = 0.0 if c.thin else c.daily_rate * ours.share_low
         c.expected_high = c.daily_rate * ours.share_high
         scored.append(c)
-    scored.sort(key=lambda c: -c.expected_low)
+    scored.sort(key=lambda c: (-c.expected_low, -c.expected_high))
     return scored
 
 
@@ -158,8 +168,12 @@ def apply_fees(c: Candidate, gamma: dict | None) -> None:
 
 
 def choose(scored: list[Candidate], s: Settings) -> list[Candidate]:
-    chosen = scored[: s.watch_markets]
+    """Watchlist: the best established markets (the top ones are the pilot), then a few thin ones."""
+    established = [c for c in scored if not c.thin]
+    thin = [c for c in scored if c.thin]
+    n_thin = min(len(thin), max(s.thin_markets, s.watch_markets - len(established)), s.watch_markets)
+    chosen = established[: s.watch_markets - n_thin] + thin[:n_thin]
     for i, c in enumerate(chosen):
         c.rank = i + 1
-        c.pilot = i < s.pilot_markets
+        c.pilot = not c.thin and i < s.pilot_markets
     return chosen

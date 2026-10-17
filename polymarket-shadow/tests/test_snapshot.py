@@ -106,3 +106,39 @@ def test_markouts_are_written_after_the_horizon(tmp_path, fx):
     rows = [r for r in rows if r["fill_ts"] == T_START and r["price"] == 0.55]
     assert len(rows) == 1 and rows[0]["horizon"] == 3600
     assert rows[0]["markout_usd"] == round((rows[0]["later_mid"] - 0.55) * 20, 6)
+
+
+class ThinBookApi(FakeApi):
+    """Same market, but nobody else quotes within the reward band."""
+
+    def books(self, tokens):
+        thin = {"bids": [{"price": "0.40", "size": "500"}], "asks": [{"price": "0.77", "size": "500"}],
+                "tick_size": "0.01", "asset_id": self.yes}
+        return {t: thin for t in tokens}
+
+
+def test_a_thin_market_is_watched_but_never_the_pilot(tmp_path, fx):
+    log = snapshot.run(tmp_path, now=T_START, api=ThinBookApi(fx), s=Settings())
+    assert log["errors"] == [] and log["samples"] == 1
+    state = json.loads((tmp_path / "state.json").read_text())
+    info = state["markets"][CID]["info"]
+    assert info["thin"] and not info["pilot"] and info["expected_low"] == 0
+    sample = json.loads((tmp_path / "days" / snapshot.utc_day(T_START) / "samples.jsonl").read_text())
+    assert sample["thin"]
+    for lv in sample["levels"].values():
+        assert lv["est_low"] == 0 and lv["est_high"] > 0
+
+
+def test_positions_are_valued_at_the_touch(tmp_path, fx):
+    api = FakeApi(fx)
+    snapshot.run(tmp_path, now=T_START, api=api, s=Settings())
+    state = json.loads((tmp_path / "state.json").read_text())
+    state["markets"][CID]["positions"]["1"].update({"yes": 20, "yes_cost": 11.6, "cash": -11.6})
+    state["markets"][CID]["trades_until"] = T_START + 3000  # nothing to replay
+    (tmp_path / "state.json").write_text(json.dumps(state))
+    snapshot.run(tmp_path, now=T_START + 3000, api=api, s=Settings())
+    rows = [json.loads(line) for line in
+            (tmp_path / "days" / snapshot.utc_day(T_START) / "samples.jsonl").read_text().splitlines()]
+    lv = rows[-1]["levels"]["1"]
+    assert lv["value"] == round(-11.6 + 20 * 0.58, 6)  # best bid in the fixture book
+    assert lv["value_mid"] > lv["value"]

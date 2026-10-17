@@ -7,10 +7,11 @@ the pilot markets of
     liquidity rewards + maker rebates + paper trading result
 averages more than $1.50 a day.
 
-"Cautious" means: competitors are assumed as strong as the order book allows,
-fills happen only when the price trades through us, and the $1 minimum payout
-is applied to each market separately (it may in fact apply to the whole
-account, which is the "optimistic" column).
+"Cautious" means: competitors are assumed as strong as the order book allows
+(and to move up to our price), a thin market earns nothing, holdings are
+valued at what they would sell for, and the $1 minimum payout is applied to
+each market separately (it may in fact apply to the whole account, which is
+the "optimistic" column).
 """
 from __future__ import annotations
 
@@ -58,7 +59,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
         fills = _read_jsonl(days_dir / day / "fills.jsonl")
         markouts = _read_jsonl(days_dir / day / "markouts.jsonl")
         per: dict[tuple[str, int], dict] = defaultdict(lambda: {"low": 0.0, "high": 0.0, "dt": 0, "value": None,
-                                                                 "rebates": None, "pilot": False})
+                                                                 "rebates": None, "pilot": False, "thin_dt": 0})
         trading: dict[tuple[str, int], float] = defaultdict(float)
         for c in closeouts:  # positions sold at the touch when a market left the watchlist
             key = (c["condition_id"], int(c["level"]))
@@ -78,6 +79,8 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 agg["value"] = d["value"]
                 agg["rebates"] = d["rebates"]
                 agg["pilot"] = agg["pilot"] or srow.get("pilot", False)
+                if srow.get("thin"):
+                    agg["thin_dt"] += srow["dt"]
         result = {"day": day, "levels": {}}
         for level in sorted({k[1] for k in per} | {pilot_level}):
             keys = [k for k in per if k[1] == level]
@@ -95,9 +98,12 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 if agg["value"] is not None:
                     trade += agg["value"] - last_value.get(key, 0.0)
                     last_value[key] = agg["value"]
-                mk.append({"condition_id": key[0], "pilot": agg["pilot"], "coverage": coverage,
+                thin = not agg["pilot"] and agg["thin_dt"] * 2 > agg["dt"]  # thin for most of the day
+                mk.append({"condition_id": key[0], "pilot": agg["pilot"], "thin": thin, "coverage": coverage,
                            "rewards_low": low, "rewards_high": high, "rebates": reb, "trading": trade})
             pilot = [x for x in mk if x["pilot"]]
+            est = [x for x in mk if not x["thin"]]
+            thin_mk = [x for x in mk if x["thin"]]
             sampled = [x for x in pilot if x["coverage"] > 0]  # closeout-only rows have no samples
             covered = bool(sampled) and min(x["coverage"] for x in sampled) >= MIN_COVERAGE
             result["levels"][str(level)] = {
@@ -109,10 +115,14 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                 + sum(x["trading"] for x in pilot),
                 "pilot_rewards_low": sum(x["rewards_low"] for x in pilot),
                 "pilot_trading": sum(x["trading"] for x in pilot),
-                "all_rewards_low": sum(x["rewards_low"] for x in mk),
-                "all_rewards_high": sum(x["rewards_high"] for x in mk),
-                "all_rebates": sum(x["rebates"] for x in mk),
-                "all_trading": sum(x["trading"] for x in mk),
+                "all_markets": len(est),
+                "all_rewards_low": sum(x["rewards_low"] for x in est),
+                "all_rewards_high": sum(x["rewards_high"] for x in est),
+                "all_rebates": sum(x["rebates"] for x in est),
+                "all_trading": sum(x["trading"] for x in est),
+                "thin_markets": len(thin_mk),
+                "thin_rewards_high": sum(x["rewards_high"] for x in thin_mk),
+                "thin_trading": sum(x["trading"] for x in thin_mk),
                 "fills": sum(1 for f in fills if int(f["level"]) == level),
                 "markout_1h": sum(m["markout_usd"] for m in markouts if int(m["level"]) == level and m["horizon"] == 3600),
                 "markout_24h": sum(m["markout_usd"] for m in markouts if int(m["level"]) == level and m["horizon"] == 86400),
@@ -156,10 +166,10 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
            f"{gate['days']} full day(s). " if gate["days"] else "No full day recorded yet. ")
         + f"It needs more than {_usd(GATE_A_USD_PER_DAY)} a day over at least {GATE_A_MIN_DAYS} days.",
         "",
-        f"Pilot: the top {settings.pilot_markets} markets each day, ${settings.budget_per_market_usd:.0f} each, "
-        f"orders {level} tick(s) behind the closest prices to the midpoint.",
+        f"Pilot: the top {settings.pilot_markets} markets each day where others already quote near the middle, "
+        f"${settings.budget_per_market_usd:.0f} each, orders {level} tick(s) behind the closest prices to the midpoint.",
         "",
-        "| Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | All-market rewards low-high | Fills | 1h markouts |",
+        "| Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Watched markets (not thin), rewards low-high | Fills | 1h markouts |",
         "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in reversed(rows[-14:]):
@@ -183,10 +193,20 @@ def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
         for lv_name, lv in sorted(last["levels"].items()):
             lines.append(
                 f"- {lv_name} tick(s) back: pilot cautious {_usd(lv['pilot_cautious'])}, "
-                f"all {lv['markets']} markets rewards {_usd(lv['all_rewards_low'])}-{_usd(lv['all_rewards_high'])}, "
+                f"{lv.get('all_markets', lv['markets'])} watched markets (not thin), rewards "
+                f"{_usd(lv['all_rewards_low'])}-{_usd(lv['all_rewards_high'])}, "
                 f"trading {_usd(lv['all_trading'])}, rebates {_usd(lv['all_rebates'])}, fills {lv['fills']}, "
                 f"24h markouts {_usd(lv['markout_24h'])}"
             )
+        thin = last["levels"].get(str(level), {})
+        if thin.get("thin_markets"):
+            lines += [
+                "",
+                f"Thin markets ({thin['thin_markets']} watched): nobody else quotes near the middle, so a paper "
+                f"order there would set the price alone and these numbers cannot be trusted. Best case rewards "
+                f"{_usd(thin['thin_rewards_high'])}, paper trading {_usd(thin['thin_trading'])}. They never count "
+                f"towards the go/no-go check.",
+            ]
     else:
         lines.append("- No full day recorded yet.")
     summary = {"generated": int(now), "gate_a": gate, "days": rows}

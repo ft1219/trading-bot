@@ -92,3 +92,32 @@ def test_close_out_and_markout():
 def test_position_round_trips_through_json():
     pos = sim.Position(yes=3, yes_cost=1.5, cash=-1.5, fills=1)
     assert sim.Position.from_dict(pos.to_dict()) == pos
+
+
+def test_midpoint_moving_through_our_bid_fills_it_without_a_trade():
+    p = sim.MarketParams(tick=0.01, size=20, budget_usd=20, max_spread_c=5.5, fee_rate=0.04, rebate_rate=0.25)
+    history = [(0, 0.585), (60, 0.585), (120, 0.555), (180, 0.555)]
+    pos = sim.Position()
+    fills = sim.replay(pos, [], history, YES, p, 0)
+    assert len(fills) == 1 and fills[0].side == "bid" and fills[0].price == 0.58 and fills[0].ts == 120
+    assert fills[0].rebate == 0 and fills[0].tx == "midpoint-move"
+    assert pos.liquidation_value(0.55, 0.56) == pytest.approx(20 * (0.55 - 0.58))
+
+
+def test_midpoint_moves_outside_the_window_are_left_for_the_other_run():
+    history = [(0, 0.585), (60, 0.585), (120, 0.555)]
+    assert sim.replay(sim.Position(), [], history, YES, P, 0, start=120, end=600) == []  # 120 was counted last run
+    assert len(sim.replay(sim.Position(), [], history, YES, P, 0, start=60, end=120)) == 1
+
+
+def test_a_trade_and_a_midpoint_move_in_the_same_minute_fill_once():
+    history = [(0, 0.585), (60, 0.585), (120, 0.555), (180, 0.555)]
+    p = sim.MarketParams(tick=0.01, size=10, budget_usd=100, max_spread_c=5.5)
+    fills = sim.replay(sim.Position(), [trade(100, "SELL", 0.56)], history, YES, p, 0)
+    assert [(f.ts, f.tx) for f in fills] == [(100, "0x100")]
+
+
+def test_liquidation_value_uses_the_touch():
+    pos = sim.Position(yes=20, yes_cost=11.6, no=10, no_cost=4.1, cash=-15.7)
+    assert pos.liquidation_value(0.57, 0.60) == pytest.approx(-15.7 + 20 * 0.57 + 10 * 0.40)
+    assert pos.liquidation_value(None, None) == pytest.approx(-15.7)  # nobody to sell to: worth nothing

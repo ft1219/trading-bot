@@ -8,10 +8,10 @@ It answers one question before any money is risked: would a small bot that keeps
 
 Each run happens inside the 40-minute scheduled job (`run.sh`, called from `.github/workflows/metaculus-forecast.yaml`):
 
-1. Once a UTC day, `selection.py` picks the watchlist from every market in the rewards program (`/sampling-markets` and `/rewards/markets/current`). It keeps markets that pay at least $10 a day, have a midpoint between 0.15 and 0.85, end more than 7 days away, are not live sports, and whose minimum reward size fits a $20 budget. It ranks them by the reward our orders would earn against the current book, and marks the top two as the pilot.
-2. `sim.py` replays every public taker trade since the last run against our paper orders at three distances from the midpoint (0, 1 and 2 ticks behind the closest prices), with pessimistic fill rules: fills only when a trade prints through our price, quotes based on the previous minute's midpoint, and a $20 budget per market.
+1. Once a UTC day, `selection.py` picks the watchlist from every market in the rewards program (`/sampling-markets` and `/rewards/markets/current`). It keeps markets that pay at least $10 a day, have a midpoint between 0.15 and 0.85, end more than 7 days away, are not live sports, and whose minimum reward size fits a $20 budget. It ranks them by the reward our orders would earn against the current book. The top two markets where other makers already quote near the middle become the pilot; a few "thin" markets are watched as well (see below).
+2. `sim.py` replays every public taker trade and every one-minute midpoint move since the last run against our paper orders at three distances from the midpoint (0, 1 and 2 ticks behind the closest prices), with pessimistic fill rules: a fill when a trade prints through our price or the midpoint moves through it, quotes based on the previous minute's midpoint, and a $20 budget per market.
 3. `rewards.py` scores our paper orders against the live order book with Polymarket's published formula, and records our share of the market's daily pool with competitors at their strongest and weakest possible.
-4. An hour and a day after each paper fill, it records how far the midpoint moved (markouts).
+4. Paper holdings are valued at what they would sell for right now (YES at the best bid, NO at one minus the best ask). An hour and a day after each paper fill, it records how far the midpoint moved (markouts).
 5. `report.py` rewrites `report.md` and `summary.json`.
 
 ## Data
@@ -24,13 +24,22 @@ Everything goes to the `polymarket-shadow-data` branch:
 
 ## The go/no-go check (Gate A)
 
-Fixed in the project plan before any data: after at least 14 days with good coverage, the two pilot markets must average more than $1.50 a day on the cautious estimate of rewards + rebates + paper trading result. The cautious estimate assumes competitors are as strong as the book allows and applies Polymarket's $1 minimum payout to each market separately. The pilot uses orders 1 tick behind the closest prices, also fixed in advance; the other two distances are shown for information only.
+Fixed in the project plan before any data: after at least 14 days with good coverage, the two pilot markets must average more than $1.50 a day on the cautious estimate of rewards + rebates + paper trading result. The cautious estimate assumes competitors are as strong as the book allows, that makers already inside the reward band would move up to our price, that a thin market pays nothing, and applies Polymarket's $1 minimum payout to each market separately. The pilot uses orders 1 tick behind the closest prices, also fixed in advance; the other two distances are shown for information only.
+
+## Thin markets
+
+The first live run found that most of the best-paying reward markets have almost nobody quoting near the middle: the gap between the best buy and sell prices is 20-60 cents, wider than the reward band. A paper order there looks like it collects the whole daily reward, because it is alone. In real life it would be the price, the "midpoint" it is placed around means little, and anyone who knows better would trade against it. Paper trading cannot measure that, so:
+
+- a market is thin when, on either side, other makers have less than the minimum reward size inside the reward band;
+- thin markets are never pilot markets, and in any run where a pilot market's book turns thin, the cautious estimate counts no reward for it;
+- up to five thin markets are still watched, and the report shows their best-case numbers on a separate line, marked as not trustworthy.
 
 ## Known limits
 
 - The public book adds up all makers at each price, so competitors' reward score is a range, not a number.
+- Our paper orders are not in the real book, so nobody reacts to them. Assuming that makers in the band move up to our price is the cautious answer to that.
 - The "size-cutoff-adjusted midpoint" is not defined in Polymarket's docs. We use the price where each side's depth first reaches the market's minimum reward size.
-- Rewards are sampled every 40 minutes, not every minute as Polymarket does; fills use every trade.
+- Rewards are sampled every 40 minutes, not every minute as Polymarket does; fills use every trade and every one-minute midpoint.
 - Rebates assume our share of a market's rebate pool equals our share of the fee-weighted maker volume, as the docs describe, and that the pool is the market's rebate rate times its taker fees.
 - GitHub's runners are in the US, which Polymarket geoblocks for trading. Reading public data works; a real pilot must run from a Malaysian connection.
 

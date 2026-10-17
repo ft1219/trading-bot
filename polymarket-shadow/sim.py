@@ -6,15 +6,20 @@ re-quoting each minute from Polymarket's one-minute midpoint history, and we
 use every public taker trade to decide whether our orders would have filled.
 The rules lean towards making us look worse than reality:
 
-- A fill counts only when a trade prints strictly through our price. A trade
+- A trade fills us only when it prints strictly through our price. A trade
   at our price might have filled us if we were early in the queue; we
   ignore it. A trade through our price means the whole price level was
   used up, so our full order fills.
+- When the midpoint itself moves through our price, we also count a fill at
+  our price, even with no trade: a resting order the market moves past gets
+  picked off. These fills earn no fee rebate.
 - Quotes come from the midpoint of the minute *before* the trade, so a fast
   move hits our stale quote, as it would hit a slow real bot.
 - After a fill we wait for the next minute's midpoint before re-quoting.
 - A per-market budget caps what we hold: resting orders lock their cost and
   bought shares keep it locked until a YES and a NO are merged back into $1.
+- Holdings are valued at what they would sell for now (YES at the best bid,
+  NO at 1 - best ask), not at the midpoint.
 
 Prices are YES-equivalent throughout: a NO bid at n is the same order as a
 YES ask at 1 - n, and Polymarket matches them against each other.
@@ -48,6 +53,12 @@ class Position:
 
     def value(self, mid: float) -> float:
         return self.cash + self.yes * mid + self.no * (1 - mid)
+
+    def liquidation_value(self, best_bid: float | None, best_ask: float | None) -> float:
+        """Cash plus holdings sold at the touch; a side with no buyers is worth nothing."""
+        yes_px = best_bid if best_bid is not None else 0.0
+        no_px = 1 - best_ask if best_ask is not None else 0.0
+        return self.cash + self.yes * yes_px + self.no * no_px
 
     def merge_pairs(self) -> None:
         pairs = min(self.yes, self.no)
@@ -144,44 +155,68 @@ class Fill:
     extra: dict = field(default_factory=dict)
 
 
+def _fill(pos: Position, side: str, price: float, p: MarketParams, until: float) -> None:
+    if side == "bid":
+        pos.yes += p.size
+        pos.yes_cost += p.size * price
+        pos.cash -= p.size * price
+        pos.bid_blocked_until = until
+    else:
+        pos.no += p.size
+        pos.no_cost += p.size * (1 - price)
+        pos.cash -= p.size * (1 - price)
+        pos.ask_blocked_until = until
+    pos.fills += 1
+
+
 def replay(pos: Position, trades: list[dict], history: list[tuple[int, float]], yes_token: str,
-           p: MarketParams, level: int) -> list[Fill]:
-    """Apply taker trades (oldest first) to our paper position; returns our fills."""
+           p: MarketParams, level: int, start: float | None = None, end: float | None = None) -> list[Fill]:
+    """
+    Apply taker trades (oldest first) and midpoint moves to our paper position;
+    returns our fills. Midpoint moves count only inside (start, end], so that
+    consecutive runs do not count the same move twice.
+    """
     times = [t for t, _ in history]
+    lo = float("-inf") if start is None else start
+    hi = float("inf") if end is None else end
+    events = [(int(t["timestamp"]), 0, t) for t in trades]
+    events += [(times[j], 1, j) for j in range(1, len(times)) if lo < times[j] <= hi]
+    events.sort(key=lambda e: (e[0], e[1]))  # a trade at the same second as a new midpoint goes first
     fills: list[Fill] = []
-    for trade in trades:
-        ts = int(trade["timestamp"])
-        i = bisect.bisect_left(times, ts) - 1  # last midpoint strictly before the trade
-        if i < 0 or ts - times[i] > MAX_QUOTE_AGE_S:
-            continue
+    for ts, kind, item in events:
+        if kind == 0:
+            i = bisect.bisect_left(times, ts) - 1  # last midpoint strictly before the trade
+            if i < 0 or ts - times[i] > MAX_QUOTE_AGE_S:
+                continue
+            converted = yes_equivalent(item, yes_token)
+            if converted is None:
+                continue
+            taker_side, price = converted
+            check_ts = ts
+        else:
+            i = item - 1  # the quote that rested until this midpoint arrived
+            if ts - times[i] > MAX_QUOTE_AGE_S:
+                continue
+            taker_side, price = None, history[item][1]
+            check_ts = ts - 1
         mid = history[i][1]
-        converted = yes_equivalent(trade, yes_token)
-        if converted is None:
-            continue
-        taker_side, price = converted
         bid, ask = quotes(mid, p, level)
-        bid_on, ask_on = active_sides(pos, bid, ask, p, ts)
-        next_quote = times[i + 1] if i + 1 < len(times) else ts + REQUOTE_DELAY_S
-        if taker_side == "SELL" and bid_on and price < bid - EPS:
-            pos.yes += p.size
-            pos.yes_cost += p.size * bid
-            pos.cash -= p.size * bid
-            pos.bid_blocked_until = max(next_quote, ts + 1)
-            fill_price, side = bid, "bid"
-        elif taker_side == "BUY" and ask_on and price > ask + EPS:
-            pos.no += p.size
-            pos.no_cost += p.size * (1 - ask)
-            pos.cash -= p.size * (1 - ask)
-            pos.ask_blocked_until = max(next_quote, ts + 1)
-            fill_price, side = ask, "ask"
+        bid_on, ask_on = active_sides(pos, bid, ask, p, check_ts)
+        next_i = i + 1 if kind == 0 else item + 1
+        next_quote = times[next_i] if next_i < len(times) else ts + REQUOTE_DELAY_S
+        if bid_on and price < bid - EPS and taker_side in ("SELL", None):
+            side, fill_price = "bid", bid
+        elif ask_on and price > ask + EPS and taker_side in ("BUY", None):
+            side, fill_price = "ask", ask
         else:
             continue
-        rebate = p.rebate_rate * taker_fee_equivalent(p.size, fill_price, p)
+        _fill(pos, side, fill_price, p, max(next_quote, ts + 1))
+        rebate = p.rebate_rate * taker_fee_equivalent(p.size, fill_price, p) if kind == 0 else 0.0
         pos.rebates += rebate
-        pos.fills += 1
         pos.merge_pairs()
+        tx = str(item.get("transactionHash", "")) if kind == 0 else "midpoint-move"
         fills.append(Fill(ts=ts, side=side, price=fill_price, shares=p.size, mid_before=mid,
-                          trade_price=price, rebate=rebate, tx=str(trade.get("transactionHash", "")), level=level))
+                          trade_price=price, rebate=rebate, tx=tx, level=level))
     return fills
 
 

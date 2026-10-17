@@ -3,13 +3,14 @@ One practice-mode run: no money, no account, public data only.
 
 Each run (every 40 minutes, inside the scheduled GitHub Actions job):
 1. Once a UTC day, picks the watchlist from all liquidity-reward markets.
-2. For each watched market, replays the public trades since the last run
-   against our paper quotes (see sim.py) at three distances from the
-   midpoint, and records any fills.
+2. For each watched market, replays the public trades and midpoint moves
+   since the last run against our paper quotes (see sim.py) at three
+   distances from the midpoint, and records any fills.
 3. Reads the live order book and records what share of the market's daily
-   reward pool our paper orders would be earning now (see rewards.py).
-4. Values each paper position at the midpoint, and an hour and a day after
-   each fill records how far the price moved (markouts).
+   reward pool our paper orders would be earning now (see rewards.py). In a
+   thin market the cautious estimate counts no reward at all.
+4. Values each paper position at what it would sell for now, and an hour
+   and a day after each fill records how far the price moved (markouts).
 5. Rewrites the report.
 
 Everything is stored as plain files in the data folder (the
@@ -50,6 +51,7 @@ def settings_from_env(env=os.environ) -> selection.Settings:
         budget_per_market_usd=num("PM_BUDGET_PER_MARKET_USD", d.budget_per_market_usd),
         watch_markets=num("PM_WATCH_MARKETS", d.watch_markets, int),
         pilot_markets=num("PM_PILOT_MARKETS", d.pilot_markets, int),
+        thin_markets=num("PM_THIN_MARKETS", d.thin_markets, int),
         pilot_level=num("PM_PILOT_LEVEL", d.pilot_level, int),
         min_daily_rate_usd=num("PM_MIN_DAILY_RATE_USD", d.min_daily_rate_usd),
         min_days_to_end=num("PM_MIN_DAYS_TO_END", d.min_days_to_end),
@@ -136,7 +138,8 @@ def refresh_watchlist(state: dict, store: Store, s: selection.Settings, now: flo
         if c.condition_id in state["markets"]:
             state["markets"][c.condition_id]["info"].update(
                 {k: info[k] for k in ("pilot", "rank", "daily_rate", "max_spread_c", "min_size", "expected_low",
-                                      "expected_high", "fee_rate", "fee_exponent", "rebate_rate", "end_date")})
+                                      "expected_high", "thin", "fee_rate", "fee_exponent", "rebate_rate",
+                                      "end_date")})
         else:
             state["markets"][c.condition_id] = {
                 "info": info, "added_ts": int(now),
@@ -202,9 +205,10 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
         histories[cid] = history
         trades = [t for t in trades if int(t["timestamp"]) <= cutoff]
         p = params_for(info, s)
+        since = int(m["trades_until"])
         for level in LEVELS:
             pos = sim.Position.from_dict(m["positions"][str(level)])
-            for f in sim.replay(pos, trades, history, info["yes_token"], p, level):
+            for f in sim.replay(pos, trades, history, info["yes_token"], p, level, start=since, end=cutoff):
                 row = {"condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
                        "ts": f.ts, "level": level, "side": f.side, "price": f.price, "shares": f.shares,
                        "mid_before": f.mid_before, "trade_price": f.trade_price, "rebate": round(f.rebate, 6),
@@ -226,22 +230,30 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
             continue
         last = m.get("last_sample_ts")
         dt_s = FIRST_SAMPLE_DT_S if last is None else min(int(now) - int(last), MAX_SAMPLE_DT_S)
-        comp = rewards.competition(book, mid, float(info["max_spread_c"]), float(info["min_size"]))
+        v, min_size = float(info["max_spread_c"]), float(info["min_size"])
+        thin = rewards.is_thin(book, mid, v, min_size)
+        comp = rewards.competition(book, mid, v, min_size)
         row = {"ts": int(now), "condition_id": cid, "pilot": info.get("pilot", False), "rank": info.get("rank"),
-               "rate": info["daily_rate"], "mid": round(mid, 5), "comp_low": round(comp.low, 3),
+               "rate": info["daily_rate"], "mid": round(mid, 5), "thin": thin, "comp_low": round(comp.low, 3),
                "comp_high": round(comp.high, 3), "dt": dt_s, "levels": {}}
         for level in LEVELS:
             pos = sim.Position.from_dict(m["positions"][str(level)])
             bid, ask = sim.quotes(mid, p, level)
             bid_on, ask_on = sim.active_sides(pos, bid, ask, p, now)
+            matched = rewards.competition(book, mid, v, min_size,
+                                          bid_c=(mid - bid) * 100 if bid is not None else None,
+                                          ask_c=(ask - mid) * 100 if ask is not None else None)
             ours = rewards.our_score(bid if bid_on else None, ask if ask_on else None, p.size, mid,
-                                     p.max_spread_c, float(info["min_size"]), comp)
+                                     v, min_size, matched)
+            share_low = 0.0 if thin else ours.share_low
             row["levels"][str(level)] = {
                 "bid": bid if bid_on else None, "ask": ask if ask_on else None,
-                "q": round(ours.q_min, 4), "share_low": ours.share_low, "share_high": ours.share_high,
-                "est_low": info["daily_rate"] * ours.share_low * dt_s / 86400,
+                "q": round(ours.q_min, 4), "comp_high": round(matched.high, 3),
+                "share_low": share_low, "share_high": ours.share_high,
+                "est_low": info["daily_rate"] * share_low * dt_s / 86400,
                 "est_high": info["daily_rate"] * ours.share_high * dt_s / 86400,
-                "value": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
+                "value": round(pos.liquidation_value(book.best_bid, book.best_ask), 6),
+                "value_mid": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
                 "yes": pos.yes, "no": pos.no,
             }
         samples_out.append(row)

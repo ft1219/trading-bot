@@ -51,3 +51,19 @@ def test_partial_days_do_not_count(tmp_path):
         write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=5, value=0, samples=10)
     _, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
     assert summary["gate_a"]["days"] == 0
+
+
+def test_thin_markets_are_listed_apart_and_never_count(tmp_path):
+    for i, d in enumerate(days(15)):
+        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0)
+        with open(tmp_path / "days" / d / "samples.jsonl", "a") as f:
+            for j in range(36):
+                per = {"est_low": 0.0, "est_high": 50 / 36, "value": 0.0, "rebates": 0.0, "fills": 0}
+                f.write(json.dumps({"ts": 1790000000 + i * 86400 + j * 2400, "condition_id": "0xthin",
+                                    "pilot": False, "thin": True, "dt": 2400, "levels": {"1": per}}) + "\n")
+    text, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
+    lv = summary["days"][-1]["levels"]["1"]
+    assert lv["thin_markets"] == 1 and lv["all_markets"] == 1
+    assert abs(lv["thin_rewards_high"] - 50) < 1e-9 and abs(lv["all_rewards_high"] - 4.0) < 1e-9
+    assert abs(summary["gate_a"]["mean_cautious_usd_per_day"] - 2.0) < 1e-9
+    assert "Thin markets (1 watched)" in text

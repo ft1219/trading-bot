@@ -21,7 +21,13 @@ total Q_min cannot be read exactly. It is bounded instead:
 - high (bad for us): every level counts and competitors are as two-sided as
   possible, giving (A + B + min(A, B)) / 3, where A and B are the Q_one and
   Q_two totals. For each maker Q_min <= (a + b + min(a, b)) / 3, which sums
-  to at most that.
+  to at most that. On top of that, makers already inside the reward band
+  are assumed to move up to our price if they are further out, because
+  other reward bots would answer a better-placed order within minutes.
+
+A market is "thin" when, on either side, other makers have less than the
+minimum reward size inside the band. Our paper order would then be the
+price, not a follower of it, and paper results there cannot be trusted.
 """
 from __future__ import annotations
 
@@ -96,13 +102,32 @@ def q_min(q_one: float, q_two: float, midpoint: float) -> float:
     return min(q_one, q_two)
 
 
-def side_score(levels: tuple[Level, ...], midpoint: float, max_spread_c: float, min_level_size: float = 0.0) -> float:
+def side_score(levels: tuple[Level, ...], midpoint: float, max_spread_c: float, min_level_size: float = 0.0,
+               match_c: float | None = None) -> float:
+    """
+    Q summed over one side of the book. With match_c, every level inside the
+    band scores at least as well as an order match_c cents from the midpoint.
+    """
+    floor = order_score(max_spread_c, match_c) if match_c is not None else 0.0
     total = 0.0
     for level in levels:
         if level.size < min_level_size:
             continue
-        total += order_score(max_spread_c, abs(level.price - midpoint) * 100) * level.size
+        score = order_score(max_spread_c, abs(level.price - midpoint) * 100)
+        if score > 0:
+            score = max(score, floor)
+        total += score * level.size
     return total
+
+
+def depth_in_band(levels: tuple[Level, ...], midpoint: float, max_spread_c: float) -> float:
+    return sum(l.size for l in levels if abs(l.price - midpoint) * 100 < max_spread_c)
+
+
+def is_thin(book: Book, midpoint: float, max_spread_c: float, min_size: float) -> bool:
+    """True when other makers leave either side of the reward band without min_size of depth."""
+    return (depth_in_band(book.bids, midpoint, max_spread_c) < min_size
+            or depth_in_band(book.asks, midpoint, max_spread_c) < min_size)
 
 
 @dataclass(frozen=True)
@@ -111,9 +136,15 @@ class Competition:
     high: float
 
 
-def competition(book: Book, midpoint: float, max_spread_c: float, min_size: float) -> Competition:
-    a_all = side_score(book.bids, midpoint, max_spread_c)
-    b_all = side_score(book.asks, midpoint, max_spread_c)
+def competition(book: Book, midpoint: float, max_spread_c: float, min_size: float,
+                bid_c: float | None = None, ask_c: float | None = None) -> Competition:
+    """
+    Bounds on the other makers' total Q_min. bid_c and ask_c are our own
+    orders' distances from the midpoint in cents: for the high bound, makers
+    inside the band are moved up to them (see the module notes).
+    """
+    a_all = side_score(book.bids, midpoint, max_spread_c, match_c=bid_c)
+    b_all = side_score(book.asks, midpoint, max_spread_c, match_c=ask_c)
     a_big = side_score(book.bids, midpoint, max_spread_c, min_level_size=min_size)
     b_big = side_score(book.asks, midpoint, max_spread_c, min_level_size=min_size)
     if TWO_SIDED_ONLY_BELOW <= midpoint <= TWO_SIDED_ONLY_ABOVE:

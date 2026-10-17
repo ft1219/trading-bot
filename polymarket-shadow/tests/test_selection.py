@@ -55,3 +55,31 @@ def test_fee_schedule_from_gamma(fx):
     d = selection.prefilter([market()], {"0xabc": config()}, NOW, S)[0]
     selection.apply_fees(d, fx("gamma_market_no_fees"))
     assert d.fee_rate == 0 and d.rebate_rate == 0
+
+
+def _cand(cid, low, high, thin):
+    return selection.Candidate(condition_id=cid, question="", yes_token="y", no_token="n", end_date=None,
+                               neg_risk=False, tick=0.01, order_min=5, min_size=20, max_spread_c=4.5,
+                               daily_rate=50, expected_low=low, expected_high=high, thin=thin)
+
+
+def test_pilots_come_only_from_markets_others_already_quote():
+    scored = [_cand(f"0xe{i}", 10 - i, 10 - i, False) for i in range(3)] + \
+             [_cand(f"0xt{i}", 0, 50 - i, True) for i in range(8)]
+    s = selection.Settings(watch_markets=6, pilot_markets=2, thin_markets=2)
+    chosen = selection.choose(scored, s)
+    # Only 3 established markets, so thin ones fill the rest of the 6 slots.
+    assert [c.condition_id for c in chosen] == ["0xe0", "0xe1", "0xe2", "0xt0", "0xt1", "0xt2"]
+    assert [c.condition_id for c in chosen if c.pilot] == ["0xe0", "0xe1"]
+    many = [_cand(f"0xe{i}", 10 - i, 10 - i, False) for i in range(9)] + scored[3:]
+    chosen = selection.choose(many, s)
+    assert sum(c.thin for c in chosen) == 2 and len(chosen) == 6  # thin slots are capped when there is a choice
+    only_thin = selection.choose([_cand("0xt", 0, 50, True)], s)
+    assert len(only_thin) == 1 and not only_thin[0].pilot
+
+
+def test_a_thin_book_scores_no_cautious_reward():
+    c = selection.prefilter([market()], {"0xabc": config(rate=60, spread=4.5)}, NOW, S)[0]
+    raw = {"bids": [{"price": "0.31", "size": "51"}], "asks": [{"price": "0.89", "size": "66"}], "tick_size": "0.01"}
+    scored = selection.score_candidates([c], {"0xabc-y": raw}, selection.Settings(min_mid=0.1, max_mid=0.9))
+    assert scored and scored[0].thin and scored[0].expected_low == 0 and scored[0].expected_high == 60
