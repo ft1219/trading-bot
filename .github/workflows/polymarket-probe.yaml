@@ -11,11 +11,11 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Probe public read-only endpoints
-        run: python3 probe/trades_v2_probe.py out
+        run: python3 probe/backtest.py out
       - name: Save results to the polymarket-probe-data branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
