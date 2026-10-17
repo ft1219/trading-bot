@@ -47,11 +47,18 @@ _KEYS_TO_DROP_WHEN_BLANK = (
 def drop_blank_env_vars(names: Sequence[str] = _KEYS_TO_DROP_WHEN_BLANK) -> list[str]:
     """
     Remove API-key variables that are set but empty, so libraries that test
-    `is not None` treat them as absent. Returns the names removed.
+    `is not None` treat them as absent, and trim spaces and line breaks from
+    the others (a secret pasted with a trailing newline would otherwise break
+    the request headers). Returns the names removed.
     """
     removed = []
     for name in names:
-        if name in os.environ and not os.environ[name].strip():
+        if name not in os.environ:
+            continue
+        value = os.environ[name].strip()
+        if value:
+            os.environ[name] = value
+        else:
             del os.environ[name]
             removed.append(name)
     return removed
