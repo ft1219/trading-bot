@@ -1,0 +1,15 @@
+name: Metaculus - one-off shape probe
+on:
+  push:
+    branches: [metaculus-probe]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 probe/metaculus_shape.py
+        env:
+          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
