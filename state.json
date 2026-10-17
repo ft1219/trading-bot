@@ -25,13 +25,13 @@
     "tick": 0.01,
     "yes_token": "1198369059272337837983197710023977775503199909109881099743328779305488526293"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": -8.4,
      "fills": 1,
      "no": 0.0,
@@ -42,9 +42,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -55,9 +55,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -67,7 +67,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x09866f57cf10c941d5fcc3ef096ec66f6e53a004148cc08340d890b151fca604": {
    "added_ts": 1792211738,
@@ -94,13 +94,13 @@
     "tick": 0.01,
     "yes_token": "5228989213481470491316994449176602987642487342097074309722597020892377869382"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -111,9 +111,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -124,9 +124,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -136,7 +136,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x1061746798dcbc8e5fdd72f6e701cba204145014847aaa60fd7566dd7e6ee102": {
    "added_ts": 1792211738,
@@ -163,13 +163,13 @@
     "tick": 0.01,
     "yes_token": "12896338380913765828011243971287948980625806294264003655037402556104795896562"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -180,9 +180,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -193,9 +193,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -205,7 +205,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x1238a5f2e6dfea20ed171c2b942ff761cf0b3390cd7a84651a04bcdb99b05a02": {
    "added_ts": 1792211738,
@@ -232,13 +232,13 @@
     "tick": 0.01,
     "yes_token": "76843334031206494041882503763217027154071916777984807870822644132594730509183"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -249,9 +249,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -262,9 +262,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -274,7 +274,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x1e423e6a4434cb8d337894fa99d13e6a6f19e18289f39cc3d770abf178635a0c": {
    "added_ts": 1792211738,
@@ -301,13 +301,13 @@
     "tick": 0.01,
     "yes_token": "9998148180054492700111449629349695207054522775075453968056760984828416376678"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -318,9 +318,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -331,9 +331,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -343,7 +343,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x1e5c5d9e6ee31d6dbdb2fefe6fdf103ad824da79b59064cefdc53ed44b6e1975": {
    "added_ts": 1792211738,
@@ -370,13 +370,13 @@
     "tick": 0.01,
     "yes_token": "52183944893309575584469195876785440459503726691144855603239839746827009154742"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -21.400000000000013,
      "fills": 18,
      "no": 0.0,
@@ -387,9 +387,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -0.8000000000000114,
      "fills": 12,
      "no": 0.0,
@@ -400,9 +400,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -14.600000000000003,
      "fills": 7,
      "no": 20.0,
@@ -412,7 +412,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x2583a7108ae2ed57936ca2a784c06d250fb68ff0f8d14e657215ba0bc354ba19": {
    "added_ts": 1792211738,
@@ -439,13 +439,13 @@
     "tick": 0.01,
     "yes_token": "55879027195503033095131494943135193572388580744947608384305213224259144104699"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -10.6,
      "fills": 3,
      "no": 0.0,
@@ -456,9 +456,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -10.0,
      "fills": 3,
      "no": 0.0,
@@ -469,9 +469,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -9.400000000000004,
      "fills": 3,
      "no": 0.0,
@@ -481,7 +481,7 @@
      "yes_cost": 9.200000000000001
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x464509f76e5958f7d898c9dca7849b0fce5768daee2d6fb2437a1628b911ce68": {
    "added_ts": 1792211738,
@@ -508,13 +508,13 @@
     "tick": 0.01,
     "yes_token": "71813863202725754791305086455638136700240261547270083751838454342011460672081"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215019,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215019,
      "cash": -14.800000000000011,
      "fills": 12,
      "no": 40.0,
@@ -525,9 +525,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215019,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215019,
      "cash": -7.600000000000001,
      "fills": 7,
      "no": 20.0,
@@ -538,9 +538,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215019,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215019,
      "cash": -6.2000000000000055,
      "fills": 7,
      "no": 20.0,
@@ -550,7 +550,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x5ae7ca6c5e9d9f3e76da26c36f859abc60dc53c135deb3560fc49e7cc85c2ed1": {
    "added_ts": 1792211738,
@@ -577,13 +577,13 @@
     "tick": 0.01,
     "yes_token": "21737122477471111758104840658349181153394578644652017933128140115380507478476"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -594,9 +594,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -607,9 +607,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -619,7 +619,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x5f6a7b61c0d5c70860e7538932e122a0392cc7f93ab568008770315883cc5de0": {
    "added_ts": 1792211738,
@@ -646,13 +646,13 @@
     "tick": 0.01,
     "yes_token": "69735375491031838104241264868597697438957468021437178287310137256738557969442"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
+     "bid_quote_ts": 1792215015,
      "cash": -9.600000000000001,
      "fills": 3,
      "no": 20.0,
@@ -663,9 +663,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
+     "bid_quote_ts": 1792215015,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -676,9 +676,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
+     "bid_quote_ts": 1792215015,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -688,7 +688,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41": {
    "added_ts": 1792211738,
@@ -715,49 +715,49 @@
     "tick": 0.01,
     "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214782,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214782,
-     "cash": -9.2,
-     "fills": 1,
-     "no": 20.0,
-     "no_cost": 9.2,
+     "bid_quote_ts": 1792215016,
+     "cash": -18.0,
+     "fills": 2,
+     "no": 40.0,
+     "no_cost": 18.0,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214782,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214782,
-     "cash": 0.0,
-     "fills": 0,
-     "no": 0.0,
-     "no_cost": 0.0,
+     "bid_quote_ts": 1792215016,
+     "cash": -8.4,
+     "fills": 1,
+     "no": 20.0,
+     "no_cost": 8.4,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214782,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214782,
-     "cash": 0.0,
-     "fills": 0,
-     "no": 0.0,
-     "no_cost": 0.0,
+     "bid_quote_ts": 1792215016,
+     "cash": -8.200000000000001,
+     "fills": 1,
+     "no": 20.0,
+     "no_cost": 8.200000000000001,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x6c4239215e1c4d375e3204e60b5d3131b10c3b238e6827679cbce1ddd426af35": {
    "added_ts": 1792211738,
@@ -784,13 +784,13 @@
     "tick": 0.01,
     "yes_token": "89481169813054101661020563608649438693445980324373231997556397218980120548744"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -801,9 +801,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -814,9 +814,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215014,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215014,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -826,7 +826,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x7a9b9fc81b9945c6adcf6f3d731627823aa96281096533e7b40ed6d86844637b": {
    "added_ts": 1792211738,
@@ -853,13 +853,13 @@
     "tick": 0.01,
     "yes_token": "27336319072645271902351374017518139025053533820501862555604151106484677362585"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -870,9 +870,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -883,9 +883,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -895,7 +895,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x84c220311c7cf514d4a6890142d907de9f635e65d3e5c43780dfafd1aa5d55b8": {
    "added_ts": 1792211738,
@@ -922,13 +922,13 @@
     "tick": 0.01,
     "yes_token": "100129247062085578837715603350015037754810807003271756015656888437455638237532"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -939,9 +939,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -952,9 +952,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -964,7 +964,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0x9cbed9a82ff1f4af973e7e50999065c5ebdc6ea2bd26fdc186352f3ad306e72d": {
    "added_ts": 1792211738,
@@ -991,13 +991,13 @@
     "tick": 0.01,
     "yes_token": "94174919150305102517518843641616807297219060211671268254304683991121123042248"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215018,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1008,9 +1008,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215018,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1021,9 +1021,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
+     "bid_quote_ts": 1792215018,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1033,7 +1033,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b": {
    "added_ts": 1792211738,
@@ -1060,49 +1060,49 @@
     "tick": 0.01,
     "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
-     "cash": -8.2,
-     "fills": 3,
-     "no": 0.0,
-     "no_cost": 0.0,
-     "rebates": 0.0,
-     "yes": 20.0,
-     "yes_cost": 8.2
+     "bid_quote_ts": 1792215018,
+     "cash": -10.0,
+     "fills": 6,
+     "no": 20.0,
+     "no_cost": 10.0,
+     "rebates": 0.05959811250000001,
+     "yes": 0.0,
+     "yes_cost": 0.0
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
-     "cash": 0.0,
-     "fills": 0,
-     "no": 0.0,
-     "no_cost": 0.0,
+     "bid_quote_ts": 1792215018,
+     "cash": -11.600000000000001,
+     "fills": 1,
+     "no": 20.0,
+     "no_cost": 11.600000000000001,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214717,
+     "ask_quote_ts": 1792215018,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214717,
-     "cash": 0.0,
-     "fills": 0,
-     "no": 0.0,
-     "no_cost": 0.0,
+     "bid_quote_ts": 1792215018,
+     "cash": -11.400000000000002,
+     "fills": 1,
+     "no": 20.0,
+     "no_cost": 11.400000000000002,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xc73b1695181e5aabef2d3b01f7c353109c359e3fae41e5950ed456e92e7b4216": {
    "added_ts": 1792211738,
@@ -1129,13 +1129,13 @@
     "tick": 0.01,
     "yes_token": "41234795299342890670202085982681394557424839443803764220823393785325639713114"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": -15.4,
      "fills": 3,
      "no": 20.0,
@@ -1146,9 +1146,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1159,9 +1159,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1171,7 +1171,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xcff4936718364890cb8acc36976eddd363776d8b7fdddf5b411715e8daa1d18e": {
    "added_ts": 1792211738,
@@ -1198,26 +1198,26 @@
     "tick": 0.01,
     "yes_token": "56206512986490528407481734398694467720557269089480648522301604664944492820881"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
-     "cash": 0.0,
-     "fills": 0,
-     "no": 0.0,
-     "no_cost": 0.0,
+     "bid_quote_ts": 1792215015,
+     "cash": -9.0,
+     "fills": 1,
+     "no": 20.0,
+     "no_cost": 9.0,
      "rebates": 0.0,
      "yes": 0.0,
      "yes_cost": 0.0
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
+     "bid_quote_ts": 1792215015,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1228,9 +1228,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214781,
+     "ask_quote_ts": 1792215015,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214781,
+     "bid_quote_ts": 1792215015,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1240,7 +1240,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xdde84503924075e8e92fe4efd04de4b469f65a13c7f4b461182b921c34d3317b": {
    "added_ts": 1792211738,
@@ -1267,26 +1267,26 @@
     "tick": 0.01,
     "yes_token": "39132267558923263409544807882509425074293916270596095337345801715035176903814"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214785,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214785,
-     "cash": 0.0,
-     "fills": 0,
+     "bid_quote_ts": 1792215022,
+     "cash": -4.0,
+     "fills": 1,
      "no": 0.0,
      "no_cost": 0.0,
      "rebates": 0.0,
-     "yes": 0.0,
-     "yes_cost": 0.0
+     "yes": 20.0,
+     "yes_cost": 4.0
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214785,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214785,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1297,9 +1297,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214785,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214785,
+     "bid_quote_ts": 1792215022,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1309,7 +1309,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xdec92f6be374b7570ae00f572f1bfdffcce622b4df5f89f634d11cd6322d695d": {
    "added_ts": 1792211738,
@@ -1336,13 +1336,13 @@
     "tick": 0.01,
     "yes_token": "61220678597472059911582615667581601247044119648184778152945328998571916499474"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": -0.6000000000000014,
      "fills": 2,
      "no": 0.0,
@@ -1353,9 +1353,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": -7.800000000000001,
      "fills": 1,
      "no": 0.0,
@@ -1366,9 +1366,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214720,
+     "ask_quote_ts": 1792215022,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214720,
+     "bid_quote_ts": 1792215022,
      "cash": -7.6,
      "fills": 1,
      "no": 0.0,
@@ -1378,7 +1378,7 @@
      "yes_cost": 7.6
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xf10d8f089e7f91df9df6d755bcd294cd0d0ecf5a68c42a1563172311a79727ad": {
    "added_ts": 1792211738,
@@ -1405,13 +1405,13 @@
     "tick": 0.01,
     "yes_token": "28796619146822421105153301559743535745203832211989373155057685200025155981948"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214715,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214715,
+     "bid_quote_ts": 1792215016,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1422,9 +1422,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214715,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214715,
+     "bid_quote_ts": 1792215016,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1435,9 +1435,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214715,
+     "ask_quote_ts": 1792215016,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214715,
+     "bid_quote_ts": 1792215016,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1447,7 +1447,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xf4f152e30e83a89063caec7ffa180411bf3dcd7c1f88fe54c51e3391773601b6": {
    "added_ts": 1792211738,
@@ -1474,13 +1474,13 @@
     "tick": 0.01,
     "yes_token": "57119911139732815483412951115053806695854946912026382653926647454696621626050"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -11.200000000000001,
      "fills": 1,
      "no": 0.0,
@@ -1491,9 +1491,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": -11.0,
      "fills": 1,
      "no": 0.0,
@@ -1504,9 +1504,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1516,7 +1516,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xf85c8a7a66365d0c58ec863a48bc65fb40e5071514a36c2931bc665c02f3cd7b": {
    "added_ts": 1792211738,
@@ -1543,13 +1543,13 @@
     "tick": 0.01,
     "yes_token": "97431011823780899021980732525193405149332107618632169235837896798477713781997"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": -16.599999999999998,
      "fills": 5,
      "no": 20.0,
@@ -1560,9 +1560,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": -15.599999999999998,
      "fills": 5,
      "no": 20.0,
@@ -1573,9 +1573,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214718,
+     "ask_quote_ts": 1792215020,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214718,
+     "bid_quote_ts": 1792215020,
      "cash": -14.599999999999998,
      "fills": 5,
      "no": 20.0,
@@ -1585,7 +1585,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xfaf1ac4ee3e13cc2b4348b8249affb4dc7b9387888f109913c8c144b4c1adf13": {
    "added_ts": 1792211738,
@@ -1612,13 +1612,13 @@
     "tick": 0.01,
     "yes_token": "2120701099548195134760684151170571430038631288040426655922612003511269513075"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1629,9 +1629,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1642,9 +1642,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214719,
+     "ask_quote_ts": 1792215021,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214719,
+     "bid_quote_ts": 1792215021,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1654,7 +1654,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   },
   "0xfb899faf90b7267d2ecc79e91df332c5fe6fecdb08430cf6d41cf9e55009efbc": {
    "added_ts": 1792211738,
@@ -1681,13 +1681,13 @@
     "tick": 0.01,
     "yes_token": "76565423201577494855535436848785828371258030901434995346155031129685366771472"
    },
-   "last_sample_ts": 1792214976,
+   "last_sample_ts": 1792215218,
    "positions": {
     "0": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1698,9 +1698,9 @@
     },
     "1": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1711,9 +1711,9 @@
     },
     "2": {
      "ask_left": 20.0,
-     "ask_quote_ts": 1792214780,
+     "ask_quote_ts": 1792215013,
      "bid_left": 20.0,
-     "bid_quote_ts": 1792214780,
+     "bid_quote_ts": 1792215013,
      "cash": 0.0,
      "fills": 0,
      "no": 0.0,
@@ -1723,7 +1723,7 @@
      "yes_cost": 0.0
     }
    },
-   "trades_until": 1792214856
+   "trades_until": 1792215098
   }
  },
  "pending_markouts": [
@@ -5262,6 +5262,346 @@
    "ts": 1792212684,
    "tx": "midpoint-move",
    "yes_token": "97431011823780899021980732525193405149332107618632169235837896798477713781997"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.555,
+   "pilot": false,
+   "price": 0.56,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218561,
+   "trade_price": 0.565,
+   "ts": 1792214961,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.555,
+   "pilot": false,
+   "price": 0.56,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301361,
+   "trade_price": 0.565,
+   "ts": 1792214961,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 3600,
+   "level": 1,
+   "mid_before": 0.565,
+   "pilot": false,
+   "price": 0.58,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218616,
+   "trade_price": 0.625,
+   "ts": 1792215016,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 86400,
+   "level": 1,
+   "mid_before": 0.565,
+   "pilot": false,
+   "price": 0.58,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301416,
+   "trade_price": 0.625,
+   "ts": 1792215016,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 3600,
+   "level": 2,
+   "mid_before": 0.565,
+   "pilot": false,
+   "price": 0.59,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218616,
+   "trade_price": 0.625,
+   "ts": 1792215016,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0x646198f18035295a3b1ebd48dbc2232a0eaa9d427ca3c1a623a221cbd9835a41",
+   "horizon": 86400,
+   "level": 2,
+   "mid_before": 0.565,
+   "pilot": false,
+   "price": 0.59,
+   "rank": 4,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301416,
+   "trade_price": 0.625,
+   "ts": 1792215016,
+   "tx": "midpoint-move",
+   "yes_token": "12922042447925040141645838982073985049192248268007329929151664491578297658782"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.41,
+   "rank": 19,
+   "rebate": 0.059598,
+   "shares": 19.71,
+   "side": "ask",
+   "target": 1792218514,
+   "trade_price": 0.42000000000000004,
+   "ts": 1792214914,
+   "tx": "0xbc6e62d816dfb2db3c0f9e9d04923ac08e3ff6d4334457c99bd910f6d670386b",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.41,
+   "rank": 19,
+   "rebate": 0.059598,
+   "shares": 19.71,
+   "side": "ask",
+   "target": 1792301314,
+   "trade_price": 0.42000000000000004,
+   "ts": 1792214914,
+   "tx": "0xbc6e62d816dfb2db3c0f9e9d04923ac08e3ff6d4334457c99bd910f6d670386b",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.41,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 0.28999999999999915,
+   "side": "ask",
+   "target": 1792218563,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.41,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 0.28999999999999915,
+   "side": "ask",
+   "target": 1792301363,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.49,
+   "pilot": false,
+   "price": 0.5,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218618,
+   "trade_price": 0.52,
+   "ts": 1792215018,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.49,
+   "pilot": false,
+   "price": 0.5,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301418,
+   "trade_price": 0.52,
+   "ts": 1792215018,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 3600,
+   "level": 1,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.42,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218563,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 86400,
+   "level": 1,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.42,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301363,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 3600,
+   "level": 2,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.43,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218563,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xa8b91deb3f441ad7d3480930c6a1e26b639e30b55891a28c69258f15cb94a95b",
+   "horizon": 86400,
+   "level": 2,
+   "mid_before": 0.405,
+   "pilot": false,
+   "price": 0.43,
+   "rank": 19,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301363,
+   "trade_price": 0.49,
+   "ts": 1792214963,
+   "tx": "midpoint-move",
+   "yes_token": "76823372243408341040058356566802134685218475931079193847658689411318034462531"
+  },
+  {
+   "condition_id": "0xcff4936718364890cb8acc36976eddd363776d8b7fdddf5b411715e8daa1d18e",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.545,
+   "pilot": false,
+   "price": 0.55,
+   "rank": 24,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792218615,
+   "trade_price": 0.555,
+   "ts": 1792215015,
+   "tx": "midpoint-move",
+   "yes_token": "56206512986490528407481734398694467720557269089480648522301604664944492820881"
+  },
+  {
+   "condition_id": "0xcff4936718364890cb8acc36976eddd363776d8b7fdddf5b411715e8daa1d18e",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.545,
+   "pilot": false,
+   "price": 0.55,
+   "rank": 24,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "ask",
+   "target": 1792301415,
+   "trade_price": 0.555,
+   "ts": 1792215015,
+   "tx": "midpoint-move",
+   "yes_token": "56206512986490528407481734398694467720557269089480648522301604664944492820881"
+  },
+  {
+   "condition_id": "0xdde84503924075e8e92fe4efd04de4b469f65a13c7f4b461182b921c34d3317b",
+   "horizon": 3600,
+   "level": 0,
+   "mid_before": 0.205,
+   "pilot": false,
+   "price": 0.2,
+   "rank": 16,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "bid",
+   "target": 1792218461,
+   "trade_price": 0.195,
+   "ts": 1792214861,
+   "tx": "midpoint-move",
+   "yes_token": "39132267558923263409544807882509425074293916270596095337345801715035176903814"
+  },
+  {
+   "condition_id": "0xdde84503924075e8e92fe4efd04de4b469f65a13c7f4b461182b921c34d3317b",
+   "horizon": 86400,
+   "level": 0,
+   "mid_before": 0.205,
+   "pilot": false,
+   "price": 0.2,
+   "rank": 16,
+   "rebate": 0.0,
+   "shares": 20.0,
+   "side": "bid",
+   "target": 1792301261,
+   "trade_price": 0.195,
+   "ts": 1792214861,
+   "tx": "midpoint-move",
+   "yes_token": "39132267558923263409544807882509425074293916270596095337345801715035176903814"
   }
  ],
  "version": 1,

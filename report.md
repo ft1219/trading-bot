@@ -8,7 +8,7 @@ Pilot: the top 2 markets each day where others already quote near the middle, $2
 
 | Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Watched markets (not thin), rewards low-high | Fills | 1h markouts |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-17 (today, so far) | -$5.67 | -$3.86 | $0.59 | -$5.67 | $4.22-$12.22 | 29 | $0.00 |
+| 2026-10-17 (today, so far) | -$5.67 | -$3.75 | $0.63 | -$5.67 | $4.51-$13.03 | 31 | $0.00 |
 
 Other distances from the midpoint, latest full day:
 
