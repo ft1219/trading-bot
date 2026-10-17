@@ -22,7 +22,7 @@ class FakeApis:
         self.calls.append((method, url, token))
         if "api.github.com" in url:
             if method == "GET":
-                return self.github_get, {"name": "Metaculus - forecast new questions", "state": "active"}
+                return self.github_get, {"name": "Bots - every 40 minutes", "state": "active"}
             return self.dispatch, None
         if url.endswith("/jobs") and method == "GET":
             jobs = [{"jobId": k, "title": v["title"]} for k, v in self.jobs.items()]

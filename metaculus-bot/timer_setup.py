@@ -1,9 +1,10 @@
 """
 Creates (or updates, when run again) the two cron-job.org jobs that start the
-"Metaculus - forecast new questions" workflow every 40 minutes. GitHub's own
-`schedule` trigger never fired for this repository; since late August 2026
-GitHub has been creating scheduled runs hours late or not at all, worst for
-new repositories, while calls to the dispatch endpoint start a run at once.
+"Bots - every 40 minutes" workflow (metaculus-forecast.yaml) every 40
+minutes. GitHub's own `schedule` trigger first fired more than six hours late
+for this repository and then ran irregularly; since late August 2026 GitHub
+has been creating scheduled runs hours late or not at all, worst for new
+repositories, while calls to the dispatch endpoint start a run at once.
 
 Needs secrets BOT_TIMER_TOKEN (fine-grained GitHub token, this repository
 only, Actions: read and write) and CRONJOB_API_KEY (cron-job.org API key).
