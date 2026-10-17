@@ -321,3 +321,17 @@ def test_a_trades_only_replay_is_kept_alongside(tmp_path, fx):
     snapshot.run(tmp_path, now=T_START + 86400, api=api, s=Settings(pilot_markets=1))
     rows = _rows(tmp_path, snapshot.utc_day(T_START + 86400), "closeouts")
     assert len(rows) == 3 and all("value_after_trades_only" in r for r in rows)
+
+
+def test_a_report_error_is_saved_with_the_run(tmp_path, fx, monkeypatch):
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings())
+    def broken(*args, **kwargs):
+        raise KeyError("pilot_income")
+    monkeypatch.setattr(snapshot.report, "build", broken)
+    snapshot.run(tmp_path, now=T_START + 2400, api=FakeApi(fx), s=Settings())
+    runs = _rows(tmp_path, snapshot.utc_day(T_START), "runs")
+    assert any("report: KeyError" in e for e in runs[-1]["errors"])
+
+
+def test_settings_accept_a_count_written_with_a_decimal_point():
+    assert snapshot.settings_from_env({"PM_WATCH_MARKETS": "25.0"}).watch_markets == 25

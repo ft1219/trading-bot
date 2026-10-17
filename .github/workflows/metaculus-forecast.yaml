@@ -34,8 +34,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      # Paper trading only: public data, no money, no keys.
+      # Paper trading only: public data, no money, no keys. The pilot's size
+      # and count are fixed by the plan, so they are not repository variables.
       - name: Polymarket practice snapshot
+        id: practice
         if: vars.POLYMARKET_PRACTICE != 'off'
         continue-on-error: true
         timeout-minutes: 6
@@ -43,9 +45,7 @@ jobs:
         run: bash run.sh
         env:
           GH_TOKEN: ${{ github.token }}
-          PM_BUDGET_PER_MARKET_USD: ${{ vars.PM_BUDGET_PER_MARKET_USD }}
           PM_WATCH_MARKETS: ${{ vars.PM_WATCH_MARKETS }}
-          PM_PILOT_MARKETS: ${{ vars.PM_PILOT_MARKETS }}
       - name: Any open questions?
         id: precheck
         if: vars.METACULUS_BOT != 'off'
@@ -53,10 +53,18 @@ jobs:
         run: python3 precheck.py
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+      # A failed practice step turns this run red (so GitHub emails), after
+      # the precheck has decided whether to forecast.
+      - name: Report a failed practice step
+        if: steps.practice.outcome == 'failure'
+        run: |
+          echo "::error::The Polymarket practice step failed; see its log above."
+          exit 1
 
   forecast:
     needs: check
-    if: needs.check.outputs.to_forecast == 'true'
+    # Forecasts still run when only the practice step failed.
+    if: ${{ !cancelled() && needs.check.outputs.to_forecast == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:

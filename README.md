@@ -28,9 +28,9 @@ If a run fails, GitHub emails you; the bot retries on the next run. To pause bot
 
 ## Polymarket practice mode
 
-Nothing to set up: it uses only Polymarket's public data, with no account, keys or money. Every 40 minutes it picks the best-paying reward markets, pretends to keep a $20 bid and ask in each, and records the rewards those orders would have earned, the fees Polymarket would have paid back, and what would have been won or lost when prices moved. Markets where nobody else quotes near the middle are shown separately and never count, because paper trading can't tell what would really happen there. Results go to the `polymarket-shadow-data` branch; open `report.md` there to see them.
+Nothing to set up: it uses only Polymarket's public data, with no account, keys or money. Once a day it picks the best-paying reward markets. Every 40 minutes it pretends to keep a $20 bid and ask in each, and records the rewards those orders would have earned, the fees Polymarket would have paid back, and what would have been won or lost when prices moved. Markets where nobody else quotes near the middle are shown separately and never count, because paper trading can't tell what would really happen there. Results go to the `polymarket-shadow-data` branch; open `report.md` there to see them.
 
-The report ends each day with a go/no-go check fixed in advance: after at least 14 full days, the two pilot markets must average more than $1.50 a day on the cautious estimate. Even if it passes, real trading only starts when you say so, from a Malaysian internet connection, with 20-40 USDT.
+The report has a go/no-go check fixed in advance: over the first 14 well-covered days, the two pilot markets must average more than $1.50 a day on the cautious estimate. The verdict is taken once, on that 14th day. The report also shows a gentler figure that only lets trades fill the paper orders; the real result is likely between the two. Even if it passes, real trading only starts when you say so, from a Malaysian internet connection, with 20-40 USDT.
 
 ## Costs
 

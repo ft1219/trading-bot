@@ -124,23 +124,30 @@ def test_today_is_labelled_as_unfinished(tmp_path):
 
 
 def test_trading_losses_on_badly_covered_days_still_count(tmp_path):
-    for i, d in enumerate(days(15)):
-        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0)
-    write_day(tmp_path, "2026-10-16", 1790000000 + 15 * 86400, rewards_low=9, value=-20, samples=10)  # partial
+    names = days(16)
+    for i, d in enumerate(names):
+        if i == 4:  # a partial day that loses $20: it is not a well-covered day, but the loss counts
+            write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=9, value=-20, samples=10)
+        else:
+            write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0 if i < 4 else -20)
     _, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
     gate = summary["gate_a"]
-    assert gate["days"] == 15 and gate["days_since_start"] == 16
-    assert abs(gate["mean_cautious_usd_per_day"] - (2.0 - 20 / 16)) < 1e-9 and gate["verdict"] == "FAIL"
+    assert gate["decided_on"] == names[14] and gate["days"] == 15 and gate["days_since_start"] == 16
+    assert abs(gate["mean_cautious_usd_per_day"] - (2.0 - 20 / 15)) < 1e-9 and gate["verdict"] == "FAIL"
+    assert abs(gate["running_cautious_usd_per_day"] - (2.0 - 20 / 16)) < 1e-9
 
 
-def test_the_check_covers_every_day_not_just_the_report_window(tmp_path):
-    # Loses $3 a day for the first 10 of 40 days: -$30 over 40 days takes $2.00 of rewards to $1.25.
+def test_the_verdict_is_taken_once_and_later_days_do_not_change_it(tmp_path):
+    # 14 good days, then 26 days losing $3 a day: the verdict stays PASS, the running average shows the slide.
     for i in range(40):
         d = (dt.date(2026, 9, 1) + dt.timedelta(days=i)).isoformat()
-        write_day(tmp_path, d, 1788220800 + i * 86400, rewards_low=2.0, value=-3.0 * min(i + 1, 10))
-    _, summary = report.build(tmp_path, Settings(), now=1788220800 + 50 * 86400)
-    assert abs(summary["gate_a"]["mean_cautious_usd_per_day"] - 1.25) < 1e-9
-    assert summary["gate_a"]["verdict"] == "FAIL"
+        write_day(tmp_path, d, 1788220800 + i * 86400, rewards_low=2.0, value=-3.0 * max(0, i - 13))
+    text, summary = report.build(tmp_path, Settings(), now=1788220800 + 50 * 86400)
+    gate = summary["gate_a"]
+    assert gate["verdict"] == "PASS" and gate["decided_on"] == "2026-09-14"
+    assert abs(gate["mean_cautious_usd_per_day"] - 2.0) < 1e-9
+    assert abs(gate["running_cautious_usd_per_day"] - (2.0 - 78 / 40)) < 1e-9 and gate["days"] == 40
+    assert "Decided on 2026-09-14" in text
 
 
 def test_no_verdict_when_the_pilot_settings_differ_from_the_plan(tmp_path):
@@ -186,3 +193,12 @@ def test_the_trades_only_comparison_is_reported_but_not_judged(tmp_path):
     assert abs(gate["mean_trades_only_usd_per_day"] - 1.8) < 1e-9
     assert abs(summary["days"][3]["levels"]["1"]["pilot_trading_trades_only"] + 0.2) < 1e-9
     assert "If only trades could fill paper orders" in text and "-$0.20" in text
+
+
+def test_the_report_says_when_it_was_updated_and_how_runs_went(tmp_path):
+    write_day(tmp_path, "2026-10-01", 1790812800, rewards_low=5, value=0)
+    (tmp_path / "days" / "2026-10-01" / "runs.jsonl").write_text(
+        json.dumps({"ts": 1790812800 + 600, "errors": []}) + "\n"
+        + json.dumps({"ts": 1790812800 + 3000, "errors": ["0xabc: no book"]}) + "\n")
+    text, _ = report.build(tmp_path, Settings(), now=1790812800 + 3600, this_run={"errors": ["books: boom"]})
+    assert "Last updated 2026-10-01 01:00 UTC; 3 run(s) in the last 24 hours, 2 with problems noted" in text

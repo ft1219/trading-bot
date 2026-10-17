@@ -50,7 +50,7 @@ STATE_VERSION = 1
 def settings_from_env(env=os.environ) -> selection.Settings:
     def num(name, default, kind=float):
         raw = (env.get(name) or "").strip()
-        return kind(raw) if raw else default
+        return kind(float(raw)) if raw else default  # (so "25.0" works for a count)
     d = selection.Settings()
     return selection.Settings(
         budget_per_market_usd=num("PM_BUDGET_PER_MARKET_USD", d.budget_per_market_usd),
@@ -435,15 +435,17 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
             store.append(day, "gaps", [row])
     log.update({"markets": len(markets), "samples": len(samples_out), "fills": len(fills_out),
                 "markouts": len(markouts_out), "seconds": round(time.time() - started, 2)})
-    store.append(today, "runs", [log])
     state["version"] = STATE_VERSION
     store.save_state(state)
     try:
-        text, summary = report.build(data_dir, s, now)
+        text, summary = report.build(data_dir, s, now, this_run=log)
+    except Exception as e:  # saved in runs.jsonl below; the old report stays, with its old update time
+        log["errors"].append(f"report: {e!r}")
+        text = summary = None
+    store.append(today, "runs", [log])
+    if text is not None:
         store.write("report.md", text)
         store.write("summary.json", json.dumps(summary, indent=1, sort_keys=True))
-    except Exception as e:
-        log["errors"].append(f"report: {e!r}")
     return log
 
 

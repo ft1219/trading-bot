@@ -9,11 +9,20 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 DATA="${RUNNER_TEMP:-/tmp}/shadow-data"
 
 rm -rf "$DATA"
-if ! git clone --quiet --depth 1 --branch "$BRANCH" "$URL" "$DATA" 2>/dev/null; then
+# ls-remote exits 2 when the branch does not exist; anything else non-zero
+# means the repository could not be reached, which must not start a new branch.
+found=0
+git ls-remote --exit-code --heads "$URL" "$BRANCH" >/dev/null || found=$?
+if [ "$found" -eq 0 ]; then
+  git clone --quiet --depth 1 --branch "$BRANCH" "$URL" "$DATA"
+elif [ "$found" -eq 2 ]; then
   echo "No $BRANCH branch yet; starting a new one."
   mkdir -p "$DATA"
   git -C "$DATA" init --quiet -b "$BRANCH"
   git -C "$DATA" remote add origin "$URL"
+else
+  echo "Could not reach the repository to read the $BRANCH branch." >&2
+  exit 1
 fi
 
 python3 "$HERE/snapshot.py" --data "$DATA"

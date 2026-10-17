@@ -176,23 +176,40 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
     return out
 
 
+def _means(period: list[tuple[str, dict]]) -> tuple[int, float | None, float | None]:
+    """(well-covered days, cautious mean, trades-only mean) over a run of finished days."""
+    full = [lv for _, lv in period if lv["pilot_covered"]]
+    if not full:
+        return 0, None, None
+    income = sum(lv["pilot_income"] for lv in full) / len(full)
+    return (len(full), income + sum(lv["pilot_trading"] for _, lv in period) / len(period),
+            income + sum(lv.get("pilot_trading_trades_only", 0.0) for _, lv in period) / len(period))
+
+
 def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
     """
-    The go/no-go check over every finished day: rewards and rebates averaged
-    over the well-covered days, plus the paper trading result averaged over
-    every day since the pilot first held a position.
+    The go/no-go check. Rewards and rebates are averaged over the
+    well-covered days, and the paper trading result over every day since the
+    pilot first held a position. The verdict is taken once, on the finished
+    day that brings the count of well-covered days to GATE_A_MIN_DAYS, and
+    does not change after that: re-reading a running average every day until
+    it passes would pass a losing strategy far more often. The running
+    average is kept for information.
     """
-    done = [r["levels"][str(level)] for r in rows if r["day"] < today and str(level) in r["levels"]]
-    started = next((i for i, lv in enumerate(done) if lv["pilot_markets"] or lv["pilot_trading"]), len(done))
+    done = [(r["day"], r["levels"][str(level)]) for r in rows if r["day"] < today and str(level) in r["levels"]]
+    started = next((i for i, (_, lv) in enumerate(done) if lv["pilot_markets"] or lv["pilot_trading"]), len(done))
     period = done[started:]
-    full = [lv for lv in period if lv["pilot_covered"]]
-    mean = mean_alt = None
-    if full:
-        income = sum(lv["pilot_income"] for lv in full) / len(full)
-        mean = income + sum(lv["pilot_trading"] for lv in period) / len(period)
-        mean_alt = income + sum(lv.get("pilot_trading_trades_only", 0.0) for lv in period) / len(period)
+    days, running, running_alt = _means(period)
+    decided_on, mean, mean_alt = None, None, None
+    covered = 0
+    for k, (day, lv) in enumerate(period):
+        covered += bool(lv["pilot_covered"])
+        if covered == GATE_A_MIN_DAYS:
+            decided_on = day
+            _, mean, mean_alt = _means(period[:k + 1])
+            break
     plan_ok = settings is None or all(getattr(settings, k) == v for k, v in PLAN.items())
-    if len(full) < GATE_A_MIN_DAYS:
+    if decided_on is None:
         verdict = "NOT ENOUGH DATA YET"
     elif not plan_ok:
         verdict = "NO VERDICT: the pilot settings differ from the plan the bar was set for"
@@ -200,9 +217,19 @@ def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
         verdict = "PASS"
     else:
         verdict = "FAIL"
-    return {"days": len(full), "days_since_start": len(period), "needed_days": GATE_A_MIN_DAYS,
+    return {"verdict": verdict, "decided_on": decided_on, "needed_days": GATE_A_MIN_DAYS,
+            "threshold_usd_per_day": GATE_A_USD_PER_DAY,
             "mean_cautious_usd_per_day": mean, "mean_trades_only_usd_per_day": mean_alt,
-            "threshold_usd_per_day": GATE_A_USD_PER_DAY, "verdict": verdict}
+            "days": days, "days_since_start": len(period),
+            "running_cautious_usd_per_day": running, "running_trades_only_usd_per_day": running_alt}
+
+
+def _recent_runs(data_dir: Path, now: float) -> list[dict]:
+    rows = []
+    for back in (1, 0):
+        day = dt.datetime.fromtimestamp(now - back * 86400, dt.timezone.utc).strftime("%Y-%m-%d")
+        rows += [r for r in _read_jsonl(data_dir / "days" / day / "runs.jsonl") if r.get("ts", 0) > now - 86400]
+    return rows
 
 
 def _usd(x: float | None) -> str:
@@ -211,24 +238,41 @@ def _usd(x: float | None) -> str:
     return f"-${abs(x):.2f}" if x < 0 else f"${x:.2f}"
 
 
-def build(data_dir: Path, settings, now: float) -> tuple[str, dict]:
+def build(data_dir: Path, settings, now: float, this_run: dict | None = None) -> tuple[str, dict]:
+    """The report text and summary; this_run is the current run's log, not yet saved."""
     level = settings.pilot_level
-    today = dt.datetime.fromtimestamp(now, dt.timezone.utc).strftime("%Y-%m-%d")
+    stamp = dt.datetime.fromtimestamp(now, dt.timezone.utc)
+    today = stamp.strftime("%Y-%m-%d")
     rows = daily_rows(data_dir, level, now)
     gate = gate_a(rows, level, today, settings)
+    runs = _recent_runs(data_dir, now) + ([this_run] if this_run else [])
+    noted = sum(1 for r in runs if r.get("errors"))
+    if gate["decided_on"]:
+        verdict_text = (
+            f"Decided on {gate['decided_on']}, the {GATE_A_MIN_DAYS}th well-covered day: the pilot markets averaged "
+            f"{_usd(gate['mean_cautious_usd_per_day'])} a day on the cautious estimate, against the "
+            f"{_usd(GATE_A_USD_PER_DAY)} needed. If only trades could fill paper orders (no fills from midpoint "
+            f"moves alone), it would have been {_usd(gate['mean_trades_only_usd_per_day'])} a day. The verdict "
+            f"does not change after that day. For information, all {gate['days']} well-covered day(s) so far "
+            f"average {_usd(gate['running_cautious_usd_per_day'])} "
+            f"({_usd(gate['running_trades_only_usd_per_day'])} trades only).")
+    elif gate["days"]:
+        verdict_text = (
+            f"{gate['days']} of {GATE_A_MIN_DAYS} well-covered days so far, averaging "
+            f"{_usd(gate['running_cautious_usd_per_day'])} a day on the cautious estimate "
+            f"({_usd(gate['running_trades_only_usd_per_day'])} if only trades could fill paper orders). "
+            f"The verdict is taken once, on the {GATE_A_MIN_DAYS}th, and needs more than "
+            f"{_usd(GATE_A_USD_PER_DAY)} a day.")
+    else:
+        verdict_text = (f"No well-covered day recorded yet. The verdict is taken once, after {GATE_A_MIN_DAYS} "
+                        f"well-covered days, and needs more than {_usd(GATE_A_USD_PER_DAY)} a day.")
     lines = [
         "# Polymarket practice mode",
         "",
-        "Paper trading only: no money, no account. Updated every run.",
+        f"Paper trading only: no money, no account. Last updated {stamp:%Y-%m-%d %H:%M} UTC; "
+        f"{len(runs)} run(s) in the last 24 hours, {noted} with problems noted in `runs.jsonl`.",
         "",
-        f"**Go/no-go check (Gate A): {gate['verdict']}.** "
-        + (f"Pilot markets averaged {_usd(gate['mean_cautious_usd_per_day'])} a day on the cautious estimate over "
-           f"{gate['days']} full day(s) (paper trading over all {gate['days_since_start']} day(s)). "
-           if gate["days"] else "No full day recorded yet. ")
-        + f"It needs more than {_usd(GATE_A_USD_PER_DAY)} a day over at least {GATE_A_MIN_DAYS} days."
-        + (f" If only trades could fill paper orders (no fills from midpoint moves alone), the same days would "
-           f"average {_usd(gate['mean_trades_only_usd_per_day'])} a day; the check uses the stricter figure."
-           if gate["days"] else ""),
+        f"**Go/no-go check (Gate A): {gate['verdict']}.** {verdict_text}",
         "",
         f"Pilot: the top {settings.pilot_markets} markets each day where others already quote near the middle, "
         f"${settings.budget_per_market_usd:.0f} each, orders {level} tick(s) behind the closest prices to the midpoint.",
