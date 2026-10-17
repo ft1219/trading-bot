@@ -4,6 +4,8 @@ name: Metaculus - test on practice questions
 # the keys and models work end to end.
 on:
   workflow_dispatch:
+  push:
+    branches: [metaculus-practice]  # throwaway: lets Claude start it before this file is on main
 
 concurrency:
   group: ${{ github.workflow }}
