@@ -1,0 +1,92 @@
+{
+ "data": [
+  {
+   "condition_id": "0x00001b8c9ece76cdf2fb6f1046a33716bb87e59825a2947d7c17441c2b9617ba",
+   "rewards_config": [
+    {
+     "asset_address": "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB",
+     "start_date": "2026-10-16",
+     "end_date": "2500-12-31",
+     "rate_per_day": 1,
+     "total_rewards": 0,
+     "id": 0
+    }
+   ],
+   "rewards_max_spread": 4.5,
+   "rewards_min_size": 20,
+   "native_daily_rate": 1,
+   "total_daily_rate": 1
+  },
+  {
+   "condition_id": "0x0000c7fe300953933808d82cd4aa35dbc9f291f0b78ca9da43b0604883906c6c",
+   "rewards_config": [
+    {
+     "asset_address": "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB",
+     "start_date": "2026-10-16",
+     "end_date": "2500-12-31",
+     "rate_per_day": 1,
+     "total_rewards": 0,
+     "id": 0
+    }
+   ],
+   "rewards_max_spread": 4.5,
+   "rewards_min_size": 20,
+   "native_daily_rate": 1,
+   "total_daily_rate": 1
+  },
+  {
+   "condition_id": "0x000c7a50900321bab3ffc498b1f8d5493820ce68edfa8ab669885fd9b8c7d339",
+   "rewards_config": [
+    {
+     "asset_address": "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB",
+     "start_date": "2026-10-15",
+     "end_date": "2500-12-31",
+     "rate_per_day": 3,
+     "total_rewards": 0,
+     "id": 0
+    }
+   ],
+   "rewards_max_spread": 6.5,
+   "rewards_min_size": 30,
+   "native_daily_rate": 3,
+   "total_daily_rate": 3
+  },
+  {
+   "condition_id": "0x001650dac1c729f1dd7fc4d8a5e26d7da50beaab9baabc9dc40bfb2165b6caae",
+   "rewards_config": [
+    {
+     "asset_address": "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB",
+     "start_date": "2026-10-03",
+     "end_date": "2500-12-31",
+     "rate_per_day": 3,
+     "total_rewards": 0,
+     "id": 0
+    }
+   ],
+   "rewards_max_spread": 4.5,
+   "rewards_min_size": 30,
+   "native_daily_rate": 3,
+   "total_daily_rate": 3
+  },
+  {
+   "condition_id": "0x001a97238b0187e37d7014dae90191fb4c18bc487ae0801dfec8efb86b1c5fbe",
+   "rewards_config": [
+    {
+     "asset_address": "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB",
+     "start_date": "2026-10-17",
+     "end_date": "2500-12-31",
+     "rate_per_day": 2,
+     "total_rewards": 0,
+     "id": 0
+    }
+   ],
+   "rewards_max_spread": 6.5,
+   "rewards_min_size": 20,
+   "native_daily_rate": 2,
+   "total_daily_rate": 2
+  }
+ ],
+ "next_cursor": "NTAw",
+ "limit": 500,
+ "count": 500
+}

@@ -1,0 +1,60 @@
+{
+ "enable_order_book": true,
+ "active": true,
+ "closed": false,
+ "archived": false,
+ "accepting_orders": true,
+ "accepting_order_timestamp": "2026-10-16T20:22:09Z",
+ "minimum_order_size": 5,
+ "minimum_tick_size": 0.01,
+ "condition_id": "0xb0ea6c2f159bac649d481edc3d471fd8b9a912793ce16585e2a2333ad98821c3",
+ "question_id": "0xdffa4bff49a948be2db5745a07fca9c44a5b9dcda0071eb2b3bcc9ae3c36a182",
+ "question": "Next White House Press Secretary announced by November 30, 2026?",
+ "description": "This market will resolve to \"Yes\" if Donald Trump or the Trump administration announces a new White House Press Secretary to replace Katie Zacharia between market creation and the specified date, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nAn individual announced as an acting or interim Press Secretary will not qualify toward this market's resolution.\n\nAny qualifying announcement made within this market's time frame will count, regardless of when the new Press Secretary is sworn in or begins serving.\n\nThis market's primary resolution source will be official information from the Trump administration; however, a consensus of credible reporting may also be used.",
+ "market_slug": "next-white-house-press-secretary-announced-by-november-30-2026",
+ "end_date_iso": "2026-12-01T00:00:00Z",
+ "game_start_time": null,
+ "seconds_delay": 0,
+ "fpmm": "",
+ "maker_base_fee": 1000,
+ "taker_base_fee": 1000,
+ "notifications_enabled": true,
+ "neg_risk": false,
+ "neg_risk_market_id": "",
+ "neg_risk_request_id": "",
+ "icon": "https://polymarket-upload.s3.us-east-2.amazonaws.com/yet-again-the-next-press-secretary-in-2026-IMyD8yPohcuU.jpg",
+ "image": "https://polymarket-upload.s3.us-east-2.amazonaws.com/yet-again-the-next-press-secretary-in-2026-IMyD8yPohcuU.jpg",
+ "rewards": {
+  "rates": [
+   {
+    "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "rewards_daily_rate": 500
+   }
+  ],
+  "min_size": 20,
+  "max_spread": 5.5
+ },
+ "is_50_50_outcome": false,
+ "tokens": [
+  {
+   "token_id": "18045834217036644114164507342036770181337197361770922213469776763779998191350",
+   "outcome": "Yes",
+   "price": 0.585,
+   "winner": false
+  },
+  {
+   "token_id": "44485763975713520033552528650896513706576156566067992136204875988064392973388",
+   "outcome": "No",
+   "price": 0.415,
+   "winner": false
+  }
+ ],
+ "tags": [
+  "Politics",
+  "Trump",
+  "Trump Presidency",
+  "Zacharia",
+  "Katie Zacharia"
+ ],
+ "version": "v1"
+}

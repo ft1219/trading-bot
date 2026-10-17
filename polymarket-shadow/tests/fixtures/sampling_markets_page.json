@@ -1,0 +1,301 @@
+{
+ "data": [
+  {
+   "enable_order_book": true,
+   "active": true,
+   "closed": false,
+   "archived": false,
+   "accepting_orders": true,
+   "accepting_order_timestamp": "2025-07-03T20:36:33Z",
+   "minimum_order_size": 5,
+   "minimum_tick_size": 0.001,
+   "condition_id": "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
+   "question_id": "0x1d925c6933062c2e38031293612d8680ffa097c5d3ba2f87a8ecc565bd47183e",
+   "question": "Xi Jinping out before 2027?",
+   "market_slug": "xi-jinping-out-before-2027",
+   "end_date_iso": "2027-01-01T00:00:00Z",
+   "game_start_time": null,
+   "seconds_delay": 0,
+   "fpmm": "",
+   "maker_base_fee": 1000,
+   "taker_base_fee": 1000,
+   "notifications_enabled": true,
+   "neg_risk": false,
+   "neg_risk_market_id": "",
+   "neg_risk_request_id": "",
+   "rewards": {
+    "rates": [
+     {
+      "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "rewards_daily_rate": 100
+     }
+    ],
+    "min_size": 200,
+    "max_spread": 3.5
+   },
+   "is_50_50_outcome": false,
+   "tokens": [
+    {
+     "token_id": "32338220190071351435772801779725302244575775216413325951443816017994629993401",
+     "outcome": "Yes",
+     "price": 0.0285,
+     "winner": false
+    },
+    {
+     "token_id": "25659310674993675562345759665114759892400026242514633218387667107987341231962",
+     "outcome": "No",
+     "price": 0.9715,
+     "winner": false
+    }
+   ],
+   "tags": [
+    "world affairs",
+    "Geopolitics",
+    "Macro Geopolitics",
+    "World",
+    "Earn 3.25%",
+    "HFC"
+   ],
+   "version": "v1"
+  },
+  {
+   "enable_order_book": true,
+   "active": true,
+   "closed": false,
+   "archived": false,
+   "accepting_orders": true,
+   "accepting_order_timestamp": "2025-07-11T18:35:34Z",
+   "minimum_order_size": 5,
+   "minimum_tick_size": 0.001,
+   "condition_id": "0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75",
+   "question_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814700",
+   "question": "Will Gavin Newsom win the 2028 Democratic presidential nomination?",
+   "market_slug": "will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568",
+   "end_date_iso": "2028-11-08T00:00:00Z",
+   "game_start_time": null,
+   "seconds_delay": 0,
+   "fpmm": "",
+   "maker_base_fee": 1000,
+   "taker_base_fee": 1000,
+   "notifications_enabled": true,
+   "neg_risk": true,
+   "neg_risk_market_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814700",
+   "neg_risk_request_id": "0x3763120bc45adb952c842119daf7978d5010523bd5a7f1fa42331964b815efec",
+   "rewards": {
+    "rates": [
+     {
+      "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "rewards_daily_rate": 29
+     }
+    ],
+    "min_size": 50,
+    "max_spread": 5.5
+   },
+   "is_50_50_outcome": false,
+   "tokens": [
+    {
+     "token_id": "54533043819946592547517511176940999955633860128497669742211153063842200957669",
+     "outcome": "Yes",
+     "price": 0.154,
+     "winner": false
+    },
+    {
+     "token_id": "87854174148074652060467921081181402357467303721471806610111179101805869578687",
+     "outcome": "No",
+     "price": 0.846,
+     "winner": false
+    }
+   ],
+   "tags": [
+    "Politics",
+    "Elections",
+    "United States",
+    "Primaries",
+    "US Election",
+    "World Elections",
+    "Earn 3.25%"
+   ],
+   "version": "v1"
+  },
+  {
+   "enable_order_book": true,
+   "active": true,
+   "closed": false,
+   "archived": false,
+   "accepting_orders": true,
+   "accepting_order_timestamp": "2025-07-11T18:35:36Z",
+   "minimum_order_size": 5,
+   "minimum_tick_size": 0.001,
+   "condition_id": "0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565",
+   "question_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814701",
+   "question": "Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?",
+   "market_slug": "will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653",
+   "end_date_iso": "2028-11-08T00:00:00Z",
+   "game_start_time": null,
+   "seconds_delay": 0,
+   "fpmm": "",
+   "maker_base_fee": 1000,
+   "taker_base_fee": 1000,
+   "notifications_enabled": true,
+   "neg_risk": true,
+   "neg_risk_market_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814700",
+   "neg_risk_request_id": "0x64b5923d55bcc7660f6e4514cc75eb1f2f39a75872bf7e40f21eae43f7842f7f",
+   "rewards": {
+    "rates": [
+     {
+      "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "rewards_daily_rate": 35
+     }
+    ],
+    "min_size": 50,
+    "max_spread": 5.5
+   },
+   "is_50_50_outcome": false,
+   "tokens": [
+    {
+     "token_id": "107064985435494333113391038470401719113272800530429703182710416066774068907304",
+     "outcome": "Yes",
+     "price": 0.1655,
+     "winner": false
+    },
+    {
+     "token_id": "65176072261324737856085688071627118509549293922582857186996392180609764586527",
+     "outcome": "No",
+     "price": 0.8345,
+     "winner": false
+    }
+   ],
+   "tags": [
+    "Politics",
+    "Elections",
+    "United States",
+    "Primaries",
+    "US Election",
+    "World Elections",
+    "Earn 3.25%"
+   ],
+   "version": "v1"
+  },
+  {
+   "enable_order_book": true,
+   "active": true,
+   "closed": false,
+   "archived": false,
+   "accepting_orders": true,
+   "accepting_order_timestamp": "2025-07-11T18:35:38Z",
+   "minimum_order_size": 5,
+   "minimum_tick_size": 0.001,
+   "condition_id": "0xd65891729ce093cc12236856837eba1a0872fc7998fd4294c21346f7db68079c",
+   "question_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814703",
+   "question": "Will Josh Shapiro win the 2028 Democratic presidential nomination?",
+   "market_slug": "will-josh-shapiro-win-the-2028-democratic-presidential-nomination-977",
+   "end_date_iso": "2028-11-08T00:00:00Z",
+   "game_start_time": null,
+   "seconds_delay": 0,
+   "fpmm": "",
+   "maker_base_fee": 1000,
+   "taker_base_fee": 1000,
+   "notifications_enabled": true,
+   "neg_risk": true,
+   "neg_risk_market_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814700",
+   "neg_risk_request_id": "0xa019c0b3991fd9aa1c1d3de222ffdc573beb40e5d9f36be9dce01dc5bad1dcd8",
+   "rewards": {
+    "rates": [
+     {
+      "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "rewards_daily_rate": 3
+     }
+    ],
+    "min_size": 50,
+    "max_spread": 5.5
+   },
+   "is_50_50_outcome": false,
+   "tokens": [
+    {
+     "token_id": "71169839497420596285841847514123589847893415750912355173877524195175834054354",
+     "outcome": "Yes",
+     "price": 0.0575,
+     "winner": false
+    },
+    {
+     "token_id": "55290827599553280245963175724940496753557722439999671239772487781170052583987",
+     "outcome": "No",
+     "price": 0.9425,
+     "winner": false
+    }
+   ],
+   "tags": [
+    "Politics",
+    "Elections",
+    "United States",
+    "Primaries",
+    "US Election",
+    "World Elections",
+    "Earn 3.25%"
+   ],
+   "version": "v1"
+  },
+  {
+   "enable_order_book": true,
+   "active": true,
+   "closed": false,
+   "archived": false,
+   "accepting_orders": true,
+   "accepting_order_timestamp": "2025-07-11T18:35:40Z",
+   "minimum_order_size": 5,
+   "minimum_tick_size": 0.001,
+   "condition_id": "0x909659c9436228e2be56d5582ba6188166f2f8bf3c596335512c8f2e380d01ec",
+   "question_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814706",
+   "question": "Will Kamala Harris win the 2028 Democratic presidential nomination?",
+   "market_slug": "will-kamala-harris-win-the-2028-democratic-presidential-nomination-641",
+   "end_date_iso": "2028-11-08T00:00:00Z",
+   "game_start_time": null,
+   "seconds_delay": 0,
+   "fpmm": "",
+   "maker_base_fee": 1000,
+   "taker_base_fee": 1000,
+   "notifications_enabled": true,
+   "neg_risk": true,
+   "neg_risk_market_id": "0x2c3d7e0eee6f058be3006baabf0d54a07da254ba47fe6e3e095e7990c7814700",
+   "neg_risk_request_id": "0x4c9ffd16212dd7ac5e5fd9d0cb5456a7e4d355aa2b8d3e6f73db5a921a1f4f35",
+   "rewards": {
+    "rates": [
+     {
+      "asset_address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "rewards_daily_rate": 6
+     }
+    ],
+    "min_size": 50,
+    "max_spread": 5.5
+   },
+   "is_50_50_outcome": false,
+   "tokens": [
+    {
+     "token_id": "38171024903091354977195167437673496224420673639143973968032407064172828043588",
+     "outcome": "Yes",
+     "price": 0.0705,
+     "winner": false
+    },
+    {
+     "token_id": "26930844951471612827925270830087046333229637930899178134435055616497220846773",
+     "outcome": "No",
+     "price": 0.9295,
+     "winner": false
+    }
+   ],
+   "tags": [
+    "Politics",
+    "Elections",
+    "United States",
+    "Primaries",
+    "US Election",
+    "World Elections",
+    "Earn 3.25%"
+   ],
+   "version": "v1"
+  }
+ ],
+ "next_cursor": "aWQ6MTM0NTUzMQ==",
+ "limit": 1000,
+ "count": 1000
+}

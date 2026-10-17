@@ -1,11 +1,15 @@
-name: Metaculus - forecast new questions
+name: Bots - every 40 minutes
+
+# One job runs both bots so each run is billed as one GitHub Actions minute
+# when there is nothing to forecast. Repository variables can pause either
+# bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
 
 on:
   workflow_dispatch:
   schedule:
     # Every 40 minutes (:07 and :47 of even hours, :27 of odd hours), 36 runs
-    # a day. Questions stay open for 1.5 hours, so each gets at least two
-    # chances. To run hourly instead, replace these three lines with
+    # a day. Tournament questions stay open for 1.5 to 3 hours, so each gets
+    # at least two chances. To run hourly instead, replace these three lines with
     #   - cron: "7 * * * *"
     - cron: "7 */2 * * *"
     - cron: "47 */2 * * *"
@@ -19,15 +23,33 @@ jobs:
   forecast:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      # Only the Polymarket step gets the token, to save its data branch.
+      contents: write
     defaults:
       run:
         working-directory: metaculus-bot
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # Paper trading only: public data, no money, no keys.
+      - name: Polymarket practice snapshot
+        if: vars.POLYMARKET_PRACTICE != 'off'
+        continue-on-error: true
+        timeout-minutes: 6
+        working-directory: polymarket-shadow
+        run: bash run.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PM_BUDGET_PER_MARKET_USD: ${{ vars.PM_BUDGET_PER_MARKET_USD }}
+          PM_WATCH_MARKETS: ${{ vars.PM_WATCH_MARKETS }}
+          PM_PILOT_MARKETS: ${{ vars.PM_PILOT_MARKETS }}
       # Uses the runner's built-in Python and no packages, so a run with
       # nothing to do ends here in well under a minute.
       - name: Any open questions?
         id: precheck
+        if: vars.METACULUS_BOT != 'off'
         run: python3 precheck.py
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
