@@ -3,26 +3,68 @@
   {
    "day": "2026-10-17",
    "levels": {
-    "1": {
-     "all_markets": 0,
-     "all_rebates": 0,
-     "all_rewards_high": 0,
-     "all_rewards_low": 0,
-     "all_trading": 0,
-     "fills": 0,
-     "markets": 0,
+    "0": {
+     "all_markets": 21,
+     "all_rebates": 0.0,
+     "all_rewards_high": 1.5366523298036507,
+     "all_rewards_low": 0.41091210459372596,
+     "all_trading": -10.344113,
+     "fills": 12,
+     "markets": 25,
      "markout_1h": 0,
      "markout_24h": 0,
-     "pilot_cautious": 0,
+     "pilot_cautious": -2.6,
      "pilot_covered": false,
-     "pilot_income": 0,
-     "pilot_markets": 0,
-     "pilot_optimistic": 0.0,
-     "pilot_rewards_low": 0,
-     "pilot_trading": 0,
-     "thin_markets": 0,
-     "thin_rewards_high": 0,
-     "thin_trading": 0
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": -2.6,
+     "pilot_rewards_low": 0.05020581424970498,
+     "pilot_trading": -2.6,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.5025810185185186,
+     "thin_trading": -0.392141
+    },
+    "1": {
+     "all_markets": 21,
+     "all_rebates": 0.0,
+     "all_rewards_high": 1.260093307483495,
+     "all_rewards_low": 0.47869033230430436,
+     "all_trading": -7.462058,
+     "fills": 8,
+     "markets": 25,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": -1.8,
+     "pilot_covered": false,
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": -1.8,
+     "pilot_rewards_low": 0.04278532073189374,
+     "pilot_trading": -1.8,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.6797916666666667,
+     "thin_trading": -0.352926
+    },
+    "2": {
+     "all_markets": 21,
+     "all_rebates": 0.0,
+     "all_rewards_high": 0.8747153434586072,
+     "all_rewards_low": 0.37766237543055986,
+     "all_trading": -1.0,
+     "fills": 6,
+     "markets": 25,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": -1.0,
+     "pilot_covered": false,
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": -1.0,
+     "pilot_rewards_low": 0.04100234633812608,
+     "pilot_trading": -1.0,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.6797916666666667,
+     "thin_trading": -0.31371
     }
    }
   }
@@ -35,5 +77,5 @@
   "threshold_usd_per_day": 1.5,
   "verdict": "NOT ENOUGH DATA YET"
  },
- "generated": 1792217398
+ "generated": 1792217649
 }
