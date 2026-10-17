@@ -1,0 +1,46 @@
+{
+ "days": [
+  {
+   "day": "2026-10-17",
+   "levels": {
+    "1": {
+     "all_markets": 0,
+     "all_rebates": 0,
+     "all_rewards_high": 0,
+     "all_rewards_low": 0,
+     "all_trading": 0,
+     "all_trading_trades_only": 0,
+     "fills": 0,
+     "markets": 0,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": 0,
+     "pilot_covered": false,
+     "pilot_income": 0,
+     "pilot_markets": 0,
+     "pilot_optimistic": 0.0,
+     "pilot_rewards_low": 0,
+     "pilot_trading": 0,
+     "pilot_trading_trades_only": 0,
+     "thin_markets": 0,
+     "thin_rewards_high": 0,
+     "thin_trading": 0
+    }
+   },
+   "plan_ok": true
+  }
+ ],
+ "gate_a": {
+  "days": 0,
+  "days_since_start": 0,
+  "decided_on": null,
+  "mean_cautious_usd_per_day": null,
+  "mean_trades_only_usd_per_day": null,
+  "needed_days": 14,
+  "running_cautious_usd_per_day": null,
+  "running_trades_only_usd_per_day": null,
+  "threshold_usd_per_day": 1.5,
+  "verdict": "NOT ENOUGH DATA YET"
+ },
+ "generated": 1792262840
+}
