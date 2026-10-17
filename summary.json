@@ -1,0 +1,77 @@
+{
+ "days": [
+  {
+   "day": "2026-10-17",
+   "levels": {
+    "0": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 18.770586452819483,
+     "all_rewards_low": 5.844353873416326,
+     "all_trading": 0.0,
+     "fills": 0,
+     "markets": 25,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": 0.0,
+     "pilot_covered": false,
+     "pilot_markets": 2,
+     "pilot_optimistic": 3.4526440728158514,
+     "pilot_rewards_low": 1.2322563148922976,
+     "pilot_trading": 0.0,
+     "thin_markets": 5,
+     "thin_rewards_high": 9.25,
+     "thin_trading": 0.0
+    },
+    "1": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 14.827055973043468,
+     "all_rewards_low": 5.630872995802649,
+     "all_trading": 0.0,
+     "fills": 0,
+     "markets": 25,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": 0.0,
+     "pilot_covered": false,
+     "pilot_markets": 2,
+     "pilot_optimistic": 3.245442193834961,
+     "pilot_rewards_low": 1.2322563148922978,
+     "pilot_trading": 0.0,
+     "thin_markets": 5,
+     "thin_rewards_high": 9.25,
+     "thin_trading": 0.0
+    },
+    "2": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 9.801753463863257,
+     "all_rewards_low": 4.30774473719552,
+     "all_trading": 0.0,
+     "fills": 0,
+     "markets": 25,
+     "markout_1h": 0,
+     "markout_24h": 0,
+     "pilot_cautious": 0.0,
+     "pilot_covered": false,
+     "pilot_markets": 2,
+     "pilot_optimistic": 2.773197196101049,
+     "pilot_rewards_low": 1.2322563148922976,
+     "pilot_trading": 0.0,
+     "thin_markets": 5,
+     "thin_rewards_high": 9.25,
+     "thin_trading": 0.0
+    }
+   }
+  }
+ ],
+ "gate_a": {
+  "days": 0,
+  "mean_cautious_usd_per_day": null,
+  "needed_days": 14,
+  "threshold_usd_per_day": 1.5,
+  "verdict": "NOT ENOUGH DATA YET"
+ },
+ "generated": 1792211146
+}
