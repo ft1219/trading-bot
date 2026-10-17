@@ -202,3 +202,32 @@ def test_the_report_says_when_it_was_updated_and_how_runs_went(tmp_path):
         + json.dumps({"ts": 1790812800 + 3000, "errors": ["0xabc: no book"]}) + "\n")
     text, _ = report.build(tmp_path, Settings(), now=1790812800 + 3600, this_run={"errors": ["books: boom"]})
     assert "Last updated 2026-10-01 01:00 UTC; 3 run(s) in the last 24 hours, 2 with problems noted" in text
+
+
+def test_days_with_no_pilot_do_not_water_down_trading_losses(tmp_path):
+    names = days(20)
+    ran = 0
+    for i, d in enumerate(names):
+        if 5 <= i < 11:  # six days where no market qualified as a pilot: only another market's rows
+            folder = tmp_path / "days" / d
+            folder.mkdir(parents=True)
+            per = {"est_low": 0.01, "est_high": 0.02, "value": 0.0, "rebates": 0.0}
+            (folder / "samples.jsonl").write_text("".join(
+                json.dumps({"ts": 1790000000 + i * 86400 + j * 2400, "condition_id": "0xother", "pilot": False,
+                            "dt": 2400, "levels": {"1": per}}) + "\n" for j in range(36)))
+        else:  # the pilot loses $1 on each day it runs
+            ran += 1
+            write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=-1.0 * ran)
+    _, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
+    gate = summary["gate_a"]
+    assert gate["decided_on"] == names[19] and abs(gate["mean_cautious_usd_per_day"] - 1.0) < 1e-9
+
+
+def test_a_day_run_under_other_pilot_settings_blocks_the_verdict(tmp_path):
+    for i, d in enumerate(days(15)):
+        write_day(tmp_path, d, 1790000000 + i * 86400, rewards_low=2.0, value=0)
+    plan = dict(report.PLAN, pilot_markets=3)
+    (tmp_path / "days" / "2026-10-03" / "runs.jsonl").write_text(json.dumps({"ts": 1790172800, "errors": [],
+                                                                              "plan": plan}) + "\n")
+    _, summary = report.build(tmp_path, Settings(), now=1790000000 + 30 * 86400)
+    assert summary["gate_a"]["verdict"].startswith("NO VERDICT")

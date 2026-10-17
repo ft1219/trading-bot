@@ -90,6 +90,8 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
         gaps = _read_jsonl(folder / "gaps.jsonl")
         gap_ids = {g["condition_id"] for g in gaps}
         final_pilots = _final_pilots(_read_jsonl(folder / "watchlist.jsonl"))
+        # Every run records its pilot settings; a day run under others cannot be judged against the bar.
+        plan_ok = all(r.get("plan", PLAN) == PLAN for r in _read_jsonl(folder / "runs.jsonl"))
 
         # (condition_id, level, counted as pilot) -> the day's totals
         per: dict[tuple[str, int, bool], dict] = defaultdict(
@@ -124,7 +126,7 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
                     agg["trading_alt"] += d["value_trades_only"] - last_alt.get(key, 0.0)
                     last_alt[key] = d["value_trades_only"]
 
-        result = {"day": day, "levels": {}}
+        result = {"day": day, "plan_ok": plan_ok, "levels": {}}
         for level in sorted({k[1] for k in per} | {pilot_level}):
             mk = []
             for (cid, lv, role), agg in per.items():
@@ -177,38 +179,45 @@ def daily_rows(data_dir: Path, pilot_level: int, now: float) -> list[dict]:
 
 
 def _means(period: list[tuple[str, dict]]) -> tuple[int, float | None, float | None]:
-    """(well-covered days, cautious mean, trades-only mean) over a run of finished days."""
+    """
+    (well-covered days, cautious mean, trades-only mean) over a run of
+    finished days: income over the well-covered days, trading over the days
+    a pilot ran at all (a day with no pilot neither earns nor loses).
+    """
     full = [lv for _, lv in period if lv["pilot_covered"]]
+    ran = [lv for _, lv in period if lv["pilot_markets"]]
     if not full:
         return 0, None, None
     income = sum(lv["pilot_income"] for lv in full) / len(full)
-    return (len(full), income + sum(lv["pilot_trading"] for _, lv in period) / len(period),
-            income + sum(lv.get("pilot_trading_trades_only", 0.0) for _, lv in period) / len(period))
+    return (len(full), income + sum(lv["pilot_trading"] for lv in ran) / len(ran),
+            income + sum(lv.get("pilot_trading_trades_only", 0.0) for lv in ran) / len(ran))
 
 
 def gate_a(rows: list[dict], level: int, today: str, settings=None) -> dict:
     """
     The go/no-go check. Rewards and rebates are averaged over the
-    well-covered days, and the paper trading result over every day since the
-    pilot first held a position. The verdict is taken once, on the finished
+    well-covered days, and the paper trading result over every day a pilot
+    ran, covered or not. The verdict is taken once, on the finished
     day that brings the count of well-covered days to GATE_A_MIN_DAYS, and
     does not change after that: re-reading a running average every day until
     it passes would pass a losing strategy far more often. The running
     average is kept for information.
     """
-    done = [(r["day"], r["levels"][str(level)]) for r in rows if r["day"] < today and str(level) in r["levels"]]
+    done = [(r["day"], dict(r["levels"][str(level)], plan_ok=r.get("plan_ok", True)))
+            for r in rows if r["day"] < today and str(level) in r["levels"]]
     started = next((i for i, (_, lv) in enumerate(done) if lv["pilot_markets"] or lv["pilot_trading"]), len(done))
     period = done[started:]
     days, running, running_alt = _means(period)
-    decided_on, mean, mean_alt = None, None, None
+    decided_on, mean, mean_alt, judged = None, None, None, period
     covered = 0
     for k, (day, lv) in enumerate(period):
         covered += bool(lv["pilot_covered"])
         if covered == GATE_A_MIN_DAYS:
-            decided_on = day
-            _, mean, mean_alt = _means(period[:k + 1])
+            decided_on, judged = day, period[:k + 1]
+            _, mean, mean_alt = _means(judged)
             break
-    plan_ok = settings is None or all(getattr(settings, k) == v for k, v in PLAN.items())
+    plan_ok = ((settings is None or all(getattr(settings, name) == v for name, v in PLAN.items()))
+               and all(lv["plan_ok"] for _, lv in judged))
     if decided_on is None:
         verdict = "NOT ENOUGH DATA YET"
     elif not plan_ok:

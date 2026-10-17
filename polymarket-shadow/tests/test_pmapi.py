@@ -75,8 +75,16 @@ def test_unexpected_shape_raises():
         pmapi.trades_since(CID, 0, lambda url, body: [])
 
 
-def test_a_record_without_a_readable_time_is_passed_on():
+def test_a_record_without_a_readable_time_is_passed_on_once():
     rows = [{"timestamp": 1000, "transaction_hash": "0xa"}, {"timestamp": None, "transaction_hash": "0xb"},
-            {"timestamp": 990, "transaction_hash": "0xc"}]
+            {"timestamp": 998, "transaction_hash": "0xc"}, {"timestamp": 990, "transaction_hash": "0xd"}]
     found, complete = pmapi.trades_since(CID, 995, Pages(rows, size=10))
-    assert complete and [r["transaction_hash"] for r in found] == ["0xb", "0xa"]
+    assert complete and [r["transaction_hash"] for r in found] == ["0xb", "0xc", "0xa"]
+    # On the next run the record next to it is older than the window, so it is not reported again.
+    found, _ = pmapi.trades_since(CID, 998, Pages(rows, size=10))
+    assert [r["transaction_hash"] for r in found] == ["0xa"]
+
+
+def test_an_unreadable_history_point_is_skipped():
+    body = {"history": [{"t": 60, "p": 0.5}, {"t": 120, "p": None}, {"t": 180, "p": "0.52"}]}
+    assert pmapi.price_history("tok", 0, 200, lambda url, b: body) == [(60, 0.5), (180, 0.52)]

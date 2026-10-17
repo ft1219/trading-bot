@@ -335,3 +335,27 @@ def test_a_report_error_is_saved_with_the_run(tmp_path, fx, monkeypatch):
 
 def test_settings_accept_a_count_written_with_a_decimal_point():
     assert snapshot.settings_from_env({"PM_WATCH_MARKETS": "25.0"}).watch_markets == 25
+
+
+def test_a_market_that_fails_every_run_skips_its_window_with_a_gap(tmp_path, fx):
+    class BadHistoryApi(FakeApi):
+        def price_history(self, token, start, end):
+            raise pmapi.ApiError("bad history")
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings())
+    for i in range(1, snapshot.MAX_FAILED_RUNS + 1):
+        snapshot.run(tmp_path, now=T_START + i * 600, api=BadHistoryApi(fx), s=Settings())
+        m = json.loads((tmp_path / "state.json").read_text())["markets"][CID]
+        stuck = m["trades_until"] == T_START - snapshot.TRADE_SETTLE_S
+        assert stuck == (i < snapshot.MAX_FAILED_RUNS)
+    gaps = _rows(tmp_path, snapshot.utc_day(T_START), "gaps")
+    assert any("failed runs" in g["reason"] for g in gaps)
+
+
+def test_rewards_earned_today_wait_for_tomorrow_to_count_in_the_budget(tmp_path, fx):
+    snapshot.run(tmp_path, now=T_START, api=FakeApi(fx), s=Settings(pilot_markets=1))
+    snapshot.run(tmp_path, now=T_START + 2400, api=FakeApi(fx), s=Settings(pilot_markets=1))
+    pos = json.loads((tmp_path / "state.json").read_text())["markets"][CID]["positions"]["1"]
+    assert pos["pending_rewards"] > 0 and pos["reward_credit"] == 0
+    assert pos["credit_day"] == snapshot.utc_day(T_START + 2400)
+    runs = _rows(tmp_path, snapshot.utc_day(T_START), "runs")
+    assert runs[-1]["plan"] == {"pilot_markets": 1, "budget_per_market_usd": 20.0, "pilot_level": 1}

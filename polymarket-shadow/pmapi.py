@@ -125,7 +125,13 @@ def price_history(token_id: str, start_ts: int, end_ts: int, fetch: Fetch = http
     points = body.get("history") if isinstance(body, dict) else None
     if not isinstance(points, list):
         raise ApiError("/prices-history: unexpected shape")
-    return sorted((int(p["t"]), float(p["p"])) for p in points)
+    out = []
+    for p in points:  # an unreadable point is a missing minute, not a failed market
+        try:
+            out.append((int(p["t"]), float(p["p"])))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return sorted(out)
 
 
 def trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> tuple[list[dict], bool]:
@@ -142,8 +148,14 @@ def trades_since(condition_id: str, since_ts: int, fetch: Fetch = http_json) -> 
         if not isinstance(rows, list):
             raise ApiError("/v2/trades: unexpected shape")
         stamps = [_timestamp(t) for t in rows]
-        # A record without a readable time is kept, so the caller sees it and marks a gap.
-        found += [t for t, ts in zip(rows, stamps) if ts is None or ts > since_ts]
+        # A record without a readable time is kept, so the caller sees it and marks a gap, while the
+        # next older record (newest first) is in the window; so it is reported once, not every run.
+        older = None
+        for t, ts in reversed(list(zip(rows, stamps))):
+            if ts is not None:
+                older = ts
+            if (ts if ts is not None else older if older is not None else since_ts + 1) > since_ts:
+                found.append(t)
         paging = body.get("pagination") or {}
         cursor = paging.get("next_cursor")
         oldest = min((ts for ts in stamps if ts is not None), default=None)

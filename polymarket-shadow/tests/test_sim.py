@@ -91,16 +91,36 @@ def test_round_trip_losses_shrink_the_budget_until_rewards_make_them_up():
     pos = sim.Position(cash=-1.2)
     assert pos.held_cost() == 0 and pos.capital(20) == pytest.approx(18.8)
     assert sim.active_sides(pos, 0.57, 0.60, P) == (True, False)  # the pair needs 20 * 0.57 + 20 * 0.40 = $19.40
-    pos.rebates, pos.reward_credit = 0.2, 0.5
+    pos.reward_credit = 0.7  # rewards and rebates paid out so far
     assert pos.capital(20) == pytest.approx(19.5) and sim.active_sides(pos, 0.57, 0.60, P) == (True, True)
     assert sim.Position(cash=3.0).capital(20) == 20  # gains do not raise the budget
 
 
-def test_a_midpoint_move_after_a_hole_in_the_history_is_counted():
+def test_income_is_paid_the_next_day_and_only_above_the_minimum():
+    pos = sim.Position()
+    pos.roll_income("2026-10-01", 1.0)
+    pos.pending_rewards, pos.rebates = 1.2, 0.4
+    pos.roll_income("2026-10-01", 1.0)
+    assert pos.reward_credit == 0  # not paid during the day
+    pos.roll_income("2026-10-02", 1.0)
+    assert pos.reward_credit == pytest.approx(1.2)  # the $0.40 of rebates is under the $1 minimum
+    pos.pending_rewards, pos.rebates = 0.5, 1.6
+    pos.roll_income("2026-10-03", 1.0)
+    assert pos.reward_credit == pytest.approx(1.2 + 1.2)  # $1.20 of rebates that day; $0.50 of rewards paid nothing
+
+
+def test_a_midpoint_move_after_a_hole_in_the_history_fills_and_is_counted():
     history = [(0, 0.585), (60, 0.585), (800, 0.50), (860, 0.50)]
     stats = {}
-    assert sim.replay(sim.Position(), [], history, YES, P, 0, stats=stats) == []
+    fills = sim.replay(sim.Position(), [], history, YES, P, 0, stats=stats)
+    assert [(f.ts, f.side, f.price) for f in fills] == [(800, "bid", 0.58)]
     assert stats == {"unquoted_moves": 1}
+
+
+def test_an_order_covered_by_held_shares_rests_even_past_the_budget():
+    pos = sim.Position(yes=20, yes_cost=11.6, cash=-11.6 - 9.0)  # $9 lost earlier: capital is $11
+    assert pos.capital(20) == pytest.approx(11.0)
+    assert sim.active_sides(pos, 0.55, 0.60, P) == (False, True)
 
 
 def test_unusable_records():
@@ -118,8 +138,13 @@ def test_requote_waits_for_the_next_minute():
     assert [f.ts for f in fills] == [90, 130]
 
 
-def test_stale_midpoint_means_no_quote():
-    assert sim.replay(sim.Position(), trade(1000, "SELL", 0.5), [(0, 0.585)], YES, P, 0) == []
+def test_after_a_hole_in_the_history_the_last_quotes_stay_up():
+    stats = {}
+    fills = sim.replay(sim.Position(), trade(1000, "SELL", 0.5), [(0, 0.585)], YES, P, 0, stats=stats)
+    assert [(f.side, f.price) for f in fills] == [("bid", 0.58)] and stats == {"unquoted_trades": 1}
+    stats = {}
+    assert sim.replay(sim.Position(), trade(1000, "SELL", 0.5), [(1200, 0.585)], YES, P, 0, stats=stats) == []
+    assert stats == {"unquoted_trades": 1}  # no midpoint before the trade at all: no quote
 
 
 def test_quotes_use_the_midpoint_before_the_trade():

@@ -23,8 +23,9 @@ filled. The rules lean towards making us look worse than reality:
   locks the cost of minting what it would sell, except the part covered by
   shares we already hold (selling YES we own needs no cash). Bought shares
   keep their cost locked until a YES and a NO are merged back into $1.
-  Money lost on round trips leaves the budget, net of the rebates and
-  cautious rewards the market has earned so far.
+  Money lost on round trips leaves the budget, net of the rewards and
+  rebates already paid out (each UTC day's, once the day is over and only if
+  it reached the $1 minimum payout).
 - Holdings are valued at what selling them into the current book would
   fetch, level by level, after Polymarket's taker fee.
 
@@ -39,7 +40,10 @@ from dataclasses import asdict, dataclass, field
 import rewards
 
 REQUOTE_DELAY_S = 60
-MAX_QUOTE_AGE_S = 600  # no midpoint this recent: assume we were not quoting (the caller marks a gap)
+# No midpoint this recent: the history has a hole. Our last quotes are assumed
+# to have stayed up through it (the cautious guess: a move or trade through
+# them fills us), and the caller marks a gap.
+MAX_QUOTE_AGE_S = 600
 EPS = 1e-9
 # Trade prices are USDC / shares, each rounded to 6 decimals, so a trade at a
 # tick can print a few millionths off it. Ticks are at least 0.001 apart.
@@ -54,7 +58,10 @@ class Position:
     no_cost: float = 0.0
     cash: float = 0.0  # starts at 0: P&L is measured from here
     rebates: float = 0.0
-    reward_credit: float = 0.0  # cautious liquidity rewards earned so far (added by the caller)
+    reward_credit: float = 0.0  # rewards and rebates paid out so far (see roll_income)
+    pending_rewards: float = 0.0  # cautious rewards earned today, added by the caller, paid tomorrow
+    rebates_at_day_start: float = 0.0
+    credit_day: str = ""
     fills: int = 0
     # The order resting on each side: the midpoint time it was quoted from,
     # and how many of its shares have not filled yet.
@@ -67,9 +74,20 @@ class Position:
         return self.yes_cost + self.no_cost
 
     def capital(self, budget: float) -> float:
-        """The budget less realized trading losses not yet made up by rebates and rewards."""
+        """The budget less realized trading losses not yet made up by paid-out rewards and rebates."""
         realized = self.cash + self.held_cost()  # cash = realized P&L - cost of what is still held
-        return budget + min(0.0, realized + self.rebates + self.reward_credit)
+        return budget + min(0.0, realized + self.reward_credit)
+
+    def roll_income(self, day: str, min_payout: float) -> None:
+        """On a new UTC day, pay out the last day's rewards and rebates, each only if it reached min_payout."""
+        if day == self.credit_day:
+            return
+        if self.credit_day:
+            rebates = self.rebates - self.rebates_at_day_start
+            self.reward_credit += ((self.pending_rewards if self.pending_rewards >= min_payout else 0.0)
+                                   + (rebates if rebates >= min_payout else 0.0))
+            self.pending_rewards, self.rebates_at_day_start = 0.0, self.rebates
+        self.credit_day = day
 
     def value(self, mid: float) -> float:
         return self.cash + self.yes * mid + self.no * (1 - mid)
@@ -119,7 +137,7 @@ def active_sides(pos: Position, bid: float | None, ask: float | None, p: MarketP
     result = {"bid": False, "ask": False}
     for side in order:
         lock, want = (lock_bid, want_bid) if side == "bid" else (lock_ask, want_ask)
-        if want and used + lock <= capital + EPS:
+        if want and (lock <= EPS or used + lock <= capital + EPS):  # an order covered by held shares always fits
             result[side] = True
             used += lock
     return result["bid"], result["ask"]
@@ -223,8 +241,9 @@ def replay(pos: Position, records: list[dict], history: list[tuple[int, float]],
     inside (start, end], so consecutive runs do not count the same move twice;
     midpoint_fills=False replays trades only.
     stats["unquoted_trades"] and stats["unquoted_moves"] count trades and
-    midpoint moves skipped for want of a recent midpoint before them (a
-    hole in the history), which the caller should treat as a gap.
+    midpoint moves with no recent midpoint before them (a hole in the
+    history, or none at all), which the caller should treat as a gap. After
+    a hole the last quotes are kept; with no midpoint at all there are none.
     """
     times = [t for t, _ in history]
     fills: list[Fill] = []
@@ -237,7 +256,8 @@ def replay(pos: Position, records: list[dict], history: list[tuple[int, float]],
             if stats is not None:
                 name = "unquoted_trades" if kind == 0 else "unquoted_moves"
                 stats[name] = stats.get(name, 0) + 1
-            continue
+            if i < 0:
+                continue
         mid = history[i][1]
         bid, ask = quotes(mid, p, level)
         if pos.bid_quote_ts != times[i]:  # a fresh quote replaces whatever was left of the old one

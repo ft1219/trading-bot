@@ -44,6 +44,7 @@ FIRST_SAMPLE_DT_S = 2400
 # skipped or late scheduled run); the report does not scale coverage up.
 MAX_SAMPLE_DT_S = 5400
 CLOSEOUT_TRIES = 3  # runs without a book before a leaving market is closed out anyway
+MAX_FAILED_RUNS = 6  # runs in a row a market's data could not be read or replayed before its window is skipped
 STATE_VERSION = 1
 
 
@@ -320,6 +321,8 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
     for level in LEVELS:
         pos = sim.Position.from_dict(m["positions"][str(level)])
         alt = sim.Position.from_dict(m["positions_trades_only"][str(level)])
+        for x in (pos, alt):
+            x.roll_income(utc_day(now), report.MIN_PAYOUT_USD)
         bid, ask = sim.quotes(mid, p, level)
         bid_on, ask_on = sim.active_sides(pos, bid, ask, p)
         sc = rewards.score_quotes(book, bid if bid_on else None, ask if ask_on else None, p.size, v, min_size)
@@ -335,8 +338,8 @@ def _process_market(cid: str, m: dict, trades_result: tuple[list[dict], bool], h
             "value_mid": round(pos.value(mid), 6), "rebates": round(pos.rebates, 6), "fills": pos.fills,
             "yes": pos.yes, "no": pos.no, "value_trades_only": round(sim.liquidation_value(alt, book, p), 6),
         }
-        pos.reward_credit += est_low  # what the market has earned counts towards the budget (see sim.py)
-        alt.reward_credit += est_low
+        pos.pending_rewards += est_low  # paid out, and so back in the budget, tomorrow (see sim.py)
+        alt.pending_rewards += est_low
         m["positions"][str(level)], m["positions_trades_only"][str(level)] = pos.to_dict(), alt.to_dict()
     row["thin"] = row["levels"].get(str(s.pilot_level), row["levels"]["1"])["thin"]
     out["samples"].append(row)
@@ -350,7 +353,9 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
     store = Store(data_dir)
     state = store.load_state()
     today = utc_day(now)
-    log: dict = {"ts": int(now), "errors": []}
+    log: dict = {"ts": int(now), "errors": [],
+                 "plan": {"pilot_markets": s.pilot_markets, "budget_per_market_usd": s.budget_per_market_usd,
+                          "pilot_level": s.pilot_level}}
 
     just_chosen: set[str] = set()
     if state.get("watchlist_day") != today or not state["markets"]:
@@ -384,16 +389,20 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
         trades = fetched.get(f"trades:{cid}")
         history = fetched.get(f"hist:{cid}")
         if isinstance(trades, Exception) or isinstance(history, Exception):
-            log["errors"].append(f"{cid[:10]}: {trades if isinstance(trades, Exception) else history!r}")
-            continue  # timestamps stay put, so the next run covers this window
+            # timestamps stay put, so the next run covers this window
+            if _failed(cid, m, trades if isinstance(trades, Exception) else history, now, out, log, s):
+                finished.append(cid)
+            continue
         histories[cid] = history
         try:
             yes_value = resolved_yes_value((gamma or {}).get(cid), m["info"]["yes_token"])
             if _process_market(cid, m, trades, history, books, state, out, log, s, now, cid in just_chosen,
                                yes_value):
                 finished.append(cid)
+            m.pop("failed_runs", None)
         except Exception as e:  # one market's bad data must not stop the others
-            log["errors"].append(f"{cid[:10]}: {e!r}")
+            if _failed(cid, m, e, now, out, log, s):
+                finished.append(cid)
     for cid in finished:
         markets.pop(cid)
     fills_out, samples_out, gaps_out = out["fills"], out["samples"], out["gaps"]
@@ -447,6 +456,30 @@ def run(data_dir: Path, now: float | None = None, api=pmapi, s: selection.Settin
         store.write("report.md", text)
         store.write("summary.json", json.dumps(summary, indent=1, sort_keys=True))
     return log
+
+
+def _failed(cid: str, m: dict, error: Exception, now: float, out: dict, log: dict, s: selection.Settings) -> bool:
+    """
+    Note a run in which this market could not be read or replayed. After
+    MAX_FAILED_RUNS in a row the window is skipped with a gap, so one bad
+    record cannot freeze the market; a leaving market is then closed out
+    with unsold shares counted as worth $0. Returns True when it leaves the list.
+    """
+    log["errors"].append(f"{cid[:10]}: {error!r}")
+    m["failed_runs"] = m.get("failed_runs", 0) + 1
+    if m["failed_runs"] < MAX_FAILED_RUNS:
+        return False
+    since, end = int(m["trades_until"]), int(now) - TRADE_SETTLE_S
+    role = m.get("close_role", m["info"].get("pilot", False))
+    out["gaps"].append({"ts": int(now), "from": since, "to": max(since, end), "condition_id": cid, "pilot": role,
+                        "reason": f"window skipped after {m['failed_runs']} failed runs"})
+    m["trades_until"] = max(since, end)
+    m.pop("failed_runs")
+    if not m.get("closing"):
+        return False
+    p = params_for(m["info"], s)
+    out["closeouts"].extend(_closeout_rows(cid, m, now, role, lambda pos: sim.close_out(pos, None, p)))
+    return True
 
 
 def _markout_row(item: dict, later_mid: float) -> dict:
