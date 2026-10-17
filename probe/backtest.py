@@ -44,6 +44,7 @@ def main(out_dir):
     now = int(time.time()) // 3600 * 3600
     start = now - DAYS * 86400
     results = []
+    raw = {}
     for m in markets:
         cid, yes = m["condition_id"], m["yes_token"]
         entry = {k: m.get(k) for k in ("rank", "pilot", "thin", "question", "daily_rate", "expected_low",
@@ -62,6 +63,8 @@ def main(out_dir):
             continue
         entry.update(history_points=len(hist), trades=len(trades), trades_complete=complete,
                      first_hist=hist[0][0] if hist else None)
+        keep = ("proxy_wallet", "side", "token_id", "size", "price", "timestamp", "transaction_hash")
+        raw[cid] = {"history": hist, "trades": [{k: t.get(k) for k in keep} for t in trades], "info": m}
         p = sim.MarketParams(tick=float(m["tick"]), size=float(m["size"]), budget_usd=20.0,
                              max_spread_c=float(m["max_spread_c"]), fee_rate=float(m.get("fee_rate") or 0),
                              fee_exponent=float(m.get("fee_exponent") or 1), rebate_rate=float(m.get("rebate_rate") or 0))
@@ -87,6 +90,7 @@ def main(out_dir):
             sim._events = _orig_events
         results.append(entry)
         time.sleep(0.2)
+    json.dump({"start": start, "end": now, "markets": raw}, open(os.path.join(out_dir, "raw_7d.json"), "w"))
     json.dump({"start": start, "end": now, "days": DAYS, "markets": results},
               open(os.path.join(out_dir, "backtest_7d.json"), "w"), indent=1)
 
