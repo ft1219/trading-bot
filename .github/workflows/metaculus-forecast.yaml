@@ -1,15 +1,12 @@
 name: Metaculus - forecast new questions
 
+# Started every 40 minutes (:07 and :47 of even hours, :27 of odd hours, UTC)
+# by two cron-job.org jobs that call this workflow's dispatch endpoint; see
+# "Metaculus - set up the outside timer". Questions stay open for 1.5 hours, so
+# each gets at least two chances. GitHub's own `schedule` trigger never fired
+# for this repository, and a second starter would double the Actions minutes.
 on:
   workflow_dispatch:
-  schedule:
-    # Every 40 minutes (:07 and :47 of even hours, :27 of odd hours), 36 runs
-    # a day. Questions stay open for 1.5 hours, so each gets at least two
-    # chances. To run hourly instead, replace these three lines with
-    #   - cron: "7 * * * *"
-    - cron: "7 */2 * * *"
-    - cron: "47 */2 * * *"
-    - cron: "27 1-23/2 * * *"
 
 concurrency:
   group: ${{ github.workflow }}

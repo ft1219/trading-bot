@@ -1,0 +1,22 @@
+name: Metaculus - set up the outside timer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: metaculus-bot
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create or update the cron-job.org jobs
+        run: python3 timer_setup.py
+        env:
+          BOT_TIMER_TOKEN: ${{ secrets.BOT_TIMER_TOKEN }}
+          CRONJOB_API_KEY: ${{ secrets.CRONJOB_API_KEY }}
