@@ -1,1 +1,2 @@
 {"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792327521, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792329922, "ts": 1792330042}
+{"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792329922, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792332323, "ts": 1792332443}
