@@ -3,3 +3,4 @@
 {"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792332323, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792334722, "ts": 1792334842}
 {"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792334722, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792337124, "ts": 1792337244}
 {"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792337124, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792339523, "ts": 1792339643}
+{"condition_id": "0xc25fb37bd210c5cd9e124fc40105e78a481d247068bb583f77627dc8a38f2c27", "from": 1792339523, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1792341921, "ts": 1792342041}
