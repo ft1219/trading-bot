@@ -15,3 +15,4 @@
 {"errors": [], "fills": 71, "markets": 25, "markouts": 92, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.44, "ts": 1792315641}
 {"errors": [], "fills": 37, "markets": 25, "markouts": 61, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.44, "ts": 1792318042}
 {"errors": ["0xc25fb37b: no usable midpoint"], "fills": 57, "markets": 25, "markouts": 67, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.39, "ts": 1792320441}
+{"errors": ["0xc25fb37b: no usable midpoint"], "fills": 50, "markets": 25, "markouts": 28, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.03, "ts": 1792322841}
