@@ -704,7 +704,11 @@ def build_llms(
             model=settings.forecast_model,
             budget=budget,
             temperature=0.3,
-            timeout=180,
+            # The timeout caps a whole call, not a silence. DeepSeek V3.2 with
+            # reasoning takes 1.5 to 3 minutes on OpenRouter's cheaper hosts,
+            # so 180 s failed whole questions on 2026-10-19. Metaculus runs
+            # its own DeepSeek V3.2 reasoning bot with 300 s.
+            timeout=300,
             allowed_tries=2,
             **reasoning_kwargs(settings),
         ),
@@ -716,6 +720,24 @@ def build_llms(
             model=settings.parser_model, budget=budget, temperature=0.0
         ),
     }
+
+
+def make_bot(
+    settings: BotSettings, budget: RunBudget, publish: bool
+) -> FallTemplateBot2026:
+    return FallTemplateBot2026(
+        research_reports_per_question=1,
+        predictions_per_research_report=settings.predictions_per_question,
+        use_research_summary_to_forecast=False,
+        # The summary only decorates the published comment, yet all five
+        # forecasts wait for it (128 s on one slow host on 2026-10-19).
+        enable_summarize_research=False,
+        publish_reports_to_metaculus=publish,
+        folder_to_save_reports_to=None,
+        skip_previously_forecasted_questions=True,
+        extra_metadata_in_explanation=True,
+        llms=build_llms(settings, budget),
+    )
 
 
 def collect_questions(
@@ -784,16 +806,7 @@ if __name__ == "__main__":
     logger.info(f"Settings: {settings}")
     budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
 
-    template_bot = FallTemplateBot2026(
-        research_reports_per_question=1,
-        predictions_per_research_report=settings.predictions_per_question,
-        use_research_summary_to_forecast=False,
-        publish_reports_to_metaculus=publish_to_metaculus,
-        folder_to_save_reports_to=None,
-        skip_previously_forecasted_questions=True,
-        extra_metadata_in_explanation=True,
-        llms=build_llms(settings, budget),
-    )
+    template_bot = make_bot(settings, budget, publish=publish_to_metaculus)
 
     TOURNAMENT_URLS = {
         "tournament": "https://www.metaculus.com/tournament/fall-futureeval-2026/",

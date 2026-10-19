@@ -23,7 +23,7 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 | `MAX_QUESTIONS_PER_RUN` | `12` | Questions handled per run; the rest wait for the next run. |
 | `MAX_COST_PER_RUN_USD` | `1.00` | AI spending limit per run, checked before every call. Must be above 0. |
 | `MAX_LLM_CALLS_PER_RUN` | `400` | Backstop limit on AI calls per run, for models whose price litellm does not know. |
-| `QUESTIONS_IN_PARALLEL` | `3` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
+| `QUESTIONS_IN_PARALLEL` | `5` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
 
 ## Running locally
 
