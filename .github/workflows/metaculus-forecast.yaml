@@ -64,7 +64,9 @@ jobs:
     # Forecasts still run when only the practice step failed.
     if: ${{ !cancelled() && needs.check.outputs.to_forecast == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # A batch of 5 questions usually takes 3-6 minutes; slow hosts can stretch
+    # one to about 15 (two 300 s tries per forecast, then parsing).
+    timeout-minutes: 40
     permissions:
       contents: read
     defaults:

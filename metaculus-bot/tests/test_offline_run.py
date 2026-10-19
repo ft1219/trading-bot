@@ -35,17 +35,9 @@ def _questions(count):
 
 
 def _bot(settings, budget):
-    llms = main.build_llms(settings, budget)
-    llms["researcher"] = "no_research"
-    return main.FallTemplateBot2026(
-        research_reports_per_question=1,
-        predictions_per_research_report=settings.predictions_per_question,
-        use_research_summary_to_forecast=False,
-        publish_reports_to_metaculus=False,
-        folder_to_save_reports_to=None,
-        skip_previously_forecasted_questions=True,
-        llms=llms,
-    )
+    bot = main.make_bot(settings, budget, publish=False)
+    bot._llms["researcher"] = "no_research"
+    return bot
 
 
 @pytest.fixture
@@ -80,6 +72,14 @@ def test_build_llms_turns_on_reasoning_for_the_forecaster():
     assert llms["researcher"] == "asknews/news-summaries"
 
 
+def test_forecaster_waits_up_to_300_seconds_and_no_summary_is_made():
+    budget = RunBudget(1.0, 100)
+    assert main.build_llms(load_settings({}), budget)["default"].litellm_kwargs["timeout"] == 300
+    bot = main.make_bot(load_settings({}), budget, publish=True)
+    assert bot.enable_summarize_research is False
+    assert bot.publish_reports_to_metaculus is True
+
+
 def test_forecasts_every_question_and_counts_real_cost_once(fake_model):
     settings = load_settings({"PREDICTIONS_PER_QUESTION": "5"})
     budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
@@ -91,6 +91,8 @@ def test_forecasts_every_question_and_counts_real_cost_once(fake_model):
     assert budget.spent_usd == pytest.approx(fake_model["calls"] * COST_PER_CALL)
     forecaster_calls = [k for k in fake_model["kwargs"] if "extra_body" in k]
     assert len(forecaster_calls) == 15
+    # Only forecasts: no research summary call.
+    assert fake_model["calls"] == 15
 
 
 def test_spending_limit_stops_the_run_between_batches(fake_model):
