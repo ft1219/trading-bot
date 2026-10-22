@@ -16,3 +16,4 @@
 {"errors": [], "fills": 37, "markets": 25, "markouts": 73, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.57, "ts": 1792663646}
 {"errors": [], "fills": 54, "markets": 25, "markouts": 84, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.99, "ts": 1792666044}
 {"errors": [], "fills": 63, "markets": 25, "markouts": 80, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.6, "ts": 1792668444}
+{"errors": [], "fills": 49, "markets": 25, "markouts": 125, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.95, "ts": 1792670845}
