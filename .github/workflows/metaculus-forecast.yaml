@@ -1,59 +1,99 @@
-name: Metaculus - forecast new questions
+name: Bots - every 40 minutes
 
+# The first job runs both bots' quick parts with nothing but the runner's
+# built-in Python, so a run with nothing to forecast is billed as one GitHub
+# Actions minute. It alone may write to the repository (the Polymarket data
+# branch). The forecast job, which installs third-party packages, starts only
+# when a question needs a forecast and can only read. Repository variables
+# can pause either bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
+
+# Started every 40 minutes (:07 and :47 of even hours, :27 of odd hours, UTC)
+# by two cron-job.org jobs that call this workflow's dispatch endpoint; see
+# "Metaculus - set up the outside timer". Tournament questions stay open for
+# 1.5 to 3 hours, so each gets at least two chances. GitHub's own `schedule`
+# trigger first fired more than six hours late for this repository and then
+# ran irregularly, and a second starter would double the Actions minutes.
 on:
   workflow_dispatch:
-  schedule:
-    # Every 40 minutes (:07 and :47 of even hours, :27 of odd hours), 36 runs
-    # a day. Questions stay open for 1.5 hours, so each gets at least two
-    # chances. To run hourly instead, replace these three lines with
-    #   - cron: "7 * * * *"
-    - cron: "7 */2 * * *"
-    - cron: "47 */2 * * *"
-    - cron: "27 1-23/2 * * *"
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
-  forecast:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
+    permissions:
+      contents: write  # for the Polymarket practice data branch only
+    outputs:
+      to_forecast: ${{ steps.precheck.outputs.to_forecast }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # Paper trading only: public data, no money, no keys. The pilot's size
+      # and count are fixed by the plan, so they are not repository variables.
+      - name: Polymarket practice snapshot
+        id: practice
+        if: vars.POLYMARKET_PRACTICE != 'off'
+        continue-on-error: true
+        timeout-minutes: 6
+        working-directory: polymarket-shadow
+        run: bash run.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PM_WATCH_MARKETS: ${{ vars.PM_WATCH_MARKETS }}
+      - name: Any open questions?
+        id: precheck
+        if: vars.METACULUS_BOT != 'off'
+        working-directory: metaculus-bot
+        run: python3 precheck.py
+        env:
+          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+      # A failed practice step turns this run red (so GitHub emails), after
+      # the precheck has decided whether to forecast.
+      - name: Report a failed practice step
+        if: steps.practice.outcome == 'failure'
+        run: |
+          echo "::error::The Polymarket practice step failed; see its log above."
+          exit 1
+
+  forecast:
+    needs: check
+    # Forecasts still run when only the practice step failed.
+    if: ${{ !cancelled() && needs.check.outputs.to_forecast == 'true' }}
+    runs-on: ubuntu-latest
+    # A batch of 5 questions usually takes 3-6 minutes; slow hosts can stretch
+    # one to about 15 (two 300 s tries per forecast, then parsing).
+    timeout-minutes: 40
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: metaculus-bot
     steps:
       - uses: actions/checkout@v4
-      # Uses the runner's built-in Python and no packages, so a run with
-      # nothing to do ends here in well under a minute.
-      - name: Any open questions?
-        id: precheck
-        run: python3 precheck.py
-        env:
-          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
-        if: steps.precheck.outputs.to_forecast == 'true'
         id: setup-python
         with:
           python-version: "3.11"
       - name: Install poetry
-        if: steps.precheck.outputs.to_forecast == 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
       - name: Load cached dependencies
-        if: steps.precheck.outputs.to_forecast == 'true'
         uses: actions/cache@v4
         with:
           path: metaculus-bot/.venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('metaculus-bot/poetry.lock') }}
       - name: Install dependencies
-        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry install --no-interaction --no-root
       - name: Run bot
-        if: steps.precheck.outputs.to_forecast == 'true'
         run: poetry run python main.py --mode tournament
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}

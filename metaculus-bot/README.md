@@ -8,6 +8,7 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 - `main.py`: pins the models instead of the template's GPT-4o defaults, forecasts the soonest-closing questions first up to `MAX_QUESTIONS_PER_RUN`, a few at a time, stops once the run budget is spent, adds `--dry-run`, and exits non-zero when any question fails or is skipped so the Actions run shows red.
 - `budget.py`: the per-run spending and call limits. forecasting-tools' own `MonetaryCostManager` cannot stop a call (litellm swallows the exception its callback raises), so `BudgetedLlm` checks the budget before every model call and records each call's real cost once.
 - `precheck.py`: standard-library check run before installing anything. When no open question is waiting for a first forecast from the bot, the scheduled job ends early. Errors and unfamiliar responses count as "something to forecast", so it can never cause a missed question.
+- `timer_setup.py`: creates or updates the two cron-job.org jobs that start the forecasting workflow every 40 minutes through its dispatch endpoint, because GitHub's own `schedule` trigger fired hours late and irregularly for this repository. Run it with the **Metaculus - set up the outside timer** workflow.
 - `bot_helpers.py`: the setup check also requires `OPENROUTER_API_KEY` and AskNews keys, so the bot never falls back to a different, unbudgeted provider. Blank key variables (GitHub's value for a secret that was never created) are removed at startup; a blank `ASKNEWS_API_KEY` would otherwise override a valid client ID and secret.
 
 ## Settings
@@ -22,7 +23,7 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 | `MAX_QUESTIONS_PER_RUN` | `12` | Questions handled per run; the rest wait for the next run. |
 | `MAX_COST_PER_RUN_USD` | `1.00` | AI spending limit per run, checked before every call. Must be above 0. |
 | `MAX_LLM_CALLS_PER_RUN` | `400` | Backstop limit on AI calls per run, for models whose price litellm does not know. |
-| `QUESTIONS_IN_PARALLEL` | `3` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
+| `QUESTIONS_IN_PARALLEL` | `5` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
 
 ## Running locally
 
