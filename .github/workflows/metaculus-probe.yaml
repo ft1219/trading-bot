@@ -10,6 +10,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - run: python3 probe/metaculus_shape.py
+      - run: python3 probe/score_report.py
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
