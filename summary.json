@@ -599,19 +599,94 @@
     }
    },
    "plan_ok": true
+  },
+  {
+   "day": "2026-10-25",
+   "levels": {
+    "0": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 0.0,
+     "all_rewards_low": 0.0,
+     "all_trading": 4.415298000000001,
+     "all_trading_trades_only": 15.413702999999998,
+     "fills": 3,
+     "markets": 24,
+     "markout_1h": -1.9100000000000001,
+     "markout_24h": -10.057964,
+     "pilot_cautious": 0.10789899999999975,
+     "pilot_covered": false,
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": 0.10789899999999975,
+     "pilot_rewards_low": 0.0,
+     "pilot_trading": 0.10789899999999975,
+     "pilot_trading_trades_only": 5.4878979999999995,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.0,
+     "thin_trading": 0.022221999999999298
+    },
+    "1": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 0.0,
+     "all_rewards_low": 0.0,
+     "all_trading": 3.6199750000000015,
+     "all_trading_trades_only": 16.765964999999998,
+     "fills": 23,
+     "markets": 24,
+     "markout_1h": 5.61,
+     "markout_24h": -9.76675,
+     "pilot_cautious": 1.7800000000000002,
+     "pilot_covered": false,
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": 1.7800000000000002,
+     "pilot_rewards_low": 0.0,
+     "pilot_trading": 1.7800000000000002,
+     "pilot_trading_trades_only": 5.388285999999999,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.0,
+     "thin_trading": -1.7777780000000014
+    },
+    "2": {
+     "all_markets": 20,
+     "all_rebates": 0.0,
+     "all_rewards_high": 0.0,
+     "all_rewards_low": 0.0,
+     "all_trading": 3.1503999999999976,
+     "all_trading_trades_only": 15.55218,
+     "fills": 3,
+     "markets": 24,
+     "markout_1h": 1.7,
+     "markout_24h": 0.866876,
+     "pilot_cautious": -0.20000000000000018,
+     "pilot_covered": false,
+     "pilot_income": 0.0,
+     "pilot_markets": 2,
+     "pilot_optimistic": -0.20000000000000018,
+     "pilot_rewards_low": 0.0,
+     "pilot_trading": -0.20000000000000018,
+     "pilot_trading_trades_only": 3.24,
+     "thin_markets": 4,
+     "thin_rewards_high": 0.0,
+     "thin_trading": -1.799999999999999
+    }
+   },
+   "plan_ok": true
   }
  ],
  "gate_a": {
   "days": 6,
-  "days_since_start": 7,
+  "days_since_start": 8,
   "decided_on": null,
   "mean_cautious_usd_per_day": null,
   "mean_trades_only_usd_per_day": null,
   "needed_days": 14,
-  "running_cautious_usd_per_day": -13.850629870731364,
-  "running_trades_only_usd_per_day": -3.023260013588505,
+  "running_cautious_usd_per_day": -13.836524620731364,
+  "running_trades_only_usd_per_day": -2.9593464957313618,
   "threshold_usd_per_day": 1.5,
   "verdict": "NOT ENOUGH DATA YET"
  },
- "generated": 1792884443
+ "generated": 1792886843
 }
