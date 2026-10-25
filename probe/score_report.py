@@ -1,6 +1,6 @@
 """Read-only: prints the bot's resolved questions with their scores, and the
 tournament leaderboards (our rank and Metaculus's own baseline bots)."""
-import json, os, sys, urllib.error, urllib.request
+import json, os, sys, time, urllib.error, urllib.request
 from collections import Counter, defaultdict
 
 sys.path.insert(0, "metaculus-bot")
@@ -11,15 +11,22 @@ BASE = "https://www.metaculus.com/api"
 
 
 def get(path):
+    # Metaculus's Cloudflare rate-limits fast callers (error 1015), so go slowly.
     url = path if path.startswith("http") else BASE + path
-    req = urllib.request.Request(url, headers={"Accept": "application/json", "Authorization": f"Token {TOKEN}"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return r.status, json.loads(r.read() or b"null")
-    except urllib.error.HTTPError as e:
-        return e.code, e.read()[:200].decode(errors="replace")
-    except Exception as e:
-        return None, repr(e)[:200]
+    for attempt in range(5):
+        time.sleep(4)
+        req = urllib.request.Request(url, headers={"Accept": "application/json", "Authorization": f"Token {TOKEN}"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.status, json.loads(r.read() or b"null")
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                time.sleep(30 * (attempt + 1))
+                continue
+            return e.code, e.read()[:200].decode(errors="replace")
+        except Exception as e:
+            return None, repr(e)[:200]
+    return 429, "still rate limited"
 
 
 status, me = get("/users/me")
@@ -41,7 +48,11 @@ shown = 0
 by_project = defaultdict(list)
 for post in posts:
     proj = post.get("projects") or {}
-    tours = [(t.get("id"), t.get("slug")) for t in (proj.get("tournament") or [])] or [("default", (post.get("default_project") or {}).get("slug"))]
+    if shown == 0:
+        print("   sample projects:", json.dumps({k: [(x.get("id"), x.get("slug"), x.get("type")) for x in v] if isinstance(v, list) else v for k, v in proj.items()})[:600])
+    tours = ([(t.get("id"), t.get("slug")) for t in (proj.get("tournament") or [])]
+             or [(t.get("id"), t.get("slug")) for t in (proj.get("question_series") or [])]
+             or [((post.get("default_project") or {}).get("id"), (post.get("default_project") or {}).get("slug"))])
     for q in precheck._questions_in_post(post):
         mf = q.get("my_forecasts") or {}
         if shown < 2 and q.get("status") == "resolved":
@@ -72,7 +83,7 @@ for (tid, slug), items in sorted(by_project.items(), key=lambda x: str(x[0])):
         print(f"   RESOLVED {n}: totals={ {k: round(v, 2) for k, v in sums.items()} } means={ {k: round(v / n, 2) for k, v in sums.items()} }")
 
 # Leaderboards: try the endpoints the website uses.
-tids = {t for t, _ in by_project if t != "default"} | {33121}
+tids = {t for t, _ in by_project if isinstance(t, int)} | {33121}
 for tid in sorted(tids, key=str):
     for path in (f"/leaderboards/project/{tid}/", f"/leaderboards/project/{tid}/?primary=true", f"/projects/{tid}/leaderboard/"):
         status, body = get(path)
