@@ -38,6 +38,34 @@ def row(e):
 def leaderboard(pid, uid, uname):
     for path in (f"/leaderboards/project/{pid}/", f"/projects/{pid}/leaderboard/"):
         status, body = get(path)
+        if status == 200 and isinstance(body, list):
+            print(f"== {path}: a list of {len(body)} leaderboard(s); first item keys={sorted(body[0].keys()) if body else None}", flush=True)
+            for lb in body:
+                ents = lb.get("entries")
+                print(f"   lb id={lb.get('id')} name={lb.get('name')!r} score_type={lb.get('score_type')!r} primary={lb.get('is_primary_leaderboard') or lb.get('primary')!r} "
+                      f"finalized={lb.get('finalized')!r} prize_pool={lb.get('prize_pool')!r} entries={len(ents) if isinstance(ents, list) else ents!r}", flush=True)
+            for lb in body:
+                ents = lb.get("entries")
+                if not isinstance(ents, list):
+                    st2, lb = get(f"/leaderboards/{lb.get('id')}/")
+                    print(f"   /leaderboards/{{id}}/ -> HTTP {st2} keys={sorted(lb.keys()) if isinstance(lb, dict) else str(lb)[:80]}", flush=True)
+                    if not isinstance(lb, dict):
+                        continue
+                    ents = lb.get("entries") or []
+                print(f"   --- leaderboard {lb.get('name')!r}: {len(ents)} entries", flush=True)
+                for e in ents[:5]:
+                    print("   top", row(e))
+                for e in ents:
+                    u = e.get("user") or {}
+                    if u.get("id") == uid or u.get("username") == uname:
+                        print("   >>> OURS", row(e), f"of {len(ents)}")
+                for e in ents:
+                    if ((e.get("user") or {}).get("username") or "").lower().startswith("metac-"):
+                        print("   metac", row(e))
+                for k in ("userEntry", "user_entry"):
+                    if lb.get(k):
+                        print("   user_entry", row(lb[k]))
+            return
         if status != 200 or not isinstance(body, dict):
             print(f"== leaderboard {path}: HTTP {status} {str(body)[:100]}", flush=True)
             continue
@@ -67,14 +95,19 @@ print(f"== me: id={uid} username={uname}", flush=True)
 leaderboard(33121, uid, uname)
 
 # MiniBench: find its current project id from one of our MiniBench posts, then its scores and leaderboard.
-status, body = get(f"/posts/?tournaments=minibench&forecaster_id={uid}&limit=50")
+status, body = get(f"/posts/?tournaments=minibench&forecaster_id={uid}&statuses=resolved&limit=50")
 if status == 200:
     res = body.get("results", [])
     pids = set()
-    print(f"== minibench posts we forecast: {len(res)} (count={body.get('count')})", flush=True)
+    print(f"== minibench posts we forecast: {len(res)} (count={body.get('count')}) next={body.get('next')!r}", flush=True)
+    if res:
+        print("   first post projects:", json.dumps(res[0].get("projects"))[:700], flush=True)
+        from collections import Counter
+        print("   statuses:", Counter(((p.get("question") or {}).get("status")) for p in res), flush=True)
     for post in res:
-        for t in ((post.get("projects") or {}).get("tournament") or []):
-            pids.add((t.get("id"), t.get("slug")))
+        for key in ("tournament", "question_series"):
+            for t in ((post.get("projects") or {}).get(key) or []):
+                pids.add((t.get("id"), t.get("slug")))
         q = post.get("question") or {}
         sd = ((q.get("my_forecasts") or {}).get("score_data")) or {}
         if q.get("status") == "resolved":
