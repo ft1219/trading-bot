@@ -5,6 +5,7 @@ import pytest
 
 from bot_config import (
     DEFAULT_FORECAST_MODEL,
+    DEFAULT_TOURNAMENT_FORECAST_MODEL,
     DEFAULT_MAX_COST_PER_RUN_USD,
     DEFAULT_MAX_QUESTIONS_PER_RUN,
     SettingsError,
@@ -17,6 +18,7 @@ from bot_config import (
 def test_defaults_when_nothing_is_set():
     settings = load_settings({})
     assert settings.forecast_model == DEFAULT_FORECAST_MODEL
+    assert settings.tournament_forecast_model == DEFAULT_TOURNAMENT_FORECAST_MODEL
     assert settings.max_questions_per_run == DEFAULT_MAX_QUESTIONS_PER_RUN
     assert settings.max_cost_per_run_usd == DEFAULT_MAX_COST_PER_RUN_USD
     assert settings.forecast_reasoning is True
@@ -24,8 +26,11 @@ def test_defaults_when_nothing_is_set():
 
 def test_blank_values_fall_back_to_defaults():
     # GitHub passes unset repository variables as empty strings.
-    settings = load_settings({"FORECAST_MODEL": "", "MAX_COST_PER_RUN_USD": "  "})
+    settings = load_settings(
+        {"FORECAST_MODEL": "", "TOURNAMENT_FORECAST_MODEL": "", "MAX_COST_PER_RUN_USD": "  "}
+    )
     assert settings.forecast_model == DEFAULT_FORECAST_MODEL
+    assert settings.tournament_forecast_model == DEFAULT_TOURNAMENT_FORECAST_MODEL
     assert settings.max_cost_per_run_usd == DEFAULT_MAX_COST_PER_RUN_USD
 
 
@@ -33,6 +38,7 @@ def test_overrides_are_read():
     settings = load_settings(
         {
             "FORECAST_MODEL": "openrouter/deepseek/deepseek-v4-pro",
+            "TOURNAMENT_FORECAST_MODEL": "openrouter/anthropic/claude-sonnet-5.5",
             "FORECAST_REASONING": "false",
             "PREDICTIONS_PER_QUESTION": "3",
             "MAX_QUESTIONS_PER_RUN": "4",
@@ -40,6 +46,7 @@ def test_overrides_are_read():
         }
     )
     assert settings.forecast_model == "openrouter/deepseek/deepseek-v4-pro"
+    assert settings.tournament_forecast_model == "openrouter/anthropic/claude-sonnet-5.5"
     assert settings.forecast_reasoning is False
     assert settings.predictions_per_question == 3
     assert settings.max_questions_per_run == 4
@@ -71,6 +78,10 @@ def test_reasoning_is_requested_only_for_openrouter_models():
     assert reasoning_kwargs(off) == {}
     other = load_settings({"FORECAST_MODEL": "gpt-4o"})
     assert reasoning_kwargs(other) == {}
+    assert reasoning_kwargs(on, "gpt-4o") == {}
+    assert reasoning_kwargs(other, DEFAULT_TOURNAMENT_FORECAST_MODEL) == {
+        "extra_body": {"reasoning": {"enabled": True}}
+    }
 
 
 def _question(name, closes_in_hours, forecasted=False):

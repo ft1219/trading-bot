@@ -95,7 +95,7 @@ def check_openrouter(key: str | None, get=None) -> tuple[str, str]:
             if limit is None:
                 return BAD, (
                     "OPENROUTER_API_KEY works but has no spending limit. "
-                    "Set a $30-50 limit on the key in OpenRouter."
+                    "Set a $40-60 limit on the key in OpenRouter."
                 )
             if data.get("limit_reset"):
                 return BAD, (

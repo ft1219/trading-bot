@@ -697,11 +697,12 @@ class FallTemplateBot2026(ForecastBot):
 
 
 def build_llms(
-    settings: BotSettings, budget: RunBudget
+    settings: BotSettings, budget: RunBudget, forecast_model: str | None = None
 ) -> dict[str, str | GeneralLlm]:
+    forecast_model = forecast_model or settings.forecast_model
     return {
         "default": BudgetedLlm(
-            model=settings.forecast_model,
+            model=forecast_model,
             budget=budget,
             temperature=0.3,
             # The timeout caps a whole call, not a silence. DeepSeek V3.2 with
@@ -710,20 +711,28 @@ def build_llms(
             # its own DeepSeek V3.2 reasoning bot with 300 s.
             timeout=300,
             allowed_tries=2,
-            **reasoning_kwargs(settings),
+            **reasoning_kwargs(settings, forecast_model),
         ),
         "summarizer": BudgetedLlm(
             model=settings.parser_model, budget=budget, temperature=0.3
         ),
         "researcher": settings.researcher,
+        # The parser reads answers that were already paid for, so it keeps
+        # working past the spending limit (the call limit still applies).
         "parser": BudgetedLlm(
-            model=settings.parser_model, budget=budget, temperature=0.0
+            model=settings.parser_model,
+            budget=budget,
+            temperature=0.0,
+            enforce_spending_limit=False,
         ),
     }
 
 
 def make_bot(
-    settings: BotSettings, budget: RunBudget, publish: bool
+    settings: BotSettings,
+    budget: RunBudget,
+    publish: bool,
+    forecast_model: str | None = None,
 ) -> FallTemplateBot2026:
     return FallTemplateBot2026(
         research_reports_per_question=1,
@@ -736,7 +745,7 @@ def make_bot(
         folder_to_save_reports_to=None,
         skip_previously_forecasted_questions=True,
         extra_metadata_in_explanation=True,
-        llms=build_llms(settings, budget),
+        llms=build_llms(settings, budget, forecast_model),
     )
 
 
@@ -758,6 +767,39 @@ def collect_questions(
     return questions, errors
 
 
+def load_questions(
+    client: MetaculusClient, run_mode: str
+) -> tuple[list[MetaculusQuestion], list[MetaculusQuestion], list[Exception]]:
+    """
+    Returns (questions for the stronger model, questions for the cheaper
+    model, load errors). The main tournament, where most of the prize money
+    is, gets the stronger model; MiniBench and the Cup the cheaper one. The
+    practice questions use the stronger one, so a test run checks that setup.
+    """
+    if run_mode == "tournament":
+        strong, errors = collect_questions(client, [client.CURRENT_AI_COMPETITION_ID])
+        cheap, more_errors = collect_questions(client, [client.CURRENT_MINIBENCH_ID])
+        return strong, cheap, errors + more_errors
+    if run_mode == "metaculus_cup":
+        cheap, errors = collect_questions(client, [client.CURRENT_METACULUS_CUP_ID])
+        return [], cheap, errors
+    # The bot-testing-area tournament contains all question types and is the
+    # recommended target for smoke-testing the bot.
+    strong, errors = collect_questions(client, ["bot-testing-area"])
+    return strong, [], errors
+
+
+def split_by_model(
+    chosen: list[MetaculusQuestion], strong: list[MetaculusQuestion]
+) -> tuple[list[MetaculusQuestion], list[MetaculusQuestion]]:
+    """Split the questions picked for this run into (stronger model, cheaper model)."""
+    strong_ids = {id(q) for q in strong}
+    return (
+        [q for q in chosen if id(q) in strong_ids],
+        [q for q in chosen if id(q) not in strong_ids],
+    )
+
+
 async def forecast_in_batches(
     bot: ForecastBot,
     questions: list[MetaculusQuestion],
@@ -775,6 +817,26 @@ async def forecast_in_batches(
         batch = questions[start : start + batch_size]
         reports.extend(await bot.forecast_questions(batch, return_exceptions=True))
     return reports, []
+
+
+async def forecast_groups(
+    groups: list[tuple[ForecastBot, list[MetaculusQuestion]]],
+    batch_size: int,
+    budget: RunBudget,
+) -> tuple[list, list[MetaculusQuestion]]:
+    """
+    Forecast each (bot, questions) group in turn under one shared run budget.
+    Returns (reports, questions not attempted) across all groups.
+    """
+    reports: list = []
+    not_attempted: list[MetaculusQuestion] = []
+    for bot, questions in groups:
+        if not questions:
+            continue
+        done, skipped = await forecast_in_batches(bot, questions, batch_size, budget)
+        reports.extend(done)
+        not_attempted.extend(skipped)
+    return reports, not_attempted
 
 
 if __name__ == "__main__":
@@ -806,7 +868,15 @@ if __name__ == "__main__":
     logger.info(f"Settings: {settings}")
     budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
 
-    template_bot = make_bot(settings, budget, publish=publish_to_metaculus)
+    # The main tournament gets the stronger model; MiniBench and the Cup keep
+    # the cheaper one. Both share the run budget.
+    tournament_bot = make_bot(
+        settings,
+        budget,
+        publish=publish_to_metaculus,
+        forecast_model=settings.tournament_forecast_model,
+    )
+    other_bot = make_bot(settings, budget, publish=publish_to_metaculus)
 
     TOURNAMENT_URLS = {
         "tournament": "https://www.metaculus.com/tournament/fall-futureeval-2026/",
@@ -815,23 +885,13 @@ if __name__ == "__main__":
     }
 
     client = MetaculusClient()
-    if run_mode == "tournament":
-        open_questions, load_errors = collect_questions(
-            client, [client.CURRENT_AI_COMPETITION_ID, client.CURRENT_MINIBENCH_ID]
-        )
-    elif run_mode == "metaculus_cup":
-        # The Metaculus Cup may be uninitialized near the start of a season.
-        template_bot.skip_previously_forecasted_questions = False
-        open_questions, load_errors = collect_questions(
-            client, [client.CURRENT_METACULUS_CUP_ID]
-        )
-    else:
-        # The bot-testing-area tournament contains all question types and is
-        # the recommended target for smoke-testing the bot.
-        template_bot.skip_previously_forecasted_questions = False
-        open_questions, load_errors = collect_questions(client, ["bot-testing-area"])
-
-    if not template_bot.skip_previously_forecasted_questions:
+    strong_questions, cheap_questions, load_errors = load_questions(client, run_mode)
+    open_questions = strong_questions + cheap_questions
+    if run_mode != "tournament":
+        # The Metaculus Cup may be uninitialized near the start of a season,
+        # and practice questions are forecast again on every test run.
+        tournament_bot.skip_previously_forecasted_questions = False
+        other_bot.skip_previously_forecasted_questions = False
         for question in open_questions:
             question.already_forecasted = False
     chosen, deferred = pick_questions_to_forecast(
@@ -842,15 +902,19 @@ if __name__ == "__main__":
         f"{len(deferred)} deferred to the next run"
     )
 
+    # Main tournament questions first: if the budget runs out, MiniBench waits.
+    chosen_strong, chosen_cheap = split_by_model(chosen, strong_questions)
     forecast_reports, not_attempted = asyncio.run(
-        forecast_in_batches(
-            template_bot, chosen, settings.questions_in_parallel, budget
+        forecast_groups(
+            [(tournament_bot, chosen_strong), (other_bot, chosen_cheap)],
+            settings.questions_in_parallel,
+            budget,
         )
     )
 
     # raise_errors=False so the summary lines below still print when a question
     # failed; the exit code at the end reports the failure.
-    template_bot.log_report_summary(forecast_reports, raise_errors=False)
+    tournament_bot.log_report_summary(forecast_reports, raise_errors=False)
     print_run_summary_banner(
         forecast_reports,
         will_publish=publish_to_metaculus,
@@ -863,6 +927,11 @@ if __name__ == "__main__":
     if budget.calls_without_cost:
         print(
             f"⚠️   {budget.calls_without_cost} call(s) had no price; the cost above is too low."
+        )
+    if budget.failed_calls:
+        print(
+            f"⚠️   {budget.failed_calls} call(s) failed after being sent; any cost they "
+            "had is not in the total above."
         )
     if not_attempted:
         print(
