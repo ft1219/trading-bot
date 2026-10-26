@@ -26,8 +26,11 @@ def test_defaults_when_nothing_is_set():
 
 def test_blank_values_fall_back_to_defaults():
     # GitHub passes unset repository variables as empty strings.
-    settings = load_settings({"FORECAST_MODEL": "", "MAX_COST_PER_RUN_USD": "  "})
+    settings = load_settings(
+        {"FORECAST_MODEL": "", "TOURNAMENT_FORECAST_MODEL": "", "MAX_COST_PER_RUN_USD": "  "}
+    )
     assert settings.forecast_model == DEFAULT_FORECAST_MODEL
+    assert settings.tournament_forecast_model == DEFAULT_TOURNAMENT_FORECAST_MODEL
     assert settings.max_cost_per_run_usd == DEFAULT_MAX_COST_PER_RUN_USD
 
 

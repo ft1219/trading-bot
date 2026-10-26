@@ -717,8 +717,13 @@ def build_llms(
             model=settings.parser_model, budget=budget, temperature=0.3
         ),
         "researcher": settings.researcher,
+        # The parser reads answers that were already paid for, so it keeps
+        # working past the spending limit (the call limit still applies).
         "parser": BudgetedLlm(
-            model=settings.parser_model, budget=budget, temperature=0.0
+            model=settings.parser_model,
+            budget=budget,
+            temperature=0.0,
+            enforce_spending_limit=False,
         ),
     }
 
@@ -760,6 +765,39 @@ def collect_questions(
             logger.exception(f"Could not load questions from tournament {tournament_id}")
             errors.append(e)
     return questions, errors
+
+
+def load_questions(
+    client: MetaculusClient, run_mode: str
+) -> tuple[list[MetaculusQuestion], list[MetaculusQuestion], list[Exception]]:
+    """
+    Returns (questions for the stronger model, questions for the cheaper
+    model, load errors). The main tournament, where most of the prize money
+    is, gets the stronger model; MiniBench and the Cup the cheaper one. The
+    practice questions use the stronger one, so a test run checks that setup.
+    """
+    if run_mode == "tournament":
+        strong, errors = collect_questions(client, [client.CURRENT_AI_COMPETITION_ID])
+        cheap, more_errors = collect_questions(client, [client.CURRENT_MINIBENCH_ID])
+        return strong, cheap, errors + more_errors
+    if run_mode == "metaculus_cup":
+        cheap, errors = collect_questions(client, [client.CURRENT_METACULUS_CUP_ID])
+        return [], cheap, errors
+    # The bot-testing-area tournament contains all question types and is the
+    # recommended target for smoke-testing the bot.
+    strong, errors = collect_questions(client, ["bot-testing-area"])
+    return strong, [], errors
+
+
+def split_by_model(
+    chosen: list[MetaculusQuestion], strong: list[MetaculusQuestion]
+) -> tuple[list[MetaculusQuestion], list[MetaculusQuestion]]:
+    """Split the questions picked for this run into (stronger model, cheaper model)."""
+    strong_ids = {id(q) for q in strong}
+    return (
+        [q for q in chosen if id(q) in strong_ids],
+        [q for q in chosen if id(q) not in strong_ids],
+    )
 
 
 async def forecast_in_batches(
@@ -847,33 +885,13 @@ if __name__ == "__main__":
     }
 
     client = MetaculusClient()
-    tournament_questions: list[MetaculusQuestion] = []
-    if run_mode == "tournament":
-        tournament_questions, load_errors = collect_questions(
-            client, [client.CURRENT_AI_COMPETITION_ID]
-        )
-        minibench_questions, minibench_errors = collect_questions(
-            client, [client.CURRENT_MINIBENCH_ID]
-        )
-        open_questions = tournament_questions + minibench_questions
-        load_errors += minibench_errors
-    elif run_mode == "metaculus_cup":
-        # The Metaculus Cup may be uninitialized near the start of a season.
-        other_bot.skip_previously_forecasted_questions = False
-        open_questions, load_errors = collect_questions(
-            client, [client.CURRENT_METACULUS_CUP_ID]
-        )
-    else:
-        # The bot-testing-area tournament contains all question types and is
-        # the recommended target for smoke-testing the bot. It runs on the
-        # main tournament's model, so a test run checks that setup.
-        tournament_bot.skip_previously_forecasted_questions = False
-        tournament_questions, load_errors = collect_questions(
-            client, ["bot-testing-area"]
-        )
-        open_questions = tournament_questions
-
+    strong_questions, cheap_questions, load_errors = load_questions(client, run_mode)
+    open_questions = strong_questions + cheap_questions
     if run_mode != "tournament":
+        # The Metaculus Cup may be uninitialized near the start of a season,
+        # and practice questions are forecast again on every test run.
+        tournament_bot.skip_previously_forecasted_questions = False
+        other_bot.skip_previously_forecasted_questions = False
         for question in open_questions:
             question.already_forecasted = False
     chosen, deferred = pick_questions_to_forecast(
@@ -885,13 +903,10 @@ if __name__ == "__main__":
     )
 
     # Main tournament questions first: if the budget runs out, MiniBench waits.
-    in_tournament = {id(q) for q in tournament_questions}
+    chosen_strong, chosen_cheap = split_by_model(chosen, strong_questions)
     forecast_reports, not_attempted = asyncio.run(
         forecast_groups(
-            [
-                (tournament_bot, [q for q in chosen if id(q) in in_tournament]),
-                (other_bot, [q for q in chosen if id(q) not in in_tournament]),
-            ],
+            [(tournament_bot, chosen_strong), (other_bot, chosen_cheap)],
             settings.questions_in_parallel,
             budget,
         )
@@ -912,6 +927,11 @@ if __name__ == "__main__":
     if budget.calls_without_cost:
         print(
             f"⚠️   {budget.calls_without_cost} call(s) had no price; the cost above is too low."
+        )
+    if budget.failed_calls:
+        print(
+            f"⚠️   {budget.failed_calls} call(s) failed after being sent; any cost they "
+            "had is not in the total above."
         )
     if not_attempted:
         print(

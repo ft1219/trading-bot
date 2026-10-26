@@ -157,13 +157,56 @@ def test_spending_limit_stops_the_run_between_batches(fake_model):
 
 def test_a_call_starting_after_the_limit_is_refused(fake_model):
     budget = RunBudget(max_cost_usd=0.015, max_calls=100)
-    llm = main.build_llms(load_settings({}), budget)["parser"]
+    llm = main.build_llms(load_settings({}), budget)["default"]
     llm.allowed_tries = 1
     asyncio.run(llm.invoke("hi"))
     asyncio.run(llm.invoke("hi"))
     with pytest.raises(RunBudgetExceeded, match="spending limit"):
         asyncio.run(llm.invoke("hi"))
     assert fake_model["calls"] == 2
+
+
+def test_parser_still_reads_paid_forecasts_after_the_limit(fake_model):
+    # Forecasts already in flight when the limit is crossed were paid for;
+    # refusing their parse calls would throw them away and pay again next run.
+    budget = RunBudget(max_cost_usd=0.015, max_calls=100)
+    llms = main.build_llms(load_settings({}), budget)
+    llms["default"].allowed_tries = 1
+    asyncio.run(llms["default"].invoke("hi"))
+    asyncio.run(llms["default"].invoke("hi"))
+    asyncio.run(llms["parser"].invoke("hi"))
+    with pytest.raises(RunBudgetExceeded, match="spending limit"):
+        asyncio.run(llms["default"].invoke("hi"))
+    assert fake_model["calls"] == 3
+
+
+def test_parser_still_stops_at_the_call_limit(fake_model):
+    budget = RunBudget(max_cost_usd=0.001, max_calls=1)
+    llm = main.build_llms(load_settings({}), budget)["parser"]
+    llm.allowed_tries = 1
+    asyncio.run(llm.invoke("hi"))
+    with pytest.raises(RunBudgetExceeded, match="call limit"):
+        asyncio.run(llm.invoke("hi"))
+
+
+def test_calls_that_fail_after_being_sent_still_count(monkeypatch):
+    # An empty answer is billed by OpenRouter but raises inside GeneralLlm.
+    real_acompletion = litellm.acompletion
+    sent = []
+
+    async def empty_acompletion(**kwargs):
+        sent.append(1)
+        kwargs.pop("extra_body", None)
+        return await real_acompletion(mock_response="", **kwargs)
+
+    monkeypatch.setattr(general_llm, "acompletion", empty_acompletion)
+    budget = RunBudget(max_cost_usd=100.0, max_calls=100)
+    llm = main.build_llms(load_settings({}), budget)["default"]
+    with pytest.raises(Exception):
+        asyncio.run(llm.invoke("hi"))
+    assert len(sent) >= 1
+    assert budget.calls == len(sent)
+    assert budget.failed_calls == len(sent)
 
 
 def test_call_limit_stops_model_calls(fake_model):
@@ -175,6 +218,36 @@ def test_call_limit_stops_model_calls(fake_model):
     with pytest.raises(RunBudgetExceeded):
         asyncio.run(llm.invoke("hi"))
     assert fake_model["calls"] == 3
+
+
+class TournamentClient:
+    CURRENT_AI_COMPETITION_ID = 33121
+    CURRENT_MINIBENCH_ID = "minibench"
+    CURRENT_METACULUS_CUP_ID = "cup"
+    OFFSETS = {33121: 0, "minibench": 10, "cup": 20, "bot-testing-area": 30}
+
+    def get_all_open_questions_from_tournament(self, tournament_id):
+        return [
+            q.model_copy(update={"id_of_post": q.id_of_post + self.OFFSETS[tournament_id]})
+            for q in _questions(2)
+        ]
+
+
+@pytest.mark.parametrize(
+    "run_mode, strong_posts, cheap_posts",
+    [
+        ("tournament", [1000, 1001], [1010, 1011]),
+        ("metaculus_cup", [], [1020, 1021]),
+        ("test_questions", [1030, 1031], []),
+    ],
+)
+def test_each_question_goes_to_the_right_model(run_mode, strong_posts, cheap_posts):
+    strong, cheap, errors = main.load_questions(TournamentClient(), run_mode)
+    assert not errors
+    chosen, _ = main.pick_questions_to_forecast(strong + cheap, max_questions=12)
+    chosen_strong, chosen_cheap = main.split_by_model(chosen, strong)
+    assert sorted(q.id_of_post for q in chosen_strong) == strong_posts
+    assert sorted(q.id_of_post for q in chosen_cheap) == cheap_posts
 
 
 def test_one_tournament_failing_to_load_does_not_block_the_other():
