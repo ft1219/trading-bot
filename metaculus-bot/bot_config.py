@@ -9,7 +9,8 @@ variables -> Actions -> Variables), so switching models needs no code change.
 Defaults are chosen for a small budget. DeepSeek V3.2 with reasoning plus
 AskNews research is the setup Metaculus ran as `metac-deepseek-3-2-reasoning
 +asknews`, which placed 5th of the Metaculus baseline bots in Spring 2026 at
-roughly a cent per question.
+roughly a cent per question. The main tournament, where most of the prize
+money is, gets a stronger model; MiniBench and the Cup keep DeepSeek.
 """
 from __future__ import annotations
 
@@ -18,6 +19,12 @@ from dataclasses import dataclass
 from typing import Mapping
 
 DEFAULT_FORECAST_MODEL = "openrouter/deepseek/deepseek-v3.2"
+# Main tournament only. On Metaculus's FutureEval model leaderboard (October
+# 2026) Gemini 3.7 Flash scores about 11.8 against 6.9 for DeepSeek 3.2 High,
+# at roughly $0.08-0.20 a question. Prizes go by the square of the season
+# score, so the main tournament is where a better model pays; MiniBench pays
+# only its top few bots each round.
+DEFAULT_TOURNAMENT_FORECAST_MODEL = "openrouter/google/gemini-3.7-flash"
 DEFAULT_PARSER_MODEL = "openrouter/deepseek/deepseek-v3.2"
 DEFAULT_RESEARCHER = "asknews/news-summaries"
 
@@ -26,9 +33,10 @@ DEFAULT_PREDICTIONS_PER_QUESTION = 5
 # Metaculus releases at most 5 questions at a time; 12 leaves headroom for a
 # missed run while still bounding the cost of any single run.
 DEFAULT_MAX_QUESTIONS_PER_RUN = 12
-# About 100x the expected cost of a normal run. The season-wide cap is the
-# spending limit set on the OpenRouter key itself.
-DEFAULT_MAX_COST_PER_RUN_USD = 1.00
+# A full run of 12 main-tournament questions on Gemini 3.7 Flash costs about
+# $1-2.50. The season-wide cap is the spending limit set on the OpenRouter key
+# itself.
+DEFAULT_MAX_COST_PER_RUN_USD = 3.00
 # Backstop for models litellm cannot price. A normal question takes about
 # 10-15 calls (5 forecasts and their parsing); conditional questions take
 # about 4 times that.
@@ -48,6 +56,7 @@ class SettingsError(ValueError):
 @dataclass(frozen=True)
 class BotSettings:
     forecast_model: str
+    tournament_forecast_model: str
     parser_model: str
     researcher: str
     forecast_reasoning: bool
@@ -105,6 +114,9 @@ def load_settings(env: Mapping[str, str] | None = None) -> BotSettings:
     env = os.environ if env is None else env
     return BotSettings(
         forecast_model=_text(env, "FORECAST_MODEL", DEFAULT_FORECAST_MODEL),
+        tournament_forecast_model=_text(
+            env, "TOURNAMENT_FORECAST_MODEL", DEFAULT_TOURNAMENT_FORECAST_MODEL
+        ),
         parser_model=_text(env, "PARSER_MODEL", DEFAULT_PARSER_MODEL),
         researcher=_text(env, "RESEARCHER", DEFAULT_RESEARCHER),
         forecast_reasoning=_bool(env, "FORECAST_REASONING", True),
@@ -126,14 +138,13 @@ def load_settings(env: Mapping[str, str] | None = None) -> BotSettings:
     )
 
 
-def reasoning_kwargs(settings: BotSettings) -> dict:
+def reasoning_kwargs(settings: BotSettings, model: str | None = None) -> dict:
     """
     Extra request options that switch on the model's step-by-step reasoning.
     OpenRouter takes this as `reasoning: {enabled: true}` in the request body.
     """
-    if settings.forecast_reasoning and settings.forecast_model.startswith(
-        "openrouter/"
-    ):
+    model = model or settings.forecast_model
+    if settings.forecast_reasoning and model.startswith("openrouter/"):
         return {"extra_body": {"reasoning": {"enabled": True}}}
     return {}
 

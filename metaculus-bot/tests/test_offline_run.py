@@ -34,8 +34,8 @@ def _questions(count):
     ]
 
 
-def _bot(settings, budget):
-    bot = main.make_bot(settings, budget, publish=False)
+def _bot(settings, budget, forecast_model=None):
+    bot = main.make_bot(settings, budget, publish=False, forecast_model=forecast_model)
     bot._llms["researcher"] = "no_research"
     return bot
 
@@ -75,6 +75,8 @@ def test_build_llms_turns_on_reasoning_for_the_forecaster():
 def test_forecaster_waits_up_to_300_seconds_and_no_summary_is_made():
     budget = RunBudget(1.0, 100)
     assert main.build_llms(load_settings({}), budget)["default"].litellm_kwargs["timeout"] == 300
+    gemini = main.build_llms(load_settings({}), budget, "openrouter/google/gemini-3.7-flash")
+    assert gemini["default"].litellm_kwargs["timeout"] == 300
     bot = main.make_bot(load_settings({}), budget, publish=True)
     assert bot.enable_summarize_research is False
     assert bot.publish_reports_to_metaculus is True
@@ -93,6 +95,47 @@ def test_forecasts_every_question_and_counts_real_cost_once(fake_model):
     assert len(forecaster_calls) == 15
     # Only forecasts: no research summary call.
     assert fake_model["calls"] == 15
+
+
+def test_tournament_questions_use_the_stronger_model_and_minibench_the_cheap_one(fake_model):
+    settings = load_settings({})
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
+    tournament_bot = _bot(settings, budget, settings.tournament_forecast_model)
+    other_bot = _bot(settings, budget)
+    questions = _questions(3)
+    reports, not_attempted = asyncio.run(
+        main.forecast_groups(
+            [(tournament_bot, questions[:2]), (other_bot, questions[2:])], 5, budget
+        )
+    )
+    assert not not_attempted
+    assert not [r for r in reports if isinstance(r, BaseException)]
+    forecaster_models = [k["model"] for k in fake_model["kwargs"] if "extra_body" in k]
+    assert forecaster_models.count("openrouter/google/gemini-3.7-flash") == 10
+    assert forecaster_models.count("openrouter/deepseek/deepseek-v3.2") == 5
+    assert all(
+        k["extra_body"] == {"reasoning": {"enabled": True}}
+        for k in fake_model["kwargs"]
+        if "extra_body" in k
+    )
+
+
+def test_spent_budget_leaves_minibench_for_the_next_run(fake_model):
+    settings = load_settings({"MAX_COST_PER_RUN_USD": "0.05", "QUESTIONS_IN_PARALLEL": "1"})
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
+    questions = _questions(3)
+    reports, not_attempted = asyncio.run(
+        main.forecast_groups(
+            [
+                (_bot(settings, budget, settings.tournament_forecast_model), questions[:1]),
+                (_bot(settings, budget), questions[1:]),
+            ],
+            1,
+            budget,
+        )
+    )
+    assert len(reports) == 1
+    assert [q.id_of_post for q in not_attempted] == [1001, 1002]
 
 
 def test_spending_limit_stops_the_run_between_batches(fake_model):

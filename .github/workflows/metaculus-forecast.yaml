@@ -103,6 +103,7 @@ jobs:
           ASKNEWS_API_KEY: ${{ secrets.ASKNEWS_API_KEY }}
           # Optional overrides, set under Settings -> Secrets and variables -> Actions -> Variables.
           FORECAST_MODEL: ${{ vars.FORECAST_MODEL }}
+          TOURNAMENT_FORECAST_MODEL: ${{ vars.TOURNAMENT_FORECAST_MODEL }}
           PARSER_MODEL: ${{ vars.PARSER_MODEL }}
           RESEARCHER: ${{ vars.RESEARCHER }}
           FORECAST_REASONING: ${{ vars.FORECAST_REASONING }}
