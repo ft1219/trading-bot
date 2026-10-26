@@ -14,7 +14,7 @@ The research behind this plan is in [Trading Bot Plan: What Survived the Stress 
 You only do this once. Nothing here needs any coding.
 
 1. **Metaculus.** Create an account at [metaculus.com](https://www.metaculus.com). Go to your profile → **Settings → My Forecasting Bots → Create a Bot**, and copy the bot's API token. Then fill in the [participation form](https://forms.gle/aQdYMq9Pisrf1v7d8) (3 required questions).
-2. **OpenRouter** (pays for the AI). Create an account at [openrouter.ai](https://openrouter.ai), add $20 of credit, and create a key at [openrouter.ai/keys](https://openrouter.ai/keys) with a **credit limit** of $60-80. That limit is the bot's hard spending cap for the season.
+2. **OpenRouter** (pays for the AI). Create an account at [openrouter.ai](https://openrouter.ai), add $20 of credit, and create a key at [openrouter.ai/keys](https://openrouter.ai/keys) with a **credit limit** of $40-60. That limit is the bot's hard spending cap for the season.
 3. **AskNews** (news search, free tier). Create an account at [asknews.app](https://asknews.app) and create API credentials (a client ID and a secret).
 4. **Give the keys to GitHub, not to anyone in chat.** In this repository open **Settings → Secrets and variables → Actions → New repository secret** and add each of these, names exactly as written:
    - `METACULUS_TOKEN`
@@ -37,5 +37,5 @@ The report has a go/no-go check fixed in advance: over the first 14 well-covered
 
 ## Costs
 
-- **AI:** main-tournament questions, where most of the prize money is, use Gemini 3.7 Flash at an estimated 8-20 US cents each. MiniBench and Metaculus Cup questions use DeepSeek V3.2 at about 2-3 cents each (measured in October 2026). Together that is roughly $15-25 a month. The OpenRouter key limit caps the season total. Each run also stops starting new questions once it has spent $3, and every run's log ends with what it spent.
+- **AI:** main-tournament questions, where most of the prize money is, use Gemini 3.7 Flash at about 6-7 US cents each. MiniBench and Metaculus Cup questions use DeepSeek V3.2 at about 2-3 cents each (both measured in October 2026). Together that is roughly $8-15 a month, depending on how many questions Metaculus releases. The OpenRouter key limit caps the season total. Each run also stops starting new questions once it has spent $2, and every run's log ends with what it spent.
 - **GitHub:** free. Private repositories get 2,000 free Actions minutes a month. The timer starts the bots 36 times a day; a quick check first asks Metaculus whether any open question still needs a forecast from the bot, and when none does the run ends in under a minute. That is about 1,100 minutes a month plus the runs that actually forecast. The Polymarket practice step runs inside the same minute. If GitHub warns about minutes, change `JOBS` in `metaculus-bot/timer_setup.py` to hourly and run the setup workflow again.

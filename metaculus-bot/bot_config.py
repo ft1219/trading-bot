@@ -21,7 +21,8 @@ from typing import Mapping
 DEFAULT_FORECAST_MODEL = "openrouter/deepseek/deepseek-v3.2"
 # Main tournament only. On Metaculus's FutureEval model leaderboard (October
 # 2026) Gemini 3.7 Flash scores about 11.8 against 6.9 for DeepSeek 3.2 High,
-# at roughly $0.08-0.20 a question. Prizes go by the square of the season
+# for about $0.065 a question (11 practice questions cost $0.71 on
+# 2026-10-26, against about $0.024 for DeepSeek). Prizes go by the square of the season
 # score, so the main tournament is where a better model pays; MiniBench pays
 # only its top few bots each round.
 DEFAULT_TOURNAMENT_FORECAST_MODEL = "openrouter/google/gemini-3.7-flash"
@@ -34,9 +35,9 @@ DEFAULT_PREDICTIONS_PER_QUESTION = 5
 # missed run while still bounding the cost of any single run.
 DEFAULT_MAX_QUESTIONS_PER_RUN = 12
 # A full run of 12 main-tournament questions on Gemini 3.7 Flash costs about
-# $1-2.50. The season-wide cap is the spending limit set on the OpenRouter key
+# $0.80. The season-wide cap is the spending limit set on the OpenRouter key
 # itself.
-DEFAULT_MAX_COST_PER_RUN_USD = 3.00
+DEFAULT_MAX_COST_PER_RUN_USD = 2.00
 # Backstop for models litellm cannot price. A normal question takes about
 # 10-15 calls (5 forecasts and their parsing); conditional questions take
 # about 4 times that.

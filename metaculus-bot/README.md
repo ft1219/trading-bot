@@ -15,14 +15,14 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `TOURNAMENT_FORECAST_MODEL` | `openrouter/google/gemini-3.7-flash` | Model that writes the forecasts for the main tournament and the practice run. Scores about 11.8 on Metaculus's FutureEval model leaderboard against 6.9 for DeepSeek 3.2, at roughly $0.08-0.20 a question. |
+| `TOURNAMENT_FORECAST_MODEL` | `openrouter/google/gemini-3.7-flash` | Model that writes the forecasts for the main tournament and the practice run. Scores about 11.8 on Metaculus's FutureEval model leaderboard against 6.9 for DeepSeek 3.2, for about $0.065 a question (measured on 11 practice questions). |
 | `FORECAST_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that writes the forecasts for MiniBench and the Metaculus Cup. With AskNews this matches Metaculus's `metac-deepseek-3-2-reasoning+asknews` baseline (5th of the Metaculus baselines, Spring 2026). |
 | `FORECAST_REASONING` | `true` | Turns on the model's reasoning mode on OpenRouter. |
 | `PARSER_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that turns the forecast text into numbers. |
 | `RESEARCHER` | `asknews/news-summaries` | News research for each question. |
 | `PREDICTIONS_PER_QUESTION` | `5` | Forecasts averaged per question. |
 | `MAX_QUESTIONS_PER_RUN` | `12` | Questions handled per run; the rest wait for the next run. |
-| `MAX_COST_PER_RUN_USD` | `3.00` | AI spending limit per run, checked before every call. Must be above 0. |
+| `MAX_COST_PER_RUN_USD` | `2.00` | AI spending limit per run, checked before every call. Must be above 0. |
 | `MAX_LLM_CALLS_PER_RUN` | `400` | Backstop limit on AI calls per run, for models whose price litellm does not know. |
 | `QUESTIONS_IN_PARALLEL` | `5` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
 

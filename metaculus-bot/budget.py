@@ -8,8 +8,8 @@ run budget before the call (raising RunBudgetExceeded, which does reach the
 bot) and records the call's real cost afterwards.
 
 A few questions are forecast at a time, so a run can overshoot the limit by
-the calls already in flight when it is reached: up to about a dollar with
-five main-tournament questions on Gemini. The parser that reads those
+the calls already in flight when it is reached: about 30 cents with five
+main-tournament questions on Gemini. The parser that reads those
 forecasts' answers is exempt from the spending limit (it costs a fraction of
 a cent and only reads answers already paid for), so a run that crosses the
 limit still publishes the forecasts it paid for. The season-wide hard cap is
