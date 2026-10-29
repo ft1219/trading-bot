@@ -1,0 +1,1 @@
+{"errors": [], "fills": 54, "markets": 25, "markouts": 84, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "refresh": {"candidates": 357, "chosen": 25, "dropped": 25, "scored": 118}, "samples": 0, "seconds": 11.59, "ts": 1793232445}
