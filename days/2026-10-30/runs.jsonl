@@ -28,3 +28,4 @@
 {"errors": [], "fills": 52, "markets": 25, "markouts": 116, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.99, "ts": 1793383647}
 {"errors": [], "fills": 23, "markets": 25, "markouts": 31, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.83, "ts": 1793386045}
 {"errors": [], "fills": 40, "markets": 25, "markouts": 87, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.62, "ts": 1793388447}
+{"errors": [], "fills": 27, "markets": 25, "markouts": 37, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 3.21, "ts": 1793390846}
