@@ -1,14 +1,15 @@
 # Polymarket practice mode
 
-Paper trading only: no money, no account. Last updated 2026-10-29 23:27 UTC; 36 run(s) in the last 24 hours, 19 with problems noted in `runs.jsonl`.
+Paper trading only: no money, no account. Last updated 2026-10-30 00:07 UTC; 36 run(s) in the last 24 hours, 20 with problems noted in `runs.jsonl`.
 
-**Go/no-go check (Gate A): NOT ENOUGH DATA YET.** 9 of 14 well-covered days so far, averaging -$10.50 a day on the cautious estimate (-$0.57 if only trades could fill paper orders). The verdict is taken once, on the 14th, and needs more than $1.50 a day.
+**Go/no-go check (Gate A): NOT ENOUGH DATA YET.** 10 of 14 well-covered days so far, averaging -$11.32 a day on the cautious estimate (-$0.64 if only trades could fill paper orders). The verdict is taken once, on the 14th, and needs more than $1.50 a day.
 
 Pilot: the top 2 markets each day where others already quote near the middle, $20 each, orders 1 tick(s) behind the closest prices to the midpoint.
 
 | Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Pilot trading (trades only) | Watched markets (not thin), rewards low-high | Fills | 1h markouts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-29 (today, so far) | -$21.66 | $14.00 | $7.82 | -$28.95 | -$9.21 | $50.02-$303.90 | 752 | -$235.91 |
+| 2026-10-30 (today, so far) | $2.75 | $2.75 | $0.00 | $2.75 | $0.00 | $0.00-$0.00 | 9 | $2.36 |
+| 2026-10-29 | -$21.66 | $14.00 | $7.82 | -$28.95 | -$9.21 | $50.02-$303.90 | 752 | -$235.91 |
 | 2026-10-28 | -$2.59 | $6.94 | $6.01 | -$8.60 | -$5.43 | $76.38-$357.13 | 769 | -$198.77 |
 | 2026-10-27 | -$11.38 | $126.82 | $7.70 | -$19.09 | -$9.41 | $81.50-$479.58 | 710 | -$207.40 |
 | 2026-10-26 | $2.04 | $27.32 | $11.03 | -$8.99 | -$0.72 | $37.06-$170.86 | 873 | -$187.94 |
@@ -24,8 +25,8 @@ Pilot: the top 2 markets each day where others already quote near the middle, $2
 
 Other distances from the midpoint, latest full day:
 
-- 0 tick(s) back: pilot cautious -$4.75, 44 watched markets (not thin), rewards $60.87-$249.70, trading -$227.36 (-$89.37 trades only), rebates $0.42, fills 1106, 24h markouts -$270.65
-- 1 tick(s) back: pilot cautious -$2.59, 44 watched markets (not thin), rewards $76.38-$357.13, trading -$163.45 (-$69.83 trades only), rebates $0.30, fills 769, 24h markouts -$160.93
-- 2 tick(s) back: pilot cautious -$5.92, 44 watched markets (not thin), rewards $68.16-$292.01, trading -$150.13 (-$55.84 trades only), rebates $0.26, fills 586, 24h markouts -$113.38
+- 0 tick(s) back: pilot cautious -$25.34, 41 watched markets (not thin), rewards $42.17-$270.92, trading -$213.01 (-$110.39 trades only), rebates $0.00, fills 968, 24h markouts -$231.96
+- 1 tick(s) back: pilot cautious -$21.66, 41 watched markets (not thin), rewards $50.02-$303.90, trading -$191.05 (-$106.76 trades only), rebates $0.00, fills 752, 24h markouts -$143.02
+- 2 tick(s) back: pilot cautious -$13.87, 41 watched markets (not thin), rewards $52.31-$318.78, trading -$150.03 (-$71.35 trades only), rebates $0.00, fills 721, 24h markouts -$136.24
 
-Thin markets (6 watched): nobody else quotes near the middle, so a paper order there would set the price alone and these numbers cannot be trusted. Best case rewards $3.73, paper trading -$14.28. They never count towards the go/no-go check.
+Thin markets (9 watched): nobody else quotes near the middle, so a paper order there would set the price alone and these numbers cannot be trusted. Best case rewards $44.38, paper trading -$49.15. They never count towards the go/no-go check.
