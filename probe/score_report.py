@@ -94,6 +94,22 @@ print(f"== me: id={uid} username={uname}", flush=True)
 
 leaderboard(33121, uid, uname)
 
+# Main tournament: our resolved questions and their peer scores.
+status, body = get(f"/posts/?tournaments=33121&forecaster_id={uid}&statuses=resolved&limit=100")
+if status == 200:
+    res = body.get("results", [])
+    total = 0.0
+    print(f"== main-tournament resolved posts we forecast: {len(res)} (count={body.get('count')})", flush=True)
+    for post in res:
+        q = post.get("question") or {}
+        sd = ((q.get("my_forecasts") or {}).get("score_data")) or {}
+        total += sd.get("peer_score") or 0
+        print(f"   q{q.get('id')} res={q.get('resolution')} peer={round(sd.get('peer_score') or 0, 1)} "
+              f"baseline={round(sd.get('baseline_score') or 0, 1)} | {(post.get('title') or '')[:60]}")
+    print(f"   sum of peer scores: {round(total, 1)}", flush=True)
+else:
+    print("main-tournament posts:", status, str(body)[:150])
+
 # MiniBench: find its current project id from one of our MiniBench posts, then its scores and leaderboard.
 status, body = get(f"/posts/?tournaments=minibench&forecaster_id={uid}&statuses=resolved&limit=50")
 if status == 200:
