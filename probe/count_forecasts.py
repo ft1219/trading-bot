@@ -26,20 +26,20 @@ def get(url):
 
 status, me = get(BASE + "/users/me")
 uid = me["id"]
-for slug in ("33121", "minibench", "bot-testing-area"):
-    url = f"{BASE}/posts/?tournaments={slug}&forecaster_id={uid}&limit=100&order_by=-published_at"
-    n, months, statuses, pages = 0, Counter(), Counter(), 0
-    while url and pages < 6:
-        status, body = get(url)
-        pages += 1
-        if status != 200 or not isinstance(body, dict):
-            print(f"{slug}: HTTP {status} {str(body)[:120]}", flush=True)
-            break
-        for post in body.get("results", []):
-            n += 1
-            q = post.get("question") or {}
-            statuses[q.get("status") or post.get("status")] += 1
-            months[(post.get("published_at") or post.get("open_time") or "")[:10]] += 1
-        url = body.get("next")
-    print(f"== {slug}: {n} question(s) forecast; statuses={dict(statuses)}", flush=True)
-    print("   by publish date:", dict(sorted(months.items())), flush=True)
+url = f"{BASE}/posts/?forecaster_id={uid}&limit=100&order_by=-published_at"
+n, groups, pages = 0, Counter(), 0
+while url and pages < 8:
+    status, body = get(url)
+    pages += 1
+    if status != 200 or not isinstance(body, dict):
+        print(f"all: HTTP {status} {str(body)[:120]}", flush=True)
+        break
+    for post in body.get("results", []):
+        n += 1
+        tours = (post.get("projects") or {}).get("tournament") or []
+        name = ",".join(f"{t.get('id')}:{t.get('slug')}" for t in tours) or "none"
+        groups[(name, (post.get("published_at") or "")[:7])] += 1
+    url = body.get("next")
+print(f"== all: {n} question(s) forecast over {pages} page(s)", flush=True)
+for (name, month), c in sorted(groups.items()):
+    print(f"   {name} {month}: {c}", flush=True)
