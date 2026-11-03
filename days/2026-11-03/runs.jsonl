@@ -1,2 +1,3 @@
 {"errors": [], "fills": 24, "markets": 25, "markouts": 41, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "refresh": {"candidates": 782, "chosen": 25, "dropped": 24, "scored": 119}, "samples": 0, "seconds": 14.11, "ts": 1793664448}
 {"errors": [], "fills": 127, "markets": 25, "markouts": 61, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 1.71, "ts": 1793666849}
+{"errors": [], "fills": 132, "markets": 25, "markouts": 130, "plan": {"budget_per_market_usd": 20.0, "pilot_level": 1, "pilot_markets": 2}, "samples": 25, "seconds": 2.76, "ts": 1793669248}
