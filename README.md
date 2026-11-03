@@ -7,7 +7,7 @@ The research behind this plan is in [Trading Bot Plan: What Survived the Stress 
 | Part | What it does | Money at risk | Status |
 | --- | --- | --- | --- |
 | [`metaculus-bot/`](metaculus-bot/) | Answers forecasting questions in Metaculus's AI tournaments, which pay prizes to the most accurate bots | None (only AI costs, capped) | Running since 17 October 2026 |
-| [`polymarket-shadow/`](polymarket-shadow/) | Practice mode for a Polymarket reward bot: records, with no money, what keeping small orders in the book would have earned and lost | None (paper trading on public data) | Built; a real 20-40 USDT pilot only if it passes the check below and you say go |
+| [`polymarket-shadow/`](polymarket-shadow/) | Practice mode for a Polymarket reward bot: records, with no money, what keeping small orders in the book would have earned and lost | None (paper trading on public data) | Stopped 3 November 2026: it failed its 14-day check, so there is no real pilot |
 
 ## Setting up the Metaculus bot
 
@@ -27,7 +27,7 @@ You only do this once. Nothing here needs any coding.
    - Create a cron-job.org account, then an API key under **Settings** in its console (no IP limit). Save it as the secret `CRONJOB_API_KEY`.
    - Open the **Actions** tab → **Metaculus - set up the outside timer** → **Run workflow**. It checks the GitHub key by starting one run, then creates two cron-job.org jobs that start **Bots - every 40 minutes** every 40 minutes, and prints their next run times.
 
-If a run fails, GitHub emails you; the bot retries on the next run. If cron-job.org cannot start a run, it emails you. To pause both bots, turn off the two "Metaculus bot timer" jobs in the [cron-job.org console](https://console.cron-job.org). To pause only one, add a repository variable (**Settings → Secrets and variables → Actions → Variables**) named `METACULUS_BOT` or `POLYMARKET_PRACTICE` with the value `off`. The GitHub key expires after 90 days (mid-January 2027, after this season): make a new one with the same link, replace `BOT_TIMER_TOKEN`, and run the setup workflow again.
+If a run fails, GitHub emails you; the bot retries on the next run. If cron-job.org cannot start a run, it emails you. To pause the bot, turn off the two "Metaculus bot timer" jobs in the [cron-job.org console](https://console.cron-job.org), or add a repository variable (**Settings → Secrets and variables → Actions → Variables**) named `METACULUS_BOT` with the value `off`. The GitHub key expires after 90 days (mid-January 2027, after this season): make a new one with the same link, replace `BOT_TIMER_TOKEN`, and run the setup workflow again.
 
 ## Polymarket practice mode
 
@@ -35,7 +35,9 @@ Nothing to set up: it uses only Polymarket's public data, with no account, keys 
 
 The report has a go/no-go check fixed in advance: over the first 14 well-covered days, the two pilot markets must average more than $1.50 a day on the cautious estimate. The verdict is taken once, on that 14th day. The report also shows a gentler figure that only lets trades fill the paper orders; the real result is likely between the two. Even if it passes, real trading only starts when you say so, from a Malaysian internet connection, with 20-40 USDT.
 
+**Result:** it failed. Over the 14 well-covered days (18 October to 2 November 2026) the pilot markets averaged -$12.01 a day on the cautious estimate and -$1.89 with trades only, against more than $1.50 needed; 3 of the 14 days were positive. Rewards paid about $5 a day, but prices moving against the paper orders cost more. The recorder was switched off on 3 November 2026; the code and the `polymarket-shadow-data` branch stay for reference.
+
 ## Costs
 
 - **AI:** main-tournament questions, where most of the prize money is, use Gemini 3.7 Flash at about 6-7 US cents each. MiniBench and Metaculus Cup questions use DeepSeek V3.2 at about 2-3 cents each (both measured in October 2026). Together that is roughly $8-15 a month, depending on how many questions Metaculus releases. The OpenRouter key limit caps the season total. Each run also stops starting new questions once it has spent $2, and every run's log ends with what it spent.
-- **GitHub:** free. Private repositories get 2,000 free Actions minutes a month. The timer starts the bots 36 times a day; a quick check first asks Metaculus whether any open question still needs a forecast from the bot, and when none does the run ends in under a minute. That is about 1,100 minutes a month plus the runs that actually forecast. The Polymarket practice step runs inside the same minute. If GitHub warns about minutes, change `JOBS` in `metaculus-bot/timer_setup.py` to hourly and run the setup workflow again.
+- **GitHub:** free. Private repositories get 2,000 free Actions minutes a month. The timer starts the bots 36 times a day; a quick check first asks Metaculus whether any open question still needs a forecast from the bot, and when none does the run ends in under a minute. That is about 1,100 minutes a month plus the runs that actually forecast. If GitHub warns about minutes, change `JOBS` in `metaculus-bot/timer_setup.py` to hourly and run the setup workflow again.

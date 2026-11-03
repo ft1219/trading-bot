@@ -4,9 +4,11 @@ Paper market making on Polymarket's liquidity-reward markets, using only public 
 
 It answers one question before any money is risked: would a small bot that keeps a bid and an ask near the midpoint earn more in rewards and fee rebates than it loses when prices move against it?
 
+**Answer: no.** It failed its go/no-go check on 2 November 2026: over 14 well-covered days the two pilot markets averaged -$12.01 a day on the cautious estimate (-$1.89 with trades only), against more than $1.50 needed. It was switched off on 3 November 2026. The code, tests and the `polymarket-shadow-data` branch are kept for reference; running it again means adding its step back to `.github/workflows/metaculus-forecast.yaml` (see that file's history).
+
 ## How a run works
 
-Each run happens inside the 40-minute scheduled job (`run.sh`, called from `.github/workflows/metaculus-forecast.yaml`):
+Each run happened inside the 40-minute scheduled job (`run.sh`, called from `.github/workflows/metaculus-forecast.yaml` until 3 November 2026):
 
 1. Once a UTC day, `selection.py` picks the watchlist from every market in the rewards program (`/sampling-markets` and `/rewards/markets/current`). It keeps markets that pay at least $10 a day, have a midpoint between 0.15 and 0.85, end more than 7 days away, are not live sports, and whose minimum reward size fits a $20 budget. It ranks them by the reward our orders would earn against the current book. The top two markets where other makers already quote near the middle become the pilot; "thin" markets fill the remaining watch slots, at least five of them (see below).
 2. `sim.py` replays every public trade record (the taker's and each maker's own leg) and every one-minute midpoint move since the last run against our paper orders at three distances from the midpoint (0, 1 and 2 ticks behind the closest prices). The fill rules are pessimistic: every share that traded at a price worse than ours fills our order first, up to its size; when the midpoint moves through our price, the rest of the order fills; quotes are based on the previous minute's midpoint and replaced only at the next one; and a $20 budget per market, where selling shares we already hold needs no cash and money lost on round trips leaves the budget until rewards and rebates make it up (each day's are counted as paid the next day, and only if they reach the $1 minimum payout). If the price history has a hole of more than 10 minutes, the last quotes are assumed to have stayed up through it, and the stretch is marked as a gap. A second replay of the same quotes lets only trades fill them, for comparison (see Known limits).
@@ -46,9 +48,9 @@ The first live run found that most of the best-paying reward markets have almost
 
 ## Settings
 
-Repository variables, all optional: `PM_WATCH_MARKETS` (default 25). Set `POLYMARKET_PRACTICE` to `off` to pause it. The pilot's size and count (2 markets, $20 each) are fixed by the plan, so they are not variables.
+Repository variables, all optional: `PM_WATCH_MARKETS` (default 25). The pilot's size and count (2 markets, $20 each) are fixed by the plan, so they are not variables.
 
-The top of `report.md` says when it was last updated and how many runs in the last 24 hours noted a problem. If the practice step itself fails, the scheduled run turns red and GitHub emails you; forecasting carries on.
+The top of `report.md` says when it was last updated and how many runs in the last 24 hours noted a problem.
 
 ## Tests
 
