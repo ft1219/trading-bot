@@ -1,6 +1,6 @@
 # Polymarket practice mode
 
-Paper trading only: no money, no account. Last updated 2026-11-04 20:47 UTC; 37 run(s) in the last 24 hours, 11 with problems noted in `runs.jsonl`.
+Paper trading only: no money, no account. Last updated 2026-11-04 21:27 UTC; 37 run(s) in the last 24 hours, 12 with problems noted in `runs.jsonl`.
 
 **Go/no-go check (Gate A): FAIL.** Decided on 2026-11-02, the 14th well-covered day: the pilot markets averaged -$12.01 a day on the cautious estimate, against the $1.50 needed. If only trades could fill paper orders (no fills from midpoint moves alone), it would have been -$1.89 a day. The verdict does not change after that day. For information, all 15 well-covered day(s) so far average -$12.71 (-$2.17 trades only).
 
@@ -8,7 +8,7 @@ Pilot: the top 2 markets each day where others already quote near the middle, $2
 
 | Day | Pilot cautious | Pilot optimistic | Pilot rewards (low) | Pilot trading | Pilot trading (trades only) | Watched markets (not thin), rewards low-high | Fills | 1h markouts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-11-04 (today, so far) | -$9.05 | $34.53 | $7.39 | -$16.44 | -$3.92 | $61.34-$440.81 | 408 | -$248.96 |
+| 2026-11-04 (today, so far) | -$8.88 | $35.14 | $7.55 | -$16.44 | -$3.92 | $62.43-$460.22 | 415 | -$248.96 |
 | 2026-11-03 | -$24.55 | -$15.58 | $4.67 | -$29.22 | -$11.53 | $63.39-$271.83 | 725 | -$210.31 |
 | 2026-11-02 | -$12.45 | $13.59 | $3.38 | -$14.94 | -$10.74 | $33.37-$196.23 | 818 | -$121.23 |
 | 2026-11-01 | -$9.94 | $13.59 | $3.06 | -$13.00 | -$2.80 | $48.77-$246.54 | 763 | -$192.64 |
