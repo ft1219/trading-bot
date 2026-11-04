@@ -12,3 +12,6 @@
 {"condition_id": "0x5729322bc449c27498f17b812b5f70af7d0762a7701267a653c48b95ab1a1ec2", "from": 1793820330, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793822730, "ts": 1793822850}
 {"condition_id": "0x604404c6eb499e7530a1c5f369b18c5b4e9c3aa69b179afc8bc7234258a00f95", "from": 1793820330, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793822730, "ts": 1793822850}
 {"condition_id": "0xd725f6b7a849bc3fce62664805f6b18aab1bdaa6343cf49911776a1d6031d41d", "from": 1793820330, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793822730, "ts": 1793822850}
+{"condition_id": "0x5729322bc449c27498f17b812b5f70af7d0762a7701267a653c48b95ab1a1ec2", "from": 1793822730, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793825127, "ts": 1793825247}
+{"condition_id": "0x604404c6eb499e7530a1c5f369b18c5b4e9c3aa69b179afc8bc7234258a00f95", "from": 1793822730, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793825127, "ts": 1793825247}
+{"condition_id": "0xd725f6b7a849bc3fce62664805f6b18aab1bdaa6343cf49911776a1d6031d41d", "from": 1793822730, "pilot": false, "reason": "no midpoint history for the end of the window", "to": 1793825127, "ts": 1793825247}
