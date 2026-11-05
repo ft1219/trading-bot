@@ -8,6 +8,7 @@ The research behind this plan is in [Trading Bot Plan: What Survived the Stress 
 | --- | --- | --- | --- |
 | [`metaculus-bot/`](metaculus-bot/) | Answers forecasting questions in Metaculus's AI tournaments, which pay prizes to the most accurate bots | None (only AI costs, capped) | Running since 17 October 2026 |
 | [`polymarket-shadow/`](polymarket-shadow/) | Practice mode for a Polymarket reward bot: records, with no money, what keeping small orders in the book would have earned and lost | None (paper trading on public data) | Stopped 3 November 2026: it failed its 14-day check, so there is no real pilot |
+| [`polymarket-lab/`](polymarket-lab/) | Strategy lab: tests several Polymarket strategies side by side with pretend money, buying at real asking prices, and ranks them | None (paper trading on public data) | Running from November 2026; results on the `polymarket-lab-data` branch, `report.md` |
 
 ## Setting up the Metaculus bot
 
