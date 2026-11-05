@@ -5,24 +5,31 @@ Pretend money only. Public data, no account, no keys, no orders.
 
 Each run (every 40 minutes, inside the "Bots - every 40 minutes" workflow):
 1. Settles pretend positions whose markets have resolved ($1 or $0 a share).
-2. Lists every open market that ends within 7 days (Gamma).
+2. Lists every open event that ends within 7 days (Gamma; about 7,500
+   events holding 100,000+ markets, mostly sports props).
 3. Asks each strategy in strategies.py which markets it would buy.
 4. Fills those buys against the real order book (walking the asks, up to
-   the strategy's price cap) and adds Polymarket's taker fee.
+   the strategy's price cap) and adds Polymarket's taker fee. A fill below
+   Polymarket's minimum order (usually 5 shares) is no trade.
 5. Daily temperature markets: compares each range's price with the chance
-   two weather-model ensembles give it, and buys where the price is at
-   least 10 cents too low ("weather_forecast").
+   two weather-model ensembles give it, and buys where the forecast gives
+   at least 10 cents more than the price, before the station's local day
+   starts ("weather_forecast", see weather.py).
 6. Looks for multi-choice markets whose prices add up to less than $1
    ("price_gap"), and fills those against the real books too.
 7. Rewrites report.md / summary.json.
 
 Data layout (the polymarket-lab-data branch):
-- state.json: open positions and which events each strategy already traded
-- trades.jsonl: every pretend buy, one per line
-- settled.jsonl: every finished position with its result
+- state.json: open positions, which events each strategy already traded,
+  stored verdicts and station coordinates
+- forecasts_cache.json: each station's latest weather-model ensemble
+- trades/YYYY-MM.jsonl: every pretend buy, one per line
+- settled/YYYY-MM.jsonl: every finished position with its result
 - runs.jsonl: when each run happened, how long it took, and any problems
-- gaps/YYYY-MM-DD.jsonl, weather/YYYY-MM-DD.jsonl: what price_gap and
-  weather_forecast saw, trade or not
+- gaps/YYYY-MM-DD.jsonl: each near price gap seen by price_gap
+- weather/YYYY-MM-DD.jsonl: each forecast-versus-price disagreement found
+- forecasts/YYYY-MM-DD.jsonl: one full forecast-versus-price snapshot per
+  temperature event per day, for checking calibration later
 """
 from __future__ import annotations
 
@@ -45,10 +52,19 @@ import strategies as S  # noqa: E402
 import weather  # noqa: E402
 
 HORIZON_HOURS = 168
-MAX_UNIVERSE = 6000
+SLICE_HOURS = 6  # Gamma refuses offsets past about 2,000; slices that still overflow are halved
+MIN_SLICE_SECONDS = 600
+MAX_LIST_CALLS = 400
+# What a strategy gets to see of a market (the rest of Gamma's record is dropped to save memory)
+VIEW_KEYS = ("conditionId", "question", "groupItemTitle", "bestBid", "bestAsk", "oneDayPriceChange", "negRisk",
+             "negRiskAugmented", "endDate", "sportsMarketType", "gameStartTime", "orderMinSize", "volume24hr")
 GAP_BUDGET_USD = 20.0  # most a price_gap trade may spend
 GAP_MIN_EDGE = 0.005  # needs at least half a cent a share-set after fees
 GAP_MAX_OUTCOMES = 40
+GAP_NEAR = 0.02  # a set within 2% of its payout is worth looking at (and recording)
+GAP_MAX_EVENTS = 60  # most events whose books are read in one run (the nearest gaps first)
+STALE_DAYS = 3  # an open position this long past its market's end is reported
+REMEMBER_DAYS = 7  # how long after its end an event stays "already traded"
 
 
 def parse_ts(s: str | None) -> float | None:
@@ -76,6 +92,13 @@ def _json_list(v) -> list:
         return []
 
 
+def _float(x, default: float) -> float:
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return default
+
+
 def market_view(m: dict, now: float) -> dict | None:
     """Gamma market plus the fields strategies use; None if it cannot be traded."""
     end = parse_ts(m.get("endDate"))
@@ -84,7 +107,8 @@ def market_view(m: dict, now: float) -> dict | None:
         return None
     if m.get("closed") or not m.get("active") or m.get("acceptingOrders") is False or m.get("enableOrderBook") is False:
         return None
-    v = dict(m)
+    v = {k: m.get(k) for k in VIEW_KEYS}
+    v["ends_at"] = int(end)
     v["hours_left"] = (end - now) / 3600
     v["sport"] = m.get("sportsMarketType") or None
     start = parse_ts(m.get("gameStartTime"))
@@ -94,6 +118,9 @@ def market_view(m: dict, now: float) -> dict | None:
     ev = (m.get("events") or [{}])[0] or {}
     v["event_id"] = str(ev.get("id") or m["conditionId"])
     v["event_title"] = ev.get("title") or m.get("question")
+    v["temp"] = weather.is_temperature_event(v["event_title"])
+    v["volume_24h"] = _float(m.get("volume24hr"), 0.0)
+    v["min_size"] = _float(m.get("orderMinSize"), 5.0) or 5.0
     sched = m.get("feeSchedule") or {}
     v["fee_rate"] = float(sched.get("rate") or 0) if m.get("feesEnabled") else 0.0
     v["fee_exp"] = float(sched.get("exponent") or 1)
@@ -148,34 +175,85 @@ def fill_shares(asks, shares: float, rate: float, exp: float = 1.0):
 
 # ---------------------------------------------------------------- data access
 
-def list_markets(now: float, fetch=pmapi.http_json) -> list[dict]:
-    lo = dt.datetime.fromtimestamp(now, dt.timezone.utc)
-    hi = lo + dt.timedelta(hours=HORIZON_HOURS)
+def _event_slice(a: float, b: float, fetch) -> tuple[list[dict], bool, int]:
+    """Events ending in [a, b): (rows, complete, calls). Incomplete when Gamma's offset cap was hit."""
+    rows: list[dict] = []
+    offset, calls = 0, 0
+    while True:
+        q = urllib.parse.urlencode({
+            "active": "true", "closed": "false", "limit": 100, "offset": offset,
+            "end_date_min": dt.datetime.fromtimestamp(a, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "end_date_max": dt.datetime.fromtimestamp(b, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
+        page = fetch(f"{pmapi.GAMMA}/events?{q}", None)
+        calls += 1
+        if not isinstance(page, list):
+            raise pmapi.ApiError("/events: unexpected shape")
+        rows.extend(page)
+        if len(page) < 100:
+            return rows, True, calls
+        offset += 100
+        if offset > 2000:
+            return rows, False, calls
+
+
+def list_events(now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[str]]:
+    """
+    Every open event ending within HORIZON_HOURS, with its markets, and any
+    problems. (Events, not markets: a week holds 100,000+ markets but only
+    about 7,500 events, and Gamma pages at 100 a call.) The week is read in
+    SLICE_HOURS slices, several at once; a slice with more events than Gamma
+    will page through is split in half until it fits (or is MIN_SLICE_SECONDS
+    long, when the rest of it is given up and reported).
+    """
+    problems: list[str] = []
     out: list[dict] = []
-    # Gamma refuses offsets past about 2,000, so walk the week in 12-hour slices.
-    a = lo
-    while a < hi and len(out) < MAX_UNIVERSE:
-        b = min(a + dt.timedelta(hours=12), hi)
-        offset = 0
-        while offset <= 2000:
-            q = urllib.parse.urlencode({
-                "active": "true", "closed": "false", "limit": 100, "offset": offset,
-                "end_date_min": a.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "end_date_max": b.strftime("%Y-%m-%dT%H:%M:%SZ")})
-            page = fetch(f"{pmapi.GAMMA}/markets?{q}", None)
-            if not isinstance(page, list):
-                raise pmapi.ApiError("/markets: unexpected shape")
-            out.extend(page)
-            if len(page) < 100:
-                break
-            offset += 100
+    calls = 0
+    pending = []
+    a = now
+    while a < now + HORIZON_HOURS * 3600:
+        b = min(a + SLICE_HOURS * 3600, now + HORIZON_HOURS * 3600)
+        pending.append((a, b))
         a = b
+    while pending:
+        if calls > MAX_LIST_CALLS:
+            problems.append(f"events: stopped after {calls} calls with {len(pending)} slices unread")
+            break
+        batch, pending = pending[:16], pending[16:]
+        results = pmapi.parallel({f"{a}-{b}": (lambda a=a, b=b: _event_slice(a, b, fetch)) for a, b in batch}, workers=8)
+        for (a, b), res in zip(batch, results.values()):
+            if isinstance(res, Exception):
+                if not isinstance(res, pmapi.ApiError):
+                    res = pmapi.ApiError(repr(res))
+                raise res
+            rows, complete, n = res
+            calls += n
+            if complete:
+                out.extend(rows)
+            elif b - a > MIN_SLICE_SECONDS:
+                mid = (a + b) / 2
+                pending += [(a, mid), (mid, b)]
+            else:
+                out.extend(rows)
+                when = dt.datetime.fromtimestamp(a, dt.timezone.utc).strftime("%Y-%m-%d %H:%M")
+                problems.append(f"events: more than {len(rows)} events end around {when} UTC; the rest were not read")
     seen, uniq = set(), []
-    for m in out:
-        if m.get("conditionId") not in seen:
-            seen.add(m.get("conditionId"))
-            uniq.append(m)
-    return uniq
+    for ev in out:
+        if ev.get("id") not in seen:
+            seen.add(ev.get("id"))
+            uniq.append(ev)
+    return uniq, problems
+
+
+def markets_of(events: list[dict]):
+    """The events' markets (in place), each knowing its event (id, title, negRiskAugmented)."""
+    for ev in events:
+        for m in ev.get("markets") or []:
+            if not isinstance(m, dict):
+                continue
+            m.setdefault("events", [{"id": ev.get("id"), "title": ev.get("title")}])
+            if ev.get("negRiskAugmented") and m.get("negRiskAugmented") is None:
+                m["negRiskAugmented"] = True
+            yield m
 
 
 def closed_markets(condition_ids, fetch=pmapi.http_json) -> dict[str, dict]:
@@ -188,11 +266,6 @@ def closed_markets(condition_ids, fetch=pmapi.http_json) -> dict[str, dict]:
             if r.get("conditionId"):
                 out[r["conditionId"]] = r
     return out
-
-
-def event_markets(event_id: str, fetch=pmapi.http_json) -> dict | None:
-    rows = fetch(f"{pmapi.GAMMA}/events?id={urllib.parse.quote(event_id)}", None)
-    return rows[0] if isinstance(rows, list) and rows else None
 
 
 # ---------------------------------------------------------------- settlement
@@ -238,7 +311,13 @@ def settle(state: dict, now: float, fetch=pmapi.http_json) -> list[dict]:
 # ---------------------------------------------------------------- entries
 
 def _traded(state: dict, name: str) -> set:
-    return set(state["traded_events"].setdefault(name, []))
+    """Event ids `name` has already bought. Stored as {event_id: forget_after_ts}."""
+    cur = state["traded_events"].get(name)
+    if isinstance(cur, list):  # the first version kept a plain list
+        cur = {eid: float("inf") for eid in cur}
+    cur = cur if isinstance(cur, dict) else {}
+    state["traded_events"][name] = cur
+    return set(cur)
 
 
 def pick_entries(views: list[dict], state: dict, rng: random.Random) -> dict[str, list]:
@@ -253,7 +332,7 @@ def pick_entries(views: list[dict], state: dict, rng: random.Random) -> dict[str
                 continue
             hit = cfg["rule"](v, rng)
             if hit:
-                cands.append((v, hit[0], hit[1]))
+                cands.append((v, hit[0], hit[1], None))
                 events.add(v["event_id"])
         rng.shuffle(cands)
         picks[name] = cands[: S.MAX_NEW_PER_RUN]
@@ -262,25 +341,29 @@ def pick_entries(views: list[dict], state: dict, rng: random.Random) -> dict[str
 
 def make_trade(name: str, v: dict, idx: int, cap: float, book: dict | None, now: float, note: dict | None = None) -> dict | None:
     shares, cost = fill_dollars(asks_of(book), S.STAKE_USD, cap, v["fee_rate"], v["fee_exp"])
-    if cost < 1.0 or shares < 1:  # Polymarket's minimum order is about $1
+    if cost < 1.0 or shares < v["min_size"] - 1e-9:  # below Polymarket's smallest order: no real trade possible
         return None
     return {
         **({"note": note} if note else {}),
-        "strategy": name, "opened_at": int(now), "event_id": v["event_id"],
+        "strategy": name, "opened_at": int(now), "event_id": v["event_id"], "ends_at": v["ends_at"],
         "title": (v.get("question") or "")[:140], "event": (v.get("event_title") or "")[:140],
         "sport": v["sport"], "hours_left": round(v["hours_left"], 2),
-        "cost": round(cost, 6), "avg_price": round(cost / shares, 6),
+        "cost": round(cost, 6), "avg_price": round(cost / shares, 6), "payout_if_won": round(shares, 6),
         "legs": [{"condition_id": v["conditionId"], "outcome_index": idx,
                   "outcome": (v["outcomes"][idx] if idx < len(v["outcomes"]) else str(idx)),
                   "shares": round(shares, 6)}],
     }
 
 
-def price_gap_trades(views: list[dict], state: dict, now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[dict]]:
+def price_gap_trades(views: list[dict], events_by_id: dict, state: dict, now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[dict]]:
     """
     In a multi-choice ("neg-risk") event exactly one choice wins. If buying
     every Yes costs less than $1 a set, or every No less than (n-1) dollars,
     the difference is locked in. Returns (trades, sightings).
+
+    Events Polymarket may still add choices to ("negRiskAugmented") are
+    skipped on the Yes side: a later-added winner would make every held Yes
+    worth nothing, so that payout is not locked in.
     """
     by_event: dict[str, list[dict]] = {}
     for v in views:
@@ -288,32 +371,37 @@ def price_gap_trades(views: list[dict], state: dict, now: float, fetch=pmapi.htt
             by_event.setdefault(v["event_id"], []).append(v)
     traded = _traded(state, "price_gap")
     trades, sightings = [], []
+    near = []
     for eid, ms in by_event.items():
         if eid in traded or len(ms) < 2 or len(ms) > GAP_MAX_OUTCOMES:
             continue
-        try:
-            asks = [float(m["bestAsk"]) for m in ms]
-            bids = [float(m["bestBid"]) for m in ms]
-        except (KeyError, TypeError, ValueError):
-            continue
-        yes_sum, no_sum = sum(asks), sum(1 - b for b in bids)
-        if yes_sum >= 1.0 and no_sum >= len(ms) - 1:
-            continue  # Gamma's quotes show no gap; skip the book calls
-        try:
-            ev = event_markets(eid, fetch)
-        except pmapi.ApiError:
-            continue
+        asks = [_float(m.get("bestAsk"), -1.0) for m in ms]
+        bids = [_float(m.get("bestBid"), 0.0) for m in ms]  # no bid at all: that choice's No cannot be bought below $1
+        if any(a < 0 for a in asks):
+            continue  # a choice with no ask at all: no full Yes set to buy
+        yes_sum, no_sum = sum(asks), sum(1 - max(b, 0.0) for b in bids)
+        ratio = min(yes_sum, no_sum / (len(ms) - 1))  # cost of the cheaper full set per dollar it pays, by Gamma's quotes
+        if ratio >= 1.0 - GAP_NEAR:
+            continue  # nothing near a gap on either side; skip the book calls
+        near.append((ratio, eid, ms))
+    near.sort(key=lambda x: x[0])
+    for ratio, eid, ms in near[:GAP_MAX_EVENTS]:
+        ev = events_by_id.get(eid)
         legs_src = [market_view(m, now) for m in (ev or {}).get("markets") or []]
         if not ev or any(x is None for x in legs_src) or len(legs_src) != len(ms):
             continue  # a closed, paused or unlisted choice: not a complete set
+        augmented = bool(ev.get("negRiskAugmented") or any(m.get("negRiskAugmented") for m in ms))
         try:
             books = pmapi.books([t for x in legs_src for t in x["tokens"]], fetch)
         except pmapi.ApiError:
             continue
+        min_size = max(x["min_size"] for x in legs_src)
         for side, payout_per_set in ((0, 1.0), (1, float(len(legs_src) - 1))):
+            if side == 0 and augmented:
+                continue
             books_side = [asks_of(books.get(x["tokens"][side])) for x in legs_src]
             best = None
-            k = 1.0
+            k = float(min_size)
             while True:
                 costs = [fill_shares(b, k, x["fee_rate"], x["fee_exp"]) for b, x in zip(books_side, legs_src)]
                 if any(c is None for c in costs):
@@ -323,18 +411,19 @@ def price_gap_trades(views: list[dict], state: dict, now: float, fetch=pmapi.htt
                     break
                 best = (k, total, costs)
                 k += 1.0
-            first = [fill_shares(b, 1.0, x["fee_rate"], x["fee_exp"]) for b, x in zip(books_side, legs_src)]
-            if all(c is not None for c in first):
+            first = [fill_shares(b, float(min_size), x["fee_rate"], x["fee_exp"]) for b, x in zip(books_side, legs_src)]
+            if all(c is not None for c in first) and sum(first) / min_size <= payout_per_set * (1 + GAP_NEAR):
                 sightings.append({"event_id": eid, "event": ev.get("title"), "side": "yes" if side == 0 else "no",
-                                  "n": len(legs_src), "cost_per_set": round(sum(first), 4),
-                                  "pays": payout_per_set, "at": int(now)})
+                                  "n": len(legs_src), "cost_per_set": round(sum(first) / min_size, 4),
+                                  "pays": payout_per_set, "augmented": augmented, "at": int(now)})
             if best:
                 k, total, costs = best
                 trades.append({
                     "strategy": "price_gap", "opened_at": int(now), "event_id": eid,
+                    "ends_at": max(x["ends_at"] for x in legs_src),
                     "title": f"All {'Yes' if side == 0 else 'No'} on: {(ev.get('title') or '')[:110]}",
                     "event": (ev.get("title") or "")[:140], "sport": None, "hours_left": round(legs_src[0]["hours_left"], 2),
-                    "cost": round(total, 6), "avg_price": round(total / k, 6),
+                    "cost": round(total, 6), "avg_price": round(total / k, 6), "payout_if_won": round(payout_per_set * k, 6),
                     "legs": [{"condition_id": x["conditionId"], "outcome_index": side,
                               "outcome": x.get("groupItemTitle") or x.get("question"), "shares": k} for x in legs_src],
                 })
@@ -352,112 +441,150 @@ def load_state(data: Path) -> dict:
         st = {}
     st.setdefault("positions", [])
     st.setdefault("traded_events", {})
+    st.setdefault("verdicts", {})
     return st
 
 
 def append_jsonl(path: Path, rows: list[dict]) -> None:
     if not rows:
         return
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a") as fh:
         for r in rows:
             fh.write(json.dumps(r, sort_keys=True) + "\n")
 
 
+def _month(ts: float) -> str:
+    return dt.datetime.fromtimestamp(ts, dt.timezone.utc).strftime("%Y-%m")
+
+
 def run(data: Path, now: float | None = None, fetch=pmapi.http_json, seed: int | None = None) -> dict:
+    """
+    One run. Whatever goes wrong, the run's row, the state and the report
+    are written before the error is raised again, so a crash is visible in
+    runs.jsonl and never settles or buys anything twice.
+    """
     now = time.time() if now is None else now
     t0 = time.time()
     data.mkdir(parents=True, exist_ok=True)
     state = load_state(data)
+    cache_file = data / "forecasts_cache.json"
+    cache_before = cache_file.read_text() if cache_file.exists() else "{}"
+    try:
+        state["forecasts"] = json.loads(cache_before)  # kept out of state.json: it is big and changes often
+    except ValueError:
+        state["forecasts"] = {}
     rng = random.Random(seed if seed is not None else int(now))
     problems: list[str] = []
-
     settled: list[dict] = []
-    try:
-        settled = settle(state, now, fetch)
-    except pmapi.ApiError as e:
-        problems.append(f"settle: {e}")
-    append_jsonl(data / "settled.jsonl", settled)
-
-    raw: list[dict] = []
-    try:
-        raw = list_markets(now, fetch)
-    except pmapi.ApiError as e:
-        problems.append(f"markets: {e}")
-    views = [v for v in (market_view(m, now) for m in raw) if v and v["hours_left"] > 0]
-
-    # Temperature events, for weather_forecast. Their markets are usually in
-    # the list already; any that are not are added so every strategy sees them.
-    temp_events: list[dict] = []
-    weather_on = S.STRATEGIES["weather_forecast"]["active"]
-    if weather_on:
-        try:
-            temp_events = weather.list_events(now, fetch)
-        except pmapi.ApiError as e:
-            problems.append(f"weather events: {e}")
-    known = {v["conditionId"] for v in views}
-    for m in weather.as_markets(temp_events):
-        v = market_view(m, now)
-        if v and v["hours_left"] > 0 and v["conditionId"] not in known:
-            views.append(v)
-            known.add(v["conditionId"])
-    views_by_cid = {v["conditionId"]: v for v in views}
-
     new: list[dict] = []
-    picks = pick_entries(views, state, rng)
-    notes: dict[str, dict] = {}
-    weather_seen: list[dict] = []
-    if weather_on and temp_events:
-        traded = _traded(state, "weather_forecast")
-        fresh = [e for e in temp_events if str(e.get("id")) not in traded]
-        try:
-            wp, weather_seen = weather.forecast_picks(fresh, views_by_cid, state, now, fetch)
-        except pmapi.ApiError as e:
-            wp = []
-            problems.append(f"weather forecast: {e}")
-        rng.shuffle(wp)
-        picks["weather_forecast"] = [(v, i, cap) for v, i, cap, _ in wp[: S.MAX_NEW_PER_RUN]]
-        for v, i, cap, prob in wp:
-            notes[v["conditionId"]] = {"forecast_chance": round(prob, 3)}
-    wanted = {v["tokens"][i] for c in picks.values() for v, i, _ in c}
-    books: dict = {}
-    try:
-        books = pmapi.books(sorted(wanted), fetch) if wanted else {}
-    except pmapi.ApiError as e:
-        problems.append(f"books: {e}")
-    for name, cands in picks.items():
-        for v, i, cap in cands:
-            t = make_trade(name, v, i, cap, books.get(v["tokens"][i]), now, notes.get(v["conditionId"]))
-            if t:
-                new.append(t)
-
     sightings: list[dict] = []
-    if S.STRATEGIES["price_gap"]["active"]:
+    weather_notes: list[dict] = []
+    weather_rows: list[dict] = []
+    views: list[dict] = []
+    timing: dict[str, float] = {}
+    crash: BaseException | None = None
+
+    def lap(name: str) -> None:
+        timing[name] = round(time.time() - t0 - sum(timing.values()), 1)
+
+    try:
         try:
-            gap, sightings = price_gap_trades(views, state, now, fetch)
-            new.extend(gap)
+            settled = settle(state, now, fetch)
         except pmapi.ApiError as e:
-            problems.append(f"price_gap: {e}")
+            problems.append(f"settle: {e}")
+        lap("settle")
+        stale = [p for p in state["positions"] if now - p.get("ends_at", now) > STALE_DAYS * 86400]
+        if stale:
+            problems.append(f"{len(stale)} position(s) still open more than {STALE_DAYS} days after their market ended")
+
+        events: list[dict] = []
+        try:
+            events, more = list_events(now, fetch)
+            problems += more
+        except pmapi.ApiError as e:
+            problems.append(f"events: {e}")
+        views = [v for v in (market_view(m, now) for m in markets_of(events)) if v and v["hours_left"] > 0]
+        events_by_id = {str(ev.get("id")): ev for ev in events}
+        lap("list")
+
+        # Temperature events for weather_forecast: the ones ending within the next few days.
+        weather_on = S.STRATEGIES["weather_forecast"]["active"]
+        horizon = now + weather.EVENT_DAYS * 86400
+        temp_events = [ev for ev in events if weather.is_temperature_event(ev.get("title"))
+                       and (parse_ts(ev.get("endDate")) or 0) <= horizon] if weather_on else []
+        views_by_cid = {v["conditionId"]: v for v in views}
+
+        picks = pick_entries(views, state, rng)
+        lap("pick")
+        if weather_on and temp_events:
+            traded = _traded(state, "weather_forecast")
+            fresh = [e for e in temp_events if str(e.get("id")) not in traded]
+            wf = weather.forecast_picks(fresh, views_by_cid, state, now, fetch)
+            problems += wf["problems"]
+            weather_notes, weather_rows = wf["notes"], wf["rows"]
+            wp = list(wf["picks"])
+            rng.shuffle(wp)
+            picks["weather_forecast"] = wp[: S.MAX_NEW_PER_RUN]
+        lap("weather")
+        wanted = {v["tokens"][i] for c in picks.values() for v, i, _, _ in c}
+        books: dict = {}
+        try:
+            books = pmapi.books(sorted(wanted), fetch) if wanted else {}
+        except pmapi.ApiError as e:
+            problems.append(f"books: {e}")
+        for name, cands in picks.items():
+            for v, i, cap, note in cands:
+                t = make_trade(name, v, i, cap, books.get(v["tokens"][i]), now, note)
+                if t:
+                    new.append(t)
+        lap("fill")
+
+        if S.STRATEGIES["price_gap"]["active"]:
+            try:
+                gap, sightings = price_gap_trades(views, events_by_id, state, now, fetch)
+                new.extend(gap)
+            except pmapi.ApiError as e:
+                problems.append(f"price_gap: {e}")
+            lap("price_gap")
+    except Exception as e:  # anything unexpected: record it, save what happened, then fail loudly
+        crash = e
+        problems.append(f"crash: {e!r}"[:300])
 
     for t in new:
-        state["traded_events"].setdefault(t["strategy"], []).append(t["event_id"])
+        _traded(state, t["strategy"])
+        state["traded_events"][t["strategy"]][t["event_id"]] = int(t["ends_at"] + REMEMBER_DAYS * 86400)
+    for name, cur in state["traded_events"].items():
+        for eid in [e for e, until in cur.items() if until < now]:
+            del cur[eid]
     state["positions"].extend(new)
-    append_jsonl(data / "trades.jsonl", new)
+    for month in sorted({_month(t["opened_at"]) for t in new}):
+        append_jsonl(data / "trades" / f"{month}.jsonl", [t for t in new if _month(t["opened_at"]) == month])
+    for month in sorted({_month(s["settled_at"]) for s in settled}):
+        append_jsonl(data / "settled" / f"{month}.jsonl", [s for s in settled if _month(s["settled_at"]) == month])
     day = dt.datetime.fromtimestamp(now, dt.timezone.utc).strftime("%Y-%m-%d")
-    if sightings:
-        (data / "gaps").mkdir(exist_ok=True)
-        append_jsonl(data / "gaps" / f"{day}.jsonl", sightings)
-    if weather_seen:
-        (data / "weather").mkdir(exist_ok=True)
-        append_jsonl(data / "weather" / f"{day}.jsonl", [dict(w, at=int(now)) for w in weather_seen])
+    append_jsonl(data / "gaps" / f"{day}.jsonl", sightings)
+    append_jsonl(data / "weather" / f"{day}.jsonl", [dict(w, at=int(now)) for w in weather_notes])
+    append_jsonl(data / "forecasts" / f"{day}.jsonl", [dict(w, at=int(now)) for w in weather_rows])
 
-    run_row = {"at": int(now), "seconds": round(time.time() - t0, 1), "markets": len(views),
+    run_row = {"at": int(now), "seconds": round(time.time() - t0, 1), "timing": timing, "markets": len(views),
                "new_trades": len(new), "settled": len(settled), "open": len(state["positions"]),
                "problems": problems}
     append_jsonl(data / "runs.jsonl", [run_row])
+    try:
+        text, summary = report.build(data, now, state)
+        (data / "report.md").write_text(text)
+        (data / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
+    except Exception as e:  # the report must never cost the run its data
+        problems.append(f"report: {e!r}"[:300])
+        if crash is None:
+            crash = e
+    cache_after = json.dumps(state.pop("forecasts", {}), sort_keys=True)
+    if cache_after != cache_before:
+        cache_file.write_text(cache_after)
     (data / "state.json").write_text(json.dumps(state, sort_keys=True))
-    text, summary = report.build(data, now)
-    (data / "report.md").write_text(text)
-    (data / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
+    if crash is not None:
+        raise crash
     return run_row
 
 

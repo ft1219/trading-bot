@@ -21,6 +21,8 @@ def test_parse_event():
           "markets": [{"description": "... at Paris-Le Bourget Airport (LFPB) on 6 Nov '26."}]}
     assert W.parse_event(ev) == ("max", "2026-11-06", "LFPB")
     assert W.parse_event({"title": "Who wins?", "endDate": "2026-11-06T12:00:00Z", "markets": []}) is None
+    assert W.is_temperature_event("Lowest temperature in Tokyo on November 7?")
+    assert not W.is_temperature_event("Bitcoin Up or Down - November 6, 2AM ET")
 
 
 def test_range_prob_sums_to_one_and_centres():
@@ -33,7 +35,7 @@ def test_range_prob_sums_to_one_and_centres():
 
 def test_ensemble_parsing():
     body = {"daily": {"time": ["2026-11-06"], "temperature_2m_max_ecmwf_ifs025_ensemble": [11.0],
-                      "temperature_2m_max_member01_ecmwf_ifs025_ensemble": [12.0],
+                      "temperature_2m_max_member01_ecmwf_ifs025_ensemble": [12.04],
                       "temperature_2m_min_ncep_gefs_seamless": [3.0], "other": [1]}}
     fc = W.ensemble(1.0, 2.0, fetch=lambda u, b: body)
     assert fc == {"offset": 0, "days": {"2026-11-06": {"max": [11.0, 12.0], "min": [3.0]}}}
@@ -48,39 +50,92 @@ def test_day_started_uses_local_time():
     assert not W.day_started("2026-11-06", 9 * 3600, nov6_utc - 9 * 3600 - 60)
 
 
-def _temp_event():
+def _temp_event(prices=None):
     mk = []
-    for i, label in enumerate(["13°C or below", "14°C", "15°C", "16°C or higher"]):
+    labels = ["13°C or below", "14°C", "15°C", "16°C or higher"]
+    for i, label in enumerate(labels):
+        bid, ask = (prices or {}).get(label, (0.20, 0.22))
         m = {"conditionId": f"c{i}", "groupItemTitle": label, "question": f"Will it be {label}?",
              "active": True, "closed": False, "acceptingOrders": True, "enableOrderBook": True,
              "endDate": "2026-11-06T12:00:00Z", "clobTokenIds": f'["t{i}y", "t{i}n"]', "outcomes": '["Yes", "No"]',
-             "bestBid": 0.20, "bestAsk": 0.22, "feesEnabled": False,
+             "bestBid": bid, "bestAsk": ask, "feesEnabled": False, "orderMinSize": 5,
              "description": "recorded at Test Airport (ZZZZ) on 6 Nov '26."}
+        if bid is None:
+            del m["bestBid"]
         mk.append(m)
     return {"id": "E9", "title": "Highest temperature in Testville on November 6?", "endDate": "2026-11-06T12:00:00Z", "markets": mk}
+
+
+def _fetch_with(members):
+    def fetch(url, body):
+        if "stationinfo" in url:
+            return [{"icaoId": "ZZZZ", "lat": 1.0, "lon": 2.0}]
+        if "ensemble" in url:
+            return {"utc_offset_seconds": 3600, "daily": {"time": ["2026-11-05", "2026-11-06"],
+                    **{f"temperature_2m_max_member{i:02d}_x": [1.0, v] for i, v in enumerate(members)}}}
+        raise AssertionError(url)
+    return fetch
 
 
 def test_forecast_picks_buys_where_forecast_disagrees():
     ev = _temp_event()
     # every member says 18°C, so "16°C or higher" is near-certain; the market prices each range at 22c
     now = lab.parse_ts("2026-11-05T00:00:00Z")
-
-    def fetch(url, body):
-        if "stationinfo" in url:
-            return [{"icaoId": "ZZZZ", "lat": 1.0, "lon": 2.0}]
-        if "ensemble" in url:
-            return {"utc_offset_seconds": 3600, "daily": {"time": ["2026-11-05", "2026-11-06"], "temperature_2m_max_x": [1.0, 18.0],
-                              **{f"temperature_2m_max_member{i:02d}_x": [1.0, 18.0] for i in range(1, 30)}}}
-        raise AssertionError(url)
-
+    fetch = _fetch_with([18.0] * 30)
     views = {m["conditionId"]: lab.market_view(m, now) for m in W.as_markets([ev])}
     state = {}
-    picks, notes = W.forecast_picks([ev], views, state, now, fetch)
-    assert len(picks) == 1
-    v, idx, cap, prob = picks[0]
-    assert v["groupItemTitle"] == "16°C or higher" and idx == 0 and prob > 0.9 and cap <= W.MAX_PRICE
-    assert state["stations"]["ZZZZ"] == [1.0, 2.0]
-    assert notes[0]["edge"] > 0.5
+    res = W.forecast_picks([ev], views, state, now, fetch)
+    assert len(res["picks"]) == 1 and not res["problems"]
+    v, idx, cap, note = res["picks"][0]
+    assert v["groupItemTitle"] == "16°C or higher" and idx == 0 and note["forecast_chance"] > 0.9 and cap <= W.MAX_PRICE
+    assert note["lead_h"] == pytest.approx(23.0) and note["station"] == "ZZZZ"
+    assert state["stations"]["ZZZZ"] == [1.0, 2.0] and state["forecasts"]["ZZZZ"]["at"] == int(now)
+    assert res["notes"][0]["edge"] > 0.5
+    # one calibration row per event per day, with every range in it
+    assert len(res["rows"]) == 1 and len(res["rows"][0]["bins"]) == 4 and res["rows"][0]["sd"] == 0
+    assert W.forecast_picks([ev], views, state, now + 600, fetch)["rows"] == []
     # once the local day has begun the market may already know the answer: no trade
     late = lab.parse_ts("2026-11-05T23:30:00Z")  # 00:30 local on the 6th
-    assert W.forecast_picks([ev], views, {}, late, fetch) == ([], [])
+    assert W.forecast_picks([ev], views, {}, late, fetch)["picks"] == []
+
+
+def test_smoothing_alone_never_sells_the_favourite():
+    # a tight ensemble: all 30 members say about 15°C, and the market agrees (15°C at 50-52c)
+    ev = _temp_event({"15°C": (0.50, 0.52), "14°C": (0.15, 0.17), "16°C or higher": (0.15, 0.17), "13°C or below": (0.10, 0.12)})
+    now = lab.parse_ts("2026-11-05T00:00:00Z")
+    views = {m["conditionId"]: lab.market_view(m, now) for m in W.as_markets([ev])}
+    res = W.forecast_picks([ev], views, {}, now, _fetch_with([15.0 + 0.3 * ((i % 3) - 1) for i in range(30)]))
+    assert res["picks"] == []  # the old rule sold "15°C" here, claiming ~67% for No from the smoothing alone
+
+
+def test_yes_side_is_judged_when_the_bid_is_missing():
+    ev = _temp_event({"16°C or higher": (None, 0.22)})
+    now = lab.parse_ts("2026-11-05T00:00:00Z")
+    views = {m["conditionId"]: lab.market_view(m, now) for m in W.as_markets([ev])}
+    res = W.forecast_picks([ev], views, {}, now, _fetch_with([18.0] * 30))
+    assert len(res["picks"]) == 1 and res["picks"][0][0]["groupItemTitle"] == "16°C or higher" and res["picks"][0][1] == 0
+
+
+def test_forecast_cache_and_fetch_budget(monkeypatch):
+    calls = []
+
+    def fetch(url, body):
+        calls.append(url)
+        if "stationinfo" in url:
+            return [{"icaoId": i, "lat": 1.0, "lon": 2.0} for i in ("AAAA", "BBBB", "CCCC")]
+        if "ensemble" in url and len([c for c in calls if "ensemble" in c]) > 2:
+            raise lab.pmapi.ApiError("429")
+        return {"utc_offset_seconds": 0, "daily": {"time": ["2026-11-06"], "temperature_2m_max_x": [10.0]}}
+
+    monkeypatch.setattr(W, "MAX_FETCH_PER_RUN", 5)
+    coords = W.station_coords(["AAAA", "BBBB", "CCCC"], {}, fetch)
+    cache, problems = {}, []
+    now = lab.parse_ts("2026-11-05T00:00:00Z")
+    fcs = W.forecasts_for(["AAAA", "BBBB", "CCCC"], coords, cache, now, fetch, problems)
+    assert fcs["AAAA"] and fcs["BBBB"] and fcs["CCCC"] is None  # third call failed: no more fetching this run
+    assert len(problems) == 1 and "CCCC" in problems[0]
+    n = len(calls)
+    # within the TTL nothing is fetched again; after it, a fresh fetch (which fails here) falls back to the stale copy
+    assert W.forecasts_for(["AAAA"], coords, cache, now + 3600, fetch, [])["AAAA"] and len(calls) == n
+    assert W.forecasts_for(["AAAA"], coords, cache, now + 4 * 3600, fetch, [])["AAAA"] and len(calls) == n + 1
+    assert W.forecasts_for(["AAAA"], coords, cache, now + 7 * 3600, fetch, [])["AAAA"] is None
