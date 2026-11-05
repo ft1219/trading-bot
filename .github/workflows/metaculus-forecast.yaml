@@ -1,11 +1,11 @@
 name: Bots - every 40 minutes
 
-# The first job runs both bots' quick parts with nothing but the runner's
-# built-in Python, so a run with nothing to forecast is billed as one GitHub
-# Actions minute. It alone may write to the repository (the Polymarket data
-# branch). The forecast job, which installs third-party packages, starts only
-# when a question needs a forecast and can only read. Repository variables
-# can pause either bot: set METACULUS_BOT or POLYMARKET_PRACTICE to "off".
+# The first job asks Metaculus, with nothing but the runner's built-in Python,
+# whether any open question needs a forecast, so a run with nothing to
+# forecast is billed as one GitHub Actions minute. The forecast job, which
+# installs third-party packages, starts only when a question needs a
+# forecast. Neither job can write to the repository. Set the repository
+# variable METACULUS_BOT to "off" to pause the bot.
 
 # Started every 40 minutes (:07 and :47 of even hours, :27 of odd hours, UTC)
 # by two cron-job.org jobs that call this workflow's dispatch endpoint; see
@@ -25,25 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write  # for the Polymarket practice data branch only
+      contents: read
     outputs:
       to_forecast: ${{ steps.precheck.outputs.to_forecast }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      # Paper trading only: public data, no money, no keys. The pilot's size
-      # and count are fixed by the plan, so they are not repository variables.
-      - name: Polymarket practice snapshot
-        id: practice
-        if: vars.POLYMARKET_PRACTICE != 'off'
-        continue-on-error: true
-        timeout-minutes: 6
-        working-directory: polymarket-shadow
-        run: bash run.sh
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PM_WATCH_MARKETS: ${{ vars.PM_WATCH_MARKETS }}
       - name: Any open questions?
         id: precheck
         if: vars.METACULUS_BOT != 'off'
@@ -51,18 +39,10 @@ jobs:
         run: python3 precheck.py
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
-      # A failed practice step turns this run red (so GitHub emails), after
-      # the precheck has decided whether to forecast.
-      - name: Report a failed practice step
-        if: steps.practice.outcome == 'failure'
-        run: |
-          echo "::error::The Polymarket practice step failed; see its log above."
-          exit 1
 
   forecast:
     needs: check
-    # Forecasts still run when only the practice step failed.
-    if: ${{ !cancelled() && needs.check.outputs.to_forecast == 'true' }}
+    if: ${{ needs.check.outputs.to_forecast == 'true' }}
     runs-on: ubuntu-latest
     # A batch of 5 questions usually takes 3-6 minutes; slow hosts can stretch
     # one to about 15 (two 300 s tries per forecast, then parsing).
