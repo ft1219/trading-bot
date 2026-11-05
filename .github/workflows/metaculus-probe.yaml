@@ -10,6 +10,6 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: python3 -u probe/asknews_balance.py
+      - run: python3 -u probe/score_report.py
         env:
-          ASKNEWS_API_KEY: ${{ secrets.ASKNEWS_API_KEY }}
+          METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
