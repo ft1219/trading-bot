@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import random
 import sys
 import time
@@ -55,6 +56,7 @@ HORIZON_HOURS = 168
 SLICE_HOURS = 6  # Gamma refuses offsets past about 2,000; slices that still overflow are halved
 MIN_SLICE_SECONDS = 600
 MAX_LIST_CALLS = 400
+MAX_FAILED_SLICES = 6  # more failed slice reads than this in one run: Gamma is down, stop
 # What a strategy gets to see of a market (the rest of Gamma's record is dropped to save memory)
 VIEW_KEYS = ("conditionId", "question", "groupItemTitle", "bestBid", "bestAsk", "oneDayPriceChange", "negRisk",
              "negRiskAugmented", "endDate", "sportsMarketType", "gameStartTime", "orderMinSize", "volume24hr")
@@ -203,11 +205,18 @@ def list_events(now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[str
     about 7,500 events, and Gamma pages at 100 a call.) The week is read in
     SLICE_HOURS slices, several at once; a slice with more events than Gamma
     will page through is split in half until it fits (or is MIN_SLICE_SECONDS
-    long, when the rest of it is given up and reported).
+    long, when the rest of it is given up and reported). A slice whose call
+    fails is tried once more and then given up and reported, so one Gamma
+    hiccup does not cost the whole week; many failures mean Gamma is down,
+    and then the listing fails as a whole.
     """
     problems: list[str] = []
     out: list[dict] = []
     calls = 0
+    retried: set[tuple[float, float]] = set()
+    failed: list[str] = []
+    failures = 0
+    last_error = ""
     pending = []
     a = now
     while a < now + HORIZON_HOURS * 3600:
@@ -222,9 +231,17 @@ def list_events(now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[str
         results = pmapi.parallel({f"{a}-{b}": (lambda a=a, b=b: _event_slice(a, b, fetch)) for a, b in batch}, workers=8)
         for (a, b), res in zip(batch, results.values()):
             if isinstance(res, Exception):
-                if not isinstance(res, pmapi.ApiError):
-                    res = pmapi.ApiError(repr(res))
-                raise res
+                calls += 1
+                failures += 1
+                last_error = str(res) if isinstance(res, pmapi.ApiError) else repr(res)
+                if failures > MAX_FAILED_SLICES:
+                    raise pmapi.ApiError(f"{failures} slice reads failed, Gamma seems down: {last_error}"[:300])
+                if (a, b) not in retried:
+                    retried.add((a, b))
+                    pending.append((a, b))
+                else:
+                    failed.append(dt.datetime.fromtimestamp(a, dt.timezone.utc).strftime("%Y-%m-%d %H:%M"))
+                continue
             rows, complete, n = res
             calls += n
             if complete:
@@ -236,6 +253,9 @@ def list_events(now: float, fetch=pmapi.http_json) -> tuple[list[dict], list[str
                 out.extend(rows)
                 when = dt.datetime.fromtimestamp(a, dt.timezone.utc).strftime("%Y-%m-%d %H:%M")
                 problems.append(f"events: more than {len(rows)} events end around {when} UTC; the rest were not read")
+    if failed:
+        problems.append(f"events: {len(failed)} slice(s) could not be read twice (from {failed[0]} UTC): "
+                        f"{last_error}"[:300])
     seen, uniq = set(), []
     for ev in out:
         if ev.get("id") not in seen:
@@ -310,11 +330,14 @@ def settle(state: dict, now: float, fetch=pmapi.http_json) -> list[dict]:
 
 # ---------------------------------------------------------------- entries
 
+FOREVER = 4_102_444_800  # 2100-01-01: the expiry given to first-version entries, which had none
+
+
 def _traded(state: dict, name: str) -> set:
     """Event ids `name` has already bought. Stored as {event_id: forget_after_ts}."""
     cur = state["traded_events"].get(name)
     if isinstance(cur, list):  # the first version kept a plain list
-        cur = {eid: float("inf") for eid in cur}
+        cur = {str(eid): FOREVER for eid in cur}
     cur = cur if isinstance(cur, dict) else {}
     state["traded_events"][name] = cur
     return set(cur)
@@ -442,6 +465,8 @@ def load_state(data: Path) -> dict:
     st.setdefault("positions", [])
     st.setdefault("traded_events", {})
     st.setdefault("verdicts", {})
+    for name in list(st["traded_events"]):  # first-version lists become {event_id: forget_after_ts} once
+        _traded(st, name)
     return st
 
 
@@ -452,6 +477,14 @@ def append_jsonl(path: Path, rows: list[dict]) -> None:
     with path.open("a") as fh:
         for r in rows:
             fh.write(json.dumps(r, sort_keys=True) + "\n")
+
+
+def write_text(path: Path, text: str) -> None:
+    """Write through a temporary file and a rename, so a kill mid-write never leaves half a file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text)
+    os.replace(tmp, path)
 
 
 def _month(ts: float) -> str:
@@ -519,11 +552,12 @@ def run(data: Path, now: float | None = None, fetch=pmapi.http_json, seed: int |
         lap("pick")
         if weather_on and temp_events:
             traded = _traded(state, "weather_forecast")
-            fresh = [e for e in temp_events if str(e.get("id")) not in traded]
-            wf = weather.forecast_picks(fresh, views_by_cid, state, now, fetch)
+            # every temperature event gets its daily forecast snapshot (for checking the
+            # forecasts later), held or not; only the buying skips events already held
+            wf = weather.forecast_picks(temp_events, views_by_cid, state, now, fetch)
             problems += wf["problems"]
             weather_notes, weather_rows = wf["notes"], wf["rows"]
-            wp = list(wf["picks"])
+            wp = [p for p in wf["picks"] if p[0]["event_id"] not in traded]
             rng.shuffle(wp)
             picks["weather_forecast"] = wp[: S.MAX_NEW_PER_RUN]
         lap("weather")
@@ -570,19 +604,24 @@ def run(data: Path, now: float | None = None, fetch=pmapi.http_json, seed: int |
     run_row = {"at": int(now), "seconds": round(time.time() - t0, 1), "timing": timing, "markets": len(views),
                "new_trades": len(new), "settled": len(settled), "open": len(state["positions"]),
                "problems": problems}
-    append_jsonl(data / "runs.jsonl", [run_row])
     try:
-        text, summary = report.build(data, now, state)
-        (data / "report.md").write_text(text)
-        (data / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
+        text, summary = report.build(data, now, state, run_row)
+        write_text(data / "report.md", text)
+        write_text(data / "summary.json", json.dumps(summary, indent=1, sort_keys=True))
     except Exception as e:  # the report must never cost the run its data
         problems.append(f"report: {e!r}"[:300])
+        stamp = dt.datetime.fromtimestamp(now, dt.timezone.utc).strftime("%Y-%m-%d %H:%M")
+        write_text(data / "report.md", "# Polymarket strategy lab\n\n"
+                   f"The report could not be built at {stamp} UTC ({e!r}). The data is intact and the next run "
+                   "will try again; see runs.jsonl.\n")
         if crash is None:
             crash = e
+    run_row["seconds"] = round(time.time() - t0, 1)
+    append_jsonl(data / "runs.jsonl", [run_row])  # last, so the row holds every problem, the report's included
     cache_after = json.dumps(state.pop("forecasts", {}), sort_keys=True)
     if cache_after != cache_before:
-        cache_file.write_text(cache_after)
-    (data / "state.json").write_text(json.dumps(state, sort_keys=True))
+        write_text(cache_file, cache_after)
+    write_text(data / "state.json", json.dumps(state, sort_keys=True))
     if crash is not None:
         raise crash
     return run_row

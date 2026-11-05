@@ -10,9 +10,9 @@ Every 40 minutes, as its own job in the "Bots - every 40 minutes" workflow (`run
 
 1. Settles pretend positions whose markets have resolved: $1 a share for the winning side, $0 for the losing one (50 cents for a 50-50 result).
 2. Lists every open event that ends within 7 days (about 7,500 events holding 100,000+ markets, most of them sports props).
-3. Asks each strategy in `strategies.py` which markets it would buy. A strategy buys a given event at most once, and at most 8 new trades a run. A quote only counts when the gap between the best bid and the best ask is 5 cents or less: a lone 97-cent ask over a 1-cent bid is a dead market, not a near-certainty.
+3. Asks each strategy in `strategies.py` which markets it would buy. A strategy buys a given event at most once, and at most 8 new trades a run. For these six quote-based rules a quote only counts when the gap between the best bid and the best ask is 5 cents or less: a lone 97-cent ask over a 1-cent bid is a dead market, not a near-certainty.
 4. Fills each buy against the real order book: it walks up the asking prices, never above the strategy's price cap, until $5 is spent, and adds Polymarket's taker fee. If that buys fewer shares than Polymarket's smallest order (usually 5), there is no trade, because there could be no real one.
-5. `weather_forecast`: for each daily temperature market ("Highest temperature in Paris on November 6?") whose station's local day has not started yet, works out the chance of each range from two free weather-model ensembles (ECMWF and GFS, 82 runs, via Open-Meteo) and buys a side only where that chance beats the price by 10 cents or more, both with the runs as they are and after allowing for model error. (The first version allowed for model error only, which on its own made every market favourite look overpriced; that was a constant, not a forecast.)
+5. `weather_forecast`: for each daily temperature market ("Highest temperature in Paris on November 6?") whose station's local day has not started yet, works out the chance of each range from two free weather-model ensembles (ECMWF and GFS, 82 runs, via Open-Meteo) and buys a side only where that chance beats the price by 10 cents or more, both with the runs as they are and after allowing for model error. (The first version allowed for model error only, which on its own made every market favourite look overpriced; that was a constant, not a forecast.) Allowing for model error caps a single degree's chance at about a third, so in practice the rule nearly always buys No against an overpriced range, usually the market favourite, and buys Yes only on open-ended or wide ranges. It trades thin books on purpose: the forecast, not the quote, is its signal, and it pays the real asking price of the side it buys.
 6. `price_gap`: in multi-choice events where exactly one choice wins, checks whether buying every "Yes" costs less than $1 a set (or every "No" less than n-1 dollars), using the real books for every choice, and buys whole sets of at least 5 shares if at least half a cent a set is left after fees (up to $20). Events Polymarket may still add choices to are skipped on the Yes side.
 7. `report.py` rewrites `report.md` (made for reading on a phone) and `summary.json`.
 
@@ -44,9 +44,9 @@ A strategy is judged once, on the first run where all of this is true: it has be
 It passes only if:
 
 - it made money in total, and
-- its number of wins is one that the prices alone would produce less than 1 time in 100. (A trade bought at 95 cents should win 95% of the time with no edge, so even 40 wins out of 40 at that price proves little; the same 40 wins at 80 cents would.)
+- its number of wins is one that the prices alone would produce less than 1 time in 100. (A trade bought at 95 cents should win 95% of the time with no edge, so even 40 wins out of 40 at that price proves little; the same 40 wins at 80 cents would.) The no-edge rate is the average of the prices paid, trade by trade; total cost over total payout would understate it whenever a rule mixes cheap and dear trades, and that would have let a no-edge rule pass.
 
-`price_gap` is arithmetic, not a bet, so it passes on the total alone. A strategy that has made no trade at all after a month is marked "nothing to judge". Before judgment day the report says "too early", whatever the numbers look like.
+`price_gap` is arithmetic, not a bet: it passes if it made money in total and every set paid out (one set that lost means the gap was not really locked in). A strategy that has made no trade at all, open or finished, after a month shows "nothing to judge" until it trades. Before judgment day the report says "too early", whatever the numbers look like. Only PASS and FAIL are stored.
 
 Passing here does not put money in: that still needs the owner's explicit go, and the agreed pilot limits (20-40 USDT, $20 per market, $30 total loss cap in the first 3 months). The checks the lab makes are the ones a careful person would make; they are not a guarantee.
 
@@ -61,7 +61,7 @@ Everything goes to the `polymarket-lab-data` branch:
 - `gaps/YYYY-MM-DD.jsonl`: each near price gap seen.
 - `weather/YYYY-MM-DD.jsonl`: each forecast-versus-price disagreement found, trade or not.
 - `forecasts/YYYY-MM-DD.jsonl`: one full forecast-versus-price snapshot per temperature event per day (every range's forecast chance, raw and smoothed, and its bid and ask), so that after a few weeks the forecasts can be checked against what happened and against the market.
-- `forecasts_cache.json`: each station's latest ensemble, reused for 3 hours. Open-Meteo allows 600 weighted calls a minute and 10,000 a day on its free tier, and one ensemble call weighs about 16; the cache and a cap of 30 fresh calls a run keep the lab at about 400 calls a day.
+- `forecasts_cache.json`: each station's latest ensemble, reused for 3 hours. Open-Meteo allows 600 weighted calls a minute and 10,000 a day on its free tier, and one ensemble call for two models weighs about 16 (read from the API's own rate-limit headers; its published rules give no formula). The cache and a cap of 20 fresh calls a run keep the lab at about 380 fresh calls a day for 48 stations, roughly 6,000-6,500 weighted of the 10,000 allowed, with a run's burst of 20 at about 330 of the 600 a minute. If Open-Meteo refuses a call, the run stops asking, uses forecasts up to 6 hours old, and records the problem.
 
 The branch grows by a few MB a day. It is only ever cloned shallowly.
 
@@ -69,7 +69,7 @@ Weather data is from [Open-Meteo](https://open-meteo.com) (CC BY 4.0), whose fre
 
 ## If something breaks
 
-A failed lab run turns the workflow run red and GitHub emails the owner; the forecasting jobs are separate and are not affected. Whatever the run managed to do is still saved, with the error in `runs.jsonl`, and the next run carries on. `report.md` shows the number of runs with a problem in the last 24 hours and the latest problem.
+A failed lab run turns the workflow run red and GitHub emails the owner; the forecasting jobs are separate and are not affected. Whatever the run managed to do is still saved, with the error in `runs.jsonl`, and the next run carries on. `report.md` shows the number of runs with a problem in the last 24 hours and the latest problem. If the report itself cannot be built, `report.md` says so in one line (with the error) instead of showing an old scoreboard. One failed read of Polymarket's event list is retried and then skipped, keeping the rest of the week; only when many reads fail does the run give up on the listing.
 
 ## Settings
 

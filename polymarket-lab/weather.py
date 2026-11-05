@@ -20,7 +20,14 @@ thermometer ("smoothed"). A side is bought only when BOTH versions give it
 at least MIN_EDGE more than the price. The smoothing alone can never make a
 case for a trade: it caps any single degree's chance at about a third, so
 on its own it would "disagree" with every market favourite priced above
-about 40 cents, which is not a forecast, it is a constant.
+about 40 cents, which is not a forecast, it is a constant. The same cap
+means the smoothed test rarely lets a Yes buy through on a single-degree
+range (that needs an ask of about 22 cents or less), so in practice the
+rule almost always buys No against an overpriced range, usually the market
+favourite, and buys Yes only on open-ended or wide ranges. Unlike the rules
+in strategies.py it applies no bid-ask gap test: the forecast, not the
+quote, is its signal, and it pays the real asking price of the side it buys
+(for No, that is one minus the Yes bid).
 """
 from __future__ import annotations
 
@@ -44,15 +51,18 @@ MAX_PRICE = 0.95
 # it has, the market can see the real readings and the forecast is stale. The
 # first live run bought against markets that already knew the day's result.
 LEAD_HOURS = 0.0
-# Open-Meteo allows 600 weighted calls a minute and 10,000 a day; one
-# ensemble call weighs about 16. So each station's forecast is kept for
-# FORECAST_TTL seconds and at most MAX_FETCH_PER_RUN are refreshed in a run
-# (about 400 calls a day for 48 stations instead of 1,700).
+# Open-Meteo's free tier allows 600 weighted calls a minute and 10,000 a day.
+# One ensemble call for two models weighs about 16 (read from the API's
+# X-RateLimit-Cost header; the published rules give no member formula). So
+# each station's forecast is kept for FORECAST_TTL seconds and at most
+# MAX_FETCH_PER_RUN are refreshed in a run: for 48 stations about 380 fresh
+# calls a day, roughly 6,000-6,500 weighted of the 10,000 allowed, and a
+# run's burst of 20 is about 330 weighted of the 600 a minute.
 FORECAST_TTL = 3 * 3600
 EVENT_DAYS = 3  # temperature events ending within this many days are looked at
 FORECAST_DAYS = 4  # today and the next three local days, enough for EVENT_DAYS
 FORECAST_STALE = 6 * 3600  # older than this: do not trade on it
-MAX_FETCH_PER_RUN = 30
+MAX_FETCH_PER_RUN = 20
 
 _RANGE = re.compile(r"^\s*(-?\d+)(?:\s*-\s*(-?\d+))?\s*°\s*([CF])(?:\s+or\s+(below|lower|higher|above))?\s*$", re.I)
 _TITLE = re.compile(r"^(Highest|Lowest) temperature in (.+?) on ([A-Za-z]+ \d{1,2})\??$")

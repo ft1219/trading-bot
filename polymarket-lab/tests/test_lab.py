@@ -24,8 +24,16 @@ def gamma(cid="0xabc", end_h=10.0, bid=0.05, ask=0.06, **kw):
 
 
 def serial(monkeypatch):
-    """Run pmapi.parallel's calls one after another, so fakes stay simple."""
-    monkeypatch.setattr(lab.pmapi, "parallel", lambda calls, workers=8: {k: fn() for k, fn in calls.items()})
+    """Run pmapi.parallel's calls one after another (a failed call's exception is its result, as in the real one)."""
+    def run(calls, workers=8):
+        out = {}
+        for k, fn in calls.items():
+            try:
+                out[k] = fn()
+            except Exception as e:  # noqa: BLE001
+                out[k] = e
+        return out
+    monkeypatch.setattr(lab.pmapi, "parallel", run)
 
 
 def test_fee_curve():
@@ -178,6 +186,39 @@ def test_list_events_splits_crowded_slices(monkeypatch):
     assert len(markets) == len(events) and markets[0]["events"][0]["id"] == events[0]["id"]
 
 
+def test_list_events_retries_one_failed_slice_and_keeps_the_rest(monkeypatch):
+    serial(monkeypatch)
+    calls = []
+
+    def fetch(url, body):
+        calls.append(url)
+        q = dict(p.split("=") for p in url.split("?")[1].split("&"))
+        if "end_date_min=" + lab.dt.datetime.fromtimestamp(NOW + 6 * 3600, lab.dt.timezone.utc).strftime("%Y-%m-%dT%H") in url \
+                and len([c for c in calls if q["end_date_min"] in c]) == 1:
+            raise lab.pmapi.ApiError("HTTP 502 once")  # the second slice fails the first time only
+        m = gamma(cid=f"{q['end_date_min']}-{q['offset']}")
+        del m["events"]
+        return [{"id": f"{q['end_date_min']}", "title": "E", "markets": [m]}] if q["offset"] == "0" else []
+
+    events, problems = lab.list_events(NOW, fetch)
+    assert len(events) == 28 and problems == []  # 7 days in 6-hour slices, all read
+
+    def always_fail(url, body):
+        raise lab.pmapi.ApiError("HTTP 503")
+
+    with pytest.raises(lab.pmapi.ApiError, match="seems down"):
+        lab.list_events(NOW, always_fail)
+
+    def one_slice_dead(url, body):
+        q = dict(p.split("=") for p in url.split("?")[1].split("&"))
+        if q["end_date_min"].startswith(lab.dt.datetime.fromtimestamp(NOW + 12 * 3600, lab.dt.timezone.utc).strftime("%Y-%m-%dT%H")):
+            raise lab.pmapi.ApiError("HTTP 500")  # the third slice fails every time
+        return fetch(url, body)
+
+    events, problems = lab.list_events(NOW, one_slice_dead)
+    assert len(events) == 27 and len(problems) == 1 and "could not be read twice" in problems[0]
+
+
 def test_markets_of_marks_augmented_events():
     ev = {"id": "E", "title": "Who", "negRiskAugmented": True, "markets": [gamma(cid="a"), gamma(cid="b")]}
     assert all(m["negRiskAugmented"] is True for m in lab.markets_of([ev]))
@@ -204,11 +245,58 @@ def test_report_verdicts_are_judged_once_and_need_real_evidence():
     # a stored verdict is kept even when later numbers differ
     assert report.verdict("sure_thing", good, 15, {"verdict": "FAIL"}) == "FAIL"
     assert report.binom_tail(0, 10, 0.5) == 1.0 and report.binom_tail(10, 10, 0.5) == pytest.approx(0.5 ** 10)
-    # arbitrage is judged on the total only; a strategy that never trades is told so after a month
-    arb = report.stats([{"cost": 9.9, "pnl": 0.1, "payout_if_won": 10.0, "settled_at": NOW + i * 86400} for i in range(30)])
-    assert report.verdict("price_gap", arb, 15) == "PASS"
+    # arbitrage passes on a positive total with no losing set; a strategy that never trades is told so after a month
+    arb_rows = [{"cost": 9.9, "pnl": 0.1, "payout_if_won": 10.0, "settled_at": NOW + i * 86400} for i in range(30)]
+    assert report.verdict("price_gap", report.stats(arb_rows), 15) == "PASS"
+    lossy = report.stats(arb_rows[:-1] + [{"cost": 9.9, "pnl": -2.4, "payout_if_won": 10.0, "settled_at": NOW + 29 * 86400}])
+    assert lossy["pnl"] > 0 and report.verdict("price_gap", lossy, 15) == "FAIL"
     assert report.verdict("price_gap", report.stats([]), 29) == "nothing to judge"
+    assert report.verdict("price_gap", report.stats([]), 29, opened=1) == "too early"  # a trade is open: wait for it
     assert report.verdict("price_gap", report.stats([]), 15) == "too early"
+
+
+def test_no_edge_rate_is_the_mean_price_not_the_harmonic_mean():
+    # half the trades at 25c, half at 85c, winning exactly what the prices predict (12 of 50 and 43 of 50):
+    # that is no skill at all and must not look like it. Total cost / total payout would say the
+    # no-edge rate is 0.386 and call 55 wins a 1-in-1,500 event.
+    rows = [{"cost": 5.0, "payout_if_won": 20.0, "pnl": 15.0 if i < 12 else -5.0, "settled_at": NOW + i * 86400}
+            for i in range(50)]
+    rows += [{"cost": 5.0, "payout_if_won": 5.0 / 0.85, "pnl": (5.0 / 0.85 - 5.0) if i < 43 else -5.0,
+              "settled_at": NOW + i * 86400} for i in range(50)]
+    mixed = report.stats(rows)
+    assert mixed["break_even_rate"] == pytest.approx(0.55, abs=1e-3)
+    assert mixed["p_luck"] > 0.3
+    assert report.verdict("follow_move", mixed, 15) == "FAIL"
+
+
+def test_nothing_to_judge_is_not_stored_and_gives_way_to_trades(tmp_path):
+    settled_dir = tmp_path / "settled"
+    settled_dir.mkdir()
+    state = {"positions": [], "traded_events": {}, "verdicts": {}}
+    day = 86400
+    t0 = lab.parse_ts(S.STRATEGIES["price_gap"]["since"] + "T00:00:00Z")  # the strategies' start date
+    # a month in with nothing traded: shown, but not stored
+    text, summary = report.build(tmp_path, t0 + 29 * day, state)
+    assert summary["strategies"]["price_gap"]["verdict"] == "nothing to judge"
+    assert state["verdicts"] == {}
+    # a month in with one position still open: too early, nothing stored
+    trades_dir = tmp_path / "trades"
+    trades_dir.mkdir()
+    lab.append_jsonl(trades_dir / "2026-12.jsonl", [{"strategy": "price_gap", "opened_at": int(t0 + 28 * day),
+                                                     "event_id": "E", "cost": 9.9, "avg_price": 0.99, "title": "T",
+                                                     "legs": [{"outcome": "Yes"}]}])
+    state["positions"] = [{"strategy": "price_gap", "cost": 9.9}]
+    text, summary = report.build(tmp_path, t0 + 29 * day, state)
+    assert summary["strategies"]["price_gap"]["verdict"] == "too early" and state["verdicts"] == {}
+    # later, 30 finished sets on 12 days: judged properly, and that one is stored
+    rows = [{"strategy": "price_gap", "cost": 9.9, "pnl": 0.1, "payout_if_won": 10.0, "settled_at": t0 + (30 + i % 12) * day}
+            for i in range(30)]
+    lab.append_jsonl(settled_dir / "2026-12.jsonl", rows)
+    state["positions"] = []
+    text, summary = report.build(tmp_path, t0 + 48 * day, state)
+    assert summary["strategies"]["price_gap"]["verdict"] == "PASS" and state["verdicts"]["price_gap"]["verdict"] == "PASS"
+    # the report lists the newest buy of each strategy, so every rule's side can be seen
+    assert "T at 0.990" in text
 
 
 def test_full_run_with_fake_api(tmp_path, monkeypatch):
@@ -236,14 +324,51 @@ def test_full_run_with_fake_api(tmp_path, monkeypatch):
     assert row2["new_trades"] == 0
 
 
+def test_report_failure_is_recorded_and_leaves_a_stub_report(tmp_path, monkeypatch):
+    serial(monkeypatch)
+    m = gamma(cid="0xfav", end_h=5, bid=0.04, ask=0.05)
+
+    def fetch(url, body):
+        if "/markets?" in url and "closed=true" in url:
+            return []
+        if "/events?" in url:
+            return [{"id": "ev-0xfav", "title": "E", "markets": [m]}] if "offset=0" in url else []
+        if url.endswith("/books"):
+            return [{"asset_id": b["token_id"], "asks": [{"price": "0.95", "size": "50"}]} for b in body]
+        raise AssertionError(url)
+
+    lab.run(tmp_path, NOW, fetch, seed=1)
+    good_report = (tmp_path / "report.md").read_text()
+    assert "Runs in the last 24 hours: 1 (0 with a problem)" in good_report  # the current run counts
+
+    def broken_build(*a, **k):
+        raise ZeroDivisionError("report bug")
+
+    monkeypatch.setattr(lab.report, "build", broken_build)
+    with pytest.raises(ZeroDivisionError):
+        lab.run(tmp_path, NOW + 2400, fetch, seed=2)
+    runs = report.read_jsonl(tmp_path / "runs.jsonl")
+    assert len(runs) == 2 and "report: ZeroDivisionError" in runs[-1]["problems"][-1]
+    stub = (tmp_path / "report.md").read_text()
+    assert stub != good_report and "could not be built" in stub and "ZeroDivisionError" in stub
+    assert json.loads((tmp_path / "state.json").read_text())["positions"]  # the data itself was saved
+
+
+def test_first_version_state_is_migrated_on_load(tmp_path):
+    (tmp_path / "state.json").write_text(json.dumps({"traded_events": {"weather_forecast": ["111"], "sure_thing": []}}))
+    st = lab.load_state(tmp_path)
+    assert st["traded_events"] == {"weather_forecast": {"111": lab.FOREVER}, "sure_thing": {}}
+
+
 def test_crash_is_recorded_then_raised(tmp_path, monkeypatch):
     serial(monkeypatch)
 
-    def fetch(url, body):
-        raise ConnectionResetError("boom")  # not an ApiError
+    def broken_pick(*a, **k):
+        raise ConnectionResetError("boom")  # not an ApiError: a bug, not an API problem
 
+    monkeypatch.setattr(lab, "pick_entries", broken_pick)
     with pytest.raises(ConnectionResetError):
-        lab.run(tmp_path, NOW, fetch, seed=1)
+        lab.run(tmp_path, NOW, lambda url, body: [], seed=1)
     runs = report.read_jsonl(tmp_path / "runs.jsonl")
     assert len(runs) == 1 and runs[0]["problems"] and "crash" in runs[0]["problems"][-1]
     assert (tmp_path / "state.json").exists()

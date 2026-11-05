@@ -144,7 +144,8 @@ Rule = Callable[[dict, random.Random], "tuple[int, float] | None"]
 
 # name -> settings. "plain" is what the phone report shows. "judge" is how
 # report.verdict() treats it: "bet" (default; could it be luck?), "arbitrage"
-# (the profit is arithmetic, so only the total counts) or "yardstick".
+# (the profit is arithmetic: it must be positive in total with no losing set)
+# or "yardstick".
 STRATEGIES: dict[str, dict] = {
     "sure_thing": {"rule": sure_thing, "active": True, "since": "2026-11-05",
                    "plain": "Buy the almost-sure side (90-97c) in the last 24 hours (sports and other markets)"},
@@ -158,9 +159,10 @@ STRATEGIES: dict[str, dict] = {
     "fade_move": {"rule": fade_move, "active": True, "since": "2026-11-05",
                   "plain": "After a traded 10c+ move in a day, buy the side that went down"},
     "weather_forecast": {"rule": None, "active": True, "since": "2026-11-05",
-                         "plain": "Daily temperature markets, before the day starts: buy a range only when "
-                                  "82 weather-model runs give it 10c+ more chance than the price, "
-                                  "with and without allowing for model error"},
+                         "plain": "Daily temperature markets, before the day starts: buy No on a range when "
+                                  "82 weather-model runs give it 10c+ less chance than the market (or Yes when "
+                                  "they give it 10c+ more), with and without allowing for model error; in "
+                                  "practice nearly always No against the market favourite"},
     "price_gap": {"rule": None, "active": True, "since": "2026-11-05", "judge": "arbitrage",
                   "plain": "Multi-choice markets whose prices add up to less than $1: buy every choice"},
     "coin_flip": {"rule": coin_flip, "active": True, "since": "2026-11-05", "judge": "yardstick",

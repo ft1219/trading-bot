@@ -99,6 +99,58 @@ def test_forecast_picks_buys_where_forecast_disagrees():
     assert W.forecast_picks([ev], views, {}, late, fetch)["picks"] == []
 
 
+def test_held_events_still_get_their_daily_snapshot(tmp_path, monkeypatch):
+    """lab.run passes every temperature event to forecast_picks and drops held events from the picks only."""
+    import json
+
+    def run_serial(calls, workers=8):
+        out = {}
+        for k, fn in calls.items():
+            try:
+                out[k] = fn()
+            except Exception as e:  # noqa: BLE001
+                out[k] = e
+        return out
+
+    monkeypatch.setattr(lab.pmapi, "parallel", run_serial)
+    ev = _temp_event({"16°C or higher": (0.20, 0.22)})
+    members = [16.5] * 60 + [15.5] * 22  # the forecast likes "16 or higher" at 22c
+
+    def fetch(url, body):
+        if "/markets?" in url and "closed=true" in url:
+            return []
+        if "/events?" in url:
+            return [ev] if "offset=0" in url else []
+        if url.endswith("/books"):
+            return [{"asset_id": b["token_id"], "asks": [{"price": "0.22", "size": "500"}]} for b in body]
+        if "stationinfo" in url:
+            return [{"icaoId": "ZZZZ", "lat": 1.0, "lon": 2.0}]
+        if "ensemble" in url:  # a station five hours behind UTC: its 6 November starts at 05:00 UTC
+            return {"utc_offset_seconds": -18000, "daily": {"time": ["2026-11-05", "2026-11-06"],
+                    **{f"temperature_2m_max_member{i:02d}_x": [1.0, v] for i, v in enumerate(members)}}}
+        raise AssertionError(url)
+
+    def weather_trades():
+        rows = []
+        for f in sorted((tmp_path / "trades").glob("*.jsonl")):
+            rows += [json.loads(line) for line in f.read_text().splitlines()]
+        return [t for t in rows if t["strategy"] == "weather_forecast"]
+
+    now = lab.parse_ts("2026-11-05T06:00:00Z")
+    row = lab.run(tmp_path, now, fetch, seed=1)
+    assert not row["problems"] and len(weather_trades()) == 1
+    state = json.loads((tmp_path / "state.json").read_text())
+    assert "E9" in state["traded_events"]["weather_forecast"]
+    # the next UTC day, still before the station's local day: the event is held, so no second buy,
+    # but its forecast snapshot for the new day is still written
+    row2 = lab.run(tmp_path, lab.parse_ts("2026-11-06T02:00:00Z"), fetch, seed=2)
+    assert not row2["problems"] and len(weather_trades()) == 1
+    rows = []
+    for f in sorted((tmp_path / "forecasts").glob("*.jsonl")):
+        rows += [json.loads(line) for line in f.read_text().splitlines()]
+    assert len([r for r in rows if r["event_id"] == "E9"]) == 2
+
+
 def test_smoothing_alone_never_sells_the_favourite():
     # a tight ensemble: all 30 members say about 15°C, and the market agrees (15°C at 50-52c)
     ev = _temp_event({"15°C": (0.50, 0.52), "14°C": (0.15, 0.17), "16°C or higher": (0.15, 0.17), "13°C or below": (0.10, 0.12)})

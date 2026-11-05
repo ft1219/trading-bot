@@ -4,13 +4,15 @@ Builds the lab's report.md (written to be read on a phone) and summary.json.
 The pass rule is fixed here, before any results, so it cannot drift to fit
 them. A strategy is judged once, on the first run where it has been going
 for JUDGE_DAYS days with at least MIN_SETTLED finished trades spread over at
-least MIN_DAYS different days; that verdict is stored and never recomputed
-(judging again on every run would let a lucky streak show "PASS" at some
-point even with no edge). It passes if it made money overall AND its win
-count is one the prices alone would produce less than once in a hundred
-tries (an exact binomial test against the break-even win rate, which is the
-average price paid). Before judgment day it is "too early", whatever the
-numbers say. The coin_flip yardstick is shown for comparison only.
+least MIN_DAYS different days; that PASS or FAIL is stored and never
+recomputed (judging again on every run would let a lucky streak show "PASS"
+at some point even with no edge). It passes if it made money overall AND its
+win count is one the prices alone would produce less than once in a hundred
+tries (an exact binomial test against the no-edge win rate, which is the
+average of the prices paid). Before judgment day it is "too early", whatever
+the numbers say; a strategy with no trade at all after twice JUDGE_DAYS shows
+"nothing to judge" until it trades. Neither of those is stored. The
+coin_flip yardstick is shown for comparison only.
 """
 from __future__ import annotations
 
@@ -74,24 +76,29 @@ def stats(rows: list[dict]) -> dict:
     staked = sum(r["cost"] for r in rows)
     pnl = sum(r["pnl"] for r in rows)
     wins = sum(1 for r in rows if r["pnl"] > 0)
-    # break-even win rate: what the trades cost per dollar they would pay if won
-    pays = sum(r.get("payout_if_won") or (r["cost"] + max(r["pnl"], 0.0)) for r in rows)
-    p0 = staked / pays if pays else 1.0
+    # no-edge win rate: the mean of the prices paid (each trade's cost per dollar it would pay if won).
+    # Under "no edge" each trade wins with its own price, so the expected win count is the SUM of the
+    # prices. Total cost / total payout would be their harmonic mean, which is lower whenever prices
+    # vary and would let a no-edge rule that mixes cheap and dear trades pass as skill.
+    p0 = sum(r["cost"] / (r.get("payout_if_won") or (r["cost"] + max(r["pnl"], 0.0))) for r in rows) / n if n else 1.0
     return {"settled": n, "wins": wins, "staked": round(staked, 2), "pnl": round(pnl, 2),
             "roi": (pnl / staked) if staked else 0.0, "break_even_rate": round(p0, 4),
             "p_luck": binom_tail(wins, n, p0) if n else 1.0,
             "days": len({_day(r["settled_at"]) for r in rows if "settled_at" in r})}
 
 
-def judge(name: str, st: dict, days_running: float) -> str | None:
-    """The verdict to store now, or None if it is still too early to judge."""
+def judge(name: str, st: dict, days_running: float, opened: int = 0) -> str | None:
+    """
+    "PASS" or "FAIL" (to be stored), "nothing to judge" (no trade at all, open
+    or finished, after twice JUDGE_DAYS; not stored), or None: too early.
+    """
     cfg = S.STRATEGIES.get(name, {})
     if cfg.get("judge") == "yardstick":
         return None
     if days_running < JUDGE_DAYS:
         return None
     if st["settled"] < MIN_SETTLED:
-        return "nothing to judge" if st["settled"] == 0 and days_running >= 2 * JUDGE_DAYS else None
+        return "nothing to judge" if st["settled"] == 0 and opened == 0 and days_running >= 2 * JUDGE_DAYS else None
     if st["days"] < MIN_DAYS:
         return None
     if cfg.get("judge") == "arbitrage":
@@ -99,22 +106,23 @@ def judge(name: str, st: dict, days_running: float) -> str | None:
     return "PASS" if st["pnl"] > 0 and st["p_luck"] < P_LUCK else "FAIL"
 
 
-def verdict(name: str, st: dict, days_running: float, stored: dict | None = None) -> str:
+def verdict(name: str, st: dict, days_running: float, stored: dict | None = None, opened: int = 0) -> str:
     """
     The verdict to show: the stored one if the strategy was already judged,
-    otherwise judge it now (the caller stores a non-None result).
+    otherwise judge it now (the caller stores a PASS or FAIL).
     """
     if S.STRATEGIES.get(name, {}).get("judge") == "yardstick":
         return "yardstick"
     if stored and stored.get("verdict"):
         return stored["verdict"]
-    return judge(name, st, days_running) or "too early"
+    return judge(name, st, days_running, opened) or "too early"
 
 
-def build(data: Path, now: float, state: dict | None = None) -> tuple[str, dict]:
+def build(data: Path, now: float, state: dict | None = None, current: dict | None = None) -> tuple[str, dict]:
+    """report.md text and summary.json data. `current` is the running run's row, not yet in runs.jsonl."""
     trades = read_jsonl(data / "trades")
     settled = read_jsonl(data / "settled")
-    runs = read_jsonl(data / "runs.jsonl")
+    runs = read_jsonl(data / "runs.jsonl") + ([current] if current else [])
     if state is None:
         state = json.loads((data / "state.json").read_text()) if (data / "state.json").exists() else {}
     state.setdefault("positions", [])
@@ -130,14 +138,14 @@ def build(data: Path, now: float, state: dict | None = None) -> tuple[str, dict]
         opened = [t for t in trades if t["strategy"] == name]
         still_open = [p for p in state["positions"] if p["strategy"] == name]
         if name not in verdicts:
-            j = judge(name, st, days_running)
-            if j:
+            j = judge(name, st, days_running, len(opened))
+            if j in ("PASS", "FAIL"):  # only a real judgment is kept; "nothing to judge" is looked at again each run
                 verdicts[name] = {"verdict": j, "at": int(now), "settled": st["settled"], "pnl": st["pnl"],
                                   "p_luck": st["p_luck"]}
         st.update({"trades": len(opened), "open": len(still_open),
                    "open_cost": round(sum(p["cost"] for p in still_open), 2),
                    "days_running": round(days_running, 1), "active": bool(cfg.get("active")),
-                   "verdict": verdict(name, st, days_running, verdicts.get(name))})
+                   "verdict": verdict(name, st, days_running, verdicts.get(name), len(opened))})
         by_s[name] = st
 
     def rank(k):
@@ -172,7 +180,8 @@ def build(data: Path, now: float, state: dict | None = None) -> tuple[str, dict]
         f"Pass rule (fixed in advance): a strategy is judged once, on the first run after {JUDGE_DAYS} days with at least "
         f"{MIN_SETTLED} finished trades on at least {MIN_DAYS} different days. It passes only if it made money AND "
         f"its number of wins is one that the prices alone would produce less than {P_LUCK * 100:.0f} time in 100 "
-        "(so it is unlikely to be luck). The verdict is then kept, not recomputed. Before that, \"too early\". "
+        "(so it is unlikely to be luck). The verdict is then kept, not recomputed. Before that, \"too early\"; "
+        "\"nothing to judge\" means no trade at all after a month. "
         "\"Days\" counts the different days on which its trades finished.",
         "",
         "## Profit by day (trades that finished that day)",
@@ -192,8 +201,16 @@ def build(data: Path, now: float, state: dict | None = None) -> tuple[str, dict]
     else:
         lines.append("No trades have finished yet.")
 
-    recent = sorted(trades, key=lambda t: -t["opened_at"])[:12]
-    lines += ["", "## Latest pretend buys", ""]
+    # the newest buy of every strategy first (so each rule's side can be seen), then the next newest, and so on
+    newest: dict[str, list[dict]] = {}
+    for t in sorted(trades, key=lambda t: -t["opened_at"]):
+        newest.setdefault(t["strategy"], []).append(t)
+    recent: list[dict] = []
+    while len(recent) < 12 and any(newest.values()):
+        for name in order:
+            if newest.get(name) and len(recent) < 12:
+                recent.append(newest[name].pop(0))
+    lines += ["", "## Latest pretend buys (newest of each strategy first)", ""]
     for t in recent:
         leg = t["legs"][0]
         what = t["title"] if t["strategy"] == "price_gap" else f"{t['title']} -> {leg['outcome']}"
@@ -205,7 +222,8 @@ def build(data: Path, now: float, state: dict | None = None) -> tuple[str, dict]
     lines += ["", "## Price gaps seen today", ""]
     if gaps:
         best = min(gaps, key=lambda g: g["cost_per_set"] / g["pays"])
-        lines.append(f"{len(gaps)} checks of multi-choice markets. Cheapest full set: {best['event']} "
+        lines.append(f"{len(gaps)} near-gaps recorded (full sets within a few cents of their payout). "
+                     f"Cheapest: {best['event']} "
                      f"({best['side']}), {best['cost_per_set']:.3f} for a ${best['pays']:.0f} payout.")
     else:
         lines.append("No near-gaps today.")
