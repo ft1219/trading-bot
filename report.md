@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 04:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 05:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 0 | - | - | +$0.00 | 0 | 32 | too early |
-| 2 | safe_no_week | 0 | - | - | +$0.00 | 0 | 32 | too early |
+| 1 | sure_thing | 1 | 1/1 | +3.2% | +$0.16 | 1 | 39 | too early |
+| 2 | safe_no_week | 0 | - | - | +$0.00 | 0 | 40 | too early |
 | 3 | sports_underdog | 0 | - | - | +$0.00 | 0 | 5 | too early |
-| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 32 | too early |
-| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 32 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 32 | too early |
+| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 40 | too early |
+| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 40 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 40 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 0 | - | - | +$0.00 | 0 | 32 | yardstick |
+| 8 | coin_flip | 2 | 2/2 | +91.4% | +$9.14 | 1 | 38 | yardstick |
 
 What each one does:
 
@@ -30,25 +30,27 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Profit by day (trades that finished that day)
 
-No trades have finished yet.
+| Day | sure_thing | coin_flip |
+|---|---|---|
+| 2026-11-06 | +$0.16 | +$9.14 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sure_thing: Atlético San Luis vs. FC Juárez: Neither team to score first? -> No at 0.962 ($5.00)
-- 2026-11-06 safe_no_week: Will "Godzilla Minus Zero" Opening Weekend Box Office be between 37m and 40m? -> No at 0.967 ($5.00)
+- 2026-11-06 sure_thing: Blue Jackets vs. Sabres: O/U 3.5 -> Over at 0.904 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Chengdu be 22°C on November 7? -> No at 0.971 ($5.00)
 - 2026-11-06 sports_underdog: Counter-Strike: PARIVISION vs Natus Vincere (BO3) - IEM Beijing Playoffs -> PARIVISION at 0.310 ($5.00)
-- 2026-11-06 follow_move: Will the price of XRP be above $1.20 on November 11? -> No at 0.537 ($5.00)
-- 2026-11-06 fade_move: Will Meta (META) finish week of November 2 above $600? -> Yes at 0.620 ($5.00)
-- 2026-11-06 weather_forecast: Will the lowest temperature in Buenos Aires be 12°C on November 7? -> Yes at 0.143 ($5.00)
-- 2026-11-06 coin_flip: Solana Up or Down - November 6, 9:15PM-9:20PM ET -> Up at 0.527 ($5.00)
-- 2026-11-06 sure_thing: Will Tesla (TSLA) finish week of November 2 above $370? -> No at 0.923 ($5.00)
-- 2026-11-06 safe_no_week: Will the price of Bitcoin be less than $68,000 on November 12? -> No at 0.980 ($5.00)
+- 2026-11-06 follow_move: Will Elon Musk post 280-299 tweets from October 30 to November 6, 2026? -> Yes at 0.777 ($5.00)
+- 2026-11-06 fade_move: Ethereum Up or Down on November 6? -> Up at 0.242 ($5.00)
+- 2026-11-06 weather_forecast: Will the highest temperature in Cape Town be 19°C on November 7? -> No at 0.472 ($5.00)
+- 2026-11-06 coin_flip: Club León FC vs. CD Guadalajara: Draw at halftime? -> No at 0.642 ($5.00)
+- 2026-11-06 sure_thing: Spread: Gaziantep FK (-2.5) -> Kasımpaşa SK at 0.952 ($5.00)
+- 2026-11-06 safe_no_week: Will "Taken: Natalee Holloway: Season 1" be the top global Netflix show this week? -> Yes at 0.981 ($5.00)
 - 2026-11-06 sports_underdog: Games Total: O/U 3.5 -> Under at 0.341 ($1.71)
-- 2026-11-06 follow_move: Will the price of Bitcoin be above $72,000 on November 11? -> No at 0.177 ($5.00)
-- 2026-11-06 fade_move: Will Ted Cruz post 140-159 posts from November 3 to November 10, 2026? -> Yes at 0.160 ($5.00)
+- 2026-11-06 follow_move: Will Ethereum dip to $2,200 November 2-8? -> Yes at 0.794 ($5.00)
+- 2026-11-06 fade_move: Will voter turnout be between 76% and 78% in the 2026 New Zealand general election? -> Yes at 0.135 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 4 (0 with a problem).
+Runs in the last 24 hours: 5 (0 with a problem).
