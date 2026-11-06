@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 16:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 16:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 11 | 11/11 | +5.6% | +$3.08 | 1 | 157 | too early |
-| 2 | sports_underdog | 24 | 6/24 | -21.7% | -$25.30 | 1 | 67 | too early |
-| 3 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 160 | too early |
+| 1 | sure_thing | 12 | 12/12 | +5.5% | +$3.33 | 1 | 164 | too early |
+| 2 | sports_underdog | 26 | 7/26 | -5.6% | -$7.06 | 1 | 73 | too early |
+| 3 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 164 | too early |
 | 4 | follow_move | 1 | 0/1 | -100.0% | -$5.00 | 1 | 109 | too early |
-| 5 | fade_move | 1 | 1/1 | +227.4% | +$11.37 | 1 | 122 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 113 | too early |
+| 5 | fade_move | 1 | 1/1 | +227.4% | +$11.37 | 1 | 123 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 117 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 8 | 4/8 | -4.5% | -$1.81 | 1 | 160 | yardstick |
+| 8 | coin_flip | 8 | 4/8 | -4.5% | -$1.81 | 1 | 168 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | safe_no_week | follow_move | fade_move | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-06 | +$3.08 | -$25.30 | +$0.12 | -$5.00 | +$11.37 | -$1.81 |
+| 2026-11-06 | +$3.33 | -$7.06 | +$0.12 | -$5.00 | +$11.37 | -$1.81 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sure_thing: Spread: FK Kudrivka (-2.5) -> FK Chornomorets Odesa at 0.962 ($5.00)
-- 2026-11-06 sports_underdog: Will TOP Oss win on 2026-11-06? -> Yes at 0.259 ($5.00)
-- 2026-11-06 safe_no_week: Will "ArcheAge Chronicles" be the #1 Steam Weekly Top Seller for the week of November 3 - November 10, 2026? -> No at 0.983 ($5.00)
+- 2026-11-06 sure_thing: Will Google (GOOGL) finish week of November 2 above $280? -> Yes at 0.971 ($4.86)
+- 2026-11-06 sports_underdog: Will Union Brescia vs. FC Arzignano Valchiampo end in a draw? -> Yes at 0.249 ($5.00)
+- 2026-11-06 safe_no_week: Will the National Party win 45-49 seats in the New Zealand House of Representatives in the 2026 New Zealand legislative election? -> No at 0.983 ($5.00)
 - 2026-11-06 follow_move: Will CZ post 40-59 posts from November 3 to November 10, 2026? -> Yes at 0.482 ($5.00)
-- 2026-11-06 fade_move: Will CZ post 40-59 posts from November 3 to November 10, 2026? -> No at 0.562 ($5.00)
-- 2026-11-06 weather_forecast: Will the lowest temperature in Wuhan be 12°C on November 8? -> Yes at 0.164 ($3.62)
-- 2026-11-06 coin_flip: Spread: Browns (-2.5) -> Browns at 0.377 ($5.00)
-- 2026-11-06 sure_thing: FC Hradec Králové vs. SK Sigma Olomouc: Neither team to score first? -> No at 0.971 ($5.00)
-- 2026-11-06 sports_underdog: Will USL Dunkerque win on 2026-11-06? -> Yes at 0.341 ($5.00)
-- 2026-11-06 safe_no_week: Will the lowest temperature in Guangzhou be 21°C on November 8? -> No at 0.981 ($5.00)
+- 2026-11-06 fade_move: Will Trump's approval rating be between 38.5 and 38.9 on November 6, 2026? -> Yes at 0.145 ($5.00)
+- 2026-11-06 weather_forecast: Will the highest temperature in Busan be 14°C on November 8? -> No at 0.661 ($5.00)
+- 2026-11-06 coin_flip: Will the price of Ethereum be between $2,200 and $2,300 on November 8? -> Yes at 0.607 ($5.00)
+- 2026-11-06 sure_thing: Spread: FC Felgueiras 1932 (-2.5) -> Leixoes SC at 0.960 ($5.00)
+- 2026-11-06 sports_underdog: Spread: Union Brescia (-2.5) -> Union Brescia at 0.187 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Jeddah be 30°C on November 8? -> No at 0.983 ($5.00)
 - 2026-11-06 follow_move: Will "The One About Matthew Perry: Season 1" be the #2 US Netflix show this week? -> Yes at 0.422 ($5.00)
-- 2026-11-06 fade_move: Will Gintautas Kindurys win the 2026 Northern Nalšia district by-election? -> No at 0.420 ($5.00)
+- 2026-11-06 fade_move: Will CZ post 40-59 posts from November 3 to November 10, 2026? -> No at 0.562 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 21 (0 with a problem).
+Runs in the last 24 hours: 22 (0 with a problem).
