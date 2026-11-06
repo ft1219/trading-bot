@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 19:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 20:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | fade_move | 14 | 8/14 | +21.9% | +$15.30 | 1 | 128 | too early |
-| 2 | sure_thing | 23 | 23/23 | +5.7% | +$6.56 | 1 | 185 | too early |
-| 3 | sports_underdog | 49 | 13/49 | -7.1% | -$17.19 | 1 | 82 | too early |
-| 4 | follow_move | 13 | 5/13 | -37.8% | -$24.57 | 1 | 115 | too early |
-| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 184 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 124 | too early |
+| 1 | fade_move | 14 | 8/14 | +21.9% | +$15.30 | 1 | 129 | too early |
+| 2 | sure_thing | 26 | 25/26 | +1.7% | +$2.23 | 1 | 190 | too early |
+| 3 | sports_underdog | 52 | 13/52 | -12.5% | -$32.19 | 1 | 87 | too early |
+| 4 | follow_move | 13 | 5/13 | -37.8% | -$24.57 | 1 | 116 | too early |
+| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 185 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 126 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 12 | 6/12 | -9.1% | -$5.48 | 1 | 196 | yardstick |
+| 8 | coin_flip | 13 | 7/13 | -1.5% | -$1.00 | 1 | 203 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | fade_move | sure_thing | sports_underdog | follow_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-06 | +$15.30 | +$6.56 | -$17.19 | -$24.57 | +$0.12 | -$5.48 |
+| 2026-11-06 | +$15.30 | +$2.23 | -$32.19 | -$24.57 | +$0.12 | -$1.00 |
 
 ## Latest pretend buys (newest of each strategy first)
 
+- 2026-11-06 fade_move: Will Argentina's monthly inflation in October 2026 be between 1.6% and 1.8%? -> Yes at 0.382 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: Merthyr Town 0 - 0 Hebburn Town? -> No at 0.963 ($5.00)
+- 2026-11-06 sports_underdog: Will Operário Ferroviário EC vs. SC Recife end in a draw? -> Yes at 0.300 ($5.00)
+- 2026-11-06 follow_move: Will Argentina's monthly inflation in October 2026 be between 1.6% and 1.8%? -> No at 0.652 ($5.00)
+- 2026-11-06 safe_no_week: Will "Wildwood" 3rd Weekend Box Office be between 5m and 6m? -> No at 0.975 ($5.00)
+- 2026-11-06 weather_forecast: Will the lowest temperature in Austin be between 62-63°F on November 7? -> Yes at 0.140 ($2.98)
+- 2026-11-06 coin_flip: Burgos CF to score first vs. Celta Fortuna? -> No at 0.388 ($5.00)
 - 2026-11-06 fade_move: Bitcoin Up or Down on November 7? -> Up at 0.407 ($5.00)
-- 2026-11-06 sure_thing: St. Thomas (MN) Tommies vs. Minnesota Golden Gophers -> Minnesota Golden Gophers at 0.933 ($5.00)
-- 2026-11-06 sports_underdog: Spread: Cambridge United FC (-1.5) -> Cambridge United FC at 0.208 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: Harrogate Town AFC 1 - 0 AFC Fylde? -> No at 0.962 ($5.00)
+- 2026-11-06 sports_underdog: Spread: Club Independiente Petrolero (-1.5) -> Club Independiente Petrolero at 0.361 ($5.00)
 - 2026-11-06 follow_move: Will "FRESH" first week sales be at least 120k? -> No at 0.769 ($5.00)
 - 2026-11-06 safe_no_week: Will "FRESH" first week sales be at least 160k? -> No at 0.962 ($5.00)
-- 2026-11-06 weather_forecast: Will the highest temperature in Austin be between 62-63°F on November 8? -> No at 0.671 ($5.00)
-- 2026-11-06 coin_flip: Real Sociedad de Fútbol vs. Rayo Vallecano de Madrid: 1st Half O/U 5.5 Total Corners -> Under at 0.642 ($5.00)
-- 2026-11-06 fade_move: BNB Up or Down on November 7? -> Up at 0.396 ($5.00)
-- 2026-11-06 sure_thing: Exact Score: Oud-Heverlee Leuven 0 - 0 Yellow-Red KV Mechelen? -> No at 0.943 ($5.00)
-- 2026-11-06 sports_underdog: Costa do Sauipe: Gonzalo Bueno vs Lautaro Midon -> Gonzalo Bueno at 0.361 ($5.00)
-- 2026-11-06 follow_move: Bitcoin Up or Down on November 7? -> Down at 0.636 ($5.00)
-- 2026-11-06 safe_no_week: Will the highest temperature in Miami be between 82-83°F on November 8? -> No at 0.924 ($5.00)
 
 ## Price gaps seen today
 
 2 near-gaps recorded (full sets within a few cents of their payout). Cheapest: NZ Election: Labour Party # of seats? (yes), 1.002 for a $1 payout.
 
-Runs in the last 24 hours: 26 (0 with a problem).
+Runs in the last 24 hours: 27 (0 with a problem).
