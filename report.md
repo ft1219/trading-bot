@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 07:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 08:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 3 | 3/3 | +3.3% | +$0.50 | 1 | 61 | too early |
-| 2 | sports_underdog | 3 | 1/3 | -5.1% | -$0.76 | 1 | 13 | too early |
-| 3 | safe_no_week | 0 | - | - | +$0.00 | 0 | 64 | too early |
-| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 62 | too early |
-| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 64 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 64 | too early |
+| 1 | sure_thing | 3 | 3/3 | +3.3% | +$0.50 | 1 | 69 | too early |
+| 2 | sports_underdog | 3 | 1/3 | -5.1% | -$0.76 | 1 | 19 | too early |
+| 3 | safe_no_week | 0 | - | - | +$0.00 | 0 | 72 | too early |
+| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 64 | too early |
+| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 68 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 72 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 2 | 2/2 | +91.4% | +$9.14 | 1 | 62 | yardstick |
+| 8 | coin_flip | 2 | 2/2 | +91.4% | +$9.14 | 1 | 70 | yardstick |
 
 What each one does:
 
@@ -36,21 +36,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sure_thing: Spread: Antalyaspor (-1.5) -> Bursaspor at 0.952 ($5.00)
-- 2026-11-06 sports_underdog: Dota 2: Xipto Esports vs Froglings (BO3) - DreamLeague Division 2 Group A -> Xipto Esports at 0.361 ($5.00)
-- 2026-11-06 safe_no_week: Will the highest temperature in Busan be 12°C on November 7? -> No at 0.962 ($5.00)
-- 2026-11-06 follow_move: Will the price of XRP be above $1.20 on November 9? -> No at 0.645 ($5.00)
-- 2026-11-06 fade_move: Will Natus Vincere Win the IEM Beijing 2026? -> Yes at 0.209 ($5.00)
-- 2026-11-06 weather_forecast: Will the highest temperature in Wuhan be 15°C on November 8? -> No at 0.642 ($5.00)
-- 2026-11-06 coin_flip: Will Gaziantep FK vs. Kasımpaşa SK end in a draw? -> Yes at 0.300 ($5.00)
-- 2026-11-06 sure_thing: Exact Score: FK Septemvri Sofia 0 - 0 FC Lokomotiv 1929 Sofia? -> No at 0.943 ($5.00)
-- 2026-11-06 sports_underdog: Dota 2: potn9ki vs Zenith (BO3) - DreamLeague Division 2 Group A -> Zenith at 0.321 ($5.00)
-- 2026-11-06 safe_no_week: Will the price of XRP be above $1.10 on November 8? -> Yes at 0.955 ($5.00)
-- 2026-11-06 follow_move: Will the price of XRP be above $1.20 on November 7? -> No at 0.682 ($5.00)
-- 2026-11-06 fade_move: Will Gold (XAUUSD) hit (HIGH) $4,150 Week of November 2 2026? -> Yes at 0.124 ($5.00)
+- 2026-11-06 sure_thing: Will NVIDIA (NVDA) finish week of November 2 above $205? -> No at 0.971 ($5.00)
+- 2026-11-06 sports_underdog: Chennai Open: Robin Montgomery vs Maaya Rajeshwaran Revathi -> Maaya Rajeshwaran Revathi at 0.187 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in San Francisco be between 64-65°F on November 7? -> No at 0.984 ($5.00)
+- 2026-11-06 follow_move: Will the price of Ethereum be between $2,200 and $2,300 on November 6? -> Yes at 0.676 ($5.00)
+- 2026-11-06 fade_move: Will the price of XRP be above $1.30 on November 11? -> Yes at 0.127 ($5.00)
+- 2026-11-06 weather_forecast: Will the highest temperature in New York City be between 60-61°F on November 7? -> No at 0.522 ($5.00)
+- 2026-11-06 coin_flip: XRP Up or Down - November 6, 1:30PM-1:45PM ET -> Up at 0.527 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: Ascoli Calcio 1898 FC 0 - 0 Palermo FC? -> No at 0.950 ($5.00)
+- 2026-11-06 sports_underdog: Spread: FK Livyi Bereh (-1.5) -> FK Livyi Bereh at 0.177 ($5.00)
+- 2026-11-06 safe_no_week: Will the lowest temperature in Tokyo be 14°C on November 7? -> No at 0.933 ($5.00)
+- 2026-11-06 follow_move: Will "Godzilla Minus Zero" Opening Weekend Box Office be less than 28m? -> No at 0.850 ($5.00)
+- 2026-11-06 fade_move: BNB Up or Down on November 6? -> Up at 0.453 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 8 (0 with a problem).
+Runs in the last 24 hours: 9 (0 with a problem).
