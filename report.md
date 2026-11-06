@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 18:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 18:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | fade_move | 12 | 8/12 | +42.2% | +$25.30 | 1 | 124 | too early |
-| 2 | sure_thing | 17 | 17/17 | +5.7% | +$4.85 | 1 | 175 | too early |
-| 3 | sports_underdog | 39 | 9/39 | -18.6% | -$35.73 | 1 | 76 | too early |
-| 4 | follow_move | 11 | 3/11 | -60.3% | -$33.17 | 1 | 111 | too early |
-| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 180 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 121 | too early |
+| 1 | fade_move | 12 | 8/12 | +42.2% | +$25.30 | 1 | 126 | too early |
+| 2 | sure_thing | 17 | 17/17 | +5.7% | +$4.85 | 1 | 183 | too early |
+| 3 | sports_underdog | 41 | 10/41 | -13.0% | -$26.26 | 1 | 82 | too early |
+| 4 | follow_move | 11 | 3/11 | -60.3% | -$33.17 | 1 | 113 | too early |
+| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 183 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 124 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 9 | 5/9 | +6.1% | +$2.77 | 1 | 183 | yardstick |
+| 8 | coin_flip | 11 | 6/11 | -0.9% | -$0.48 | 1 | 189 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | fade_move | sure_thing | sports_underdog | follow_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-06 | +$25.30 | +$4.85 | -$35.73 | -$33.17 | +$0.12 | +$2.77 |
+| 2026-11-06 | +$25.30 | +$4.85 | -$26.26 | -$33.17 | +$0.12 | -$0.48 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 fade_move: Solana Up or Down on November 7? -> Up at 0.428 ($5.00)
-- 2026-11-06 sure_thing: Spread: Volos NPS (-2.5) -> AE Kifisia FC at 0.971 ($5.00)
-- 2026-11-06 sports_underdog: Will Montpellier HSC vs. FC Metz end in a draw? -> Yes at 0.259 ($5.00)
-- 2026-11-06 follow_move: XRP Up or Down on November 7? -> Down at 0.689 ($5.00)
-- 2026-11-06 safe_no_week: Will the highest temperature in Kuala Lumpur be 31°C on November 8? -> No at 0.952 ($5.00)
-- 2026-11-06 weather_forecast: Will the highest temperature in Panama City be 31°C on November 8? -> No at 0.652 ($5.00)
-- 2026-11-06 coin_flip: Spread: Texas Tech (-30.5) -> Texas Tech at 0.218 ($5.00)
-- 2026-11-06 fade_move: XRP Up or Down on November 7? -> Up at 0.361 ($5.00)
-- 2026-11-06 sure_thing: Spread: Dundee United FC (-2.5) -> Motherwell FC at 0.904 ($5.00)
-- 2026-11-06 sports_underdog: Will CA Grau vs. Cusco FC end in a draw? -> Yes at 0.280 ($5.00)
-- 2026-11-06 follow_move: Will "You Seem Pretty Sad for a Girl So in Love - Olivia Rodrigo" be the Billboard 200 #1 album for the week of November 14? -> No at 0.522 ($5.00)
-- 2026-11-06 safe_no_week: Will the highest temperature in Sao Paulo be 22°C on November 8? -> No at 0.924 ($5.00)
+- 2026-11-06 fade_move: Will Elon Musk post 260-279 tweets from November 3 to November 10, 2026? -> No at 0.784 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: Casertana FC 0 - 0 S.S.D. Casarano Calcio? -> No at 0.971 ($5.00)
+- 2026-11-06 sports_underdog: Spread: Palermo FC (-1.5) -> Palermo FC at 0.198 ($5.00)
+- 2026-11-06 follow_move: Will TheBurntPeanut win Gamer of the Year at the 2026 Streamer Awards? -> Yes at 0.341 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Miami be between 82-83°F on November 8? -> No at 0.924 ($5.00)
+- 2026-11-06 weather_forecast: Will the highest temperature in Austin be between 62-63°F on November 8? -> No at 0.671 ($5.00)
+- 2026-11-06 coin_flip: Konyaspor leading at halftime? -> No at 0.769 ($5.00)
+- 2026-11-06 fade_move: Will TheBurntPeanut win Gamer of the Year at the 2026 Streamer Awards? -> No at 0.720 ($5.00)
+- 2026-11-06 sure_thing: Spread: PFC Cherno More Varna (-2.5) -> PFC Slavia Sofia at 0.971 ($5.00)
+- 2026-11-06 sports_underdog: Spread: Sevilla FC (-1.5) -> Sevilla FC at 0.259 ($5.00)
+- 2026-11-06 follow_move: Will Elon Musk post 260-279 tweets from November 3 to November 10, 2026? -> Yes at 0.235 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Warsaw be 8°C on November 8? -> No at 0.971 ($4.91)
 
 ## Price gaps seen today
 
 2 near-gaps recorded (full sets within a few cents of their payout). Cheapest: NZ Election: Labour Party # of seats? (yes), 1.002 for a $1 payout.
 
-Runs in the last 24 hours: 24 (0 with a problem).
+Runs in the last 24 hours: 25 (0 with a problem).
