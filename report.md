@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 03:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 0 | - | - | +$0.00 | 0 | 8 | too early |
-| 2 | safe_no_week | 0 | - | - | +$0.00 | 0 | 8 | too early |
-| 3 | sports_underdog | 0 | - | - | +$0.00 | 0 | 3 | too early |
-| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 8 | too early |
-| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 8 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 8 | too early |
+| 1 | sure_thing | 0 | - | - | +$0.00 | 0 | 16 | too early |
+| 2 | safe_no_week | 0 | - | - | +$0.00 | 0 | 16 | too early |
+| 3 | sports_underdog | 0 | - | - | +$0.00 | 0 | 4 | too early |
+| 4 | follow_move | 0 | - | - | +$0.00 | 0 | 16 | too early |
+| 5 | fade_move | 0 | - | - | +$0.00 | 0 | 16 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 16 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 0 | - | - | +$0.00 | 0 | 8 | yardstick |
+| 8 | coin_flip | 0 | - | - | +$0.00 | 0 | 16 | yardstick |
 
 What each one does:
 
@@ -34,21 +34,21 @@ No trades have finished yet.
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sure_thing: Will Bitcoin dip to $75,000 on November 5? -> No at 0.969 ($5.00)
-- 2026-11-06 safe_no_week: Will "Black Doves: Season 2" be the top US Netflix show this week? -> No at 0.978 ($5.00)
+- 2026-11-06 sure_thing: Spread: Derby County FC (-2.5) -> Bolton Wanderers FC at 0.943 ($5.00)
+- 2026-11-06 safe_no_week: Will Zelenskyy post 120-139 posts from November 3 to November 10, 2026? -> No at 0.981 ($5.00)
+- 2026-11-06 sports_underdog: Games Total: O/U 3.5 -> Under at 0.341 ($1.71)
+- 2026-11-06 follow_move: Will the price of Bitcoin be between $74,000 and $76,000 on November 6? -> Yes at 0.437 ($5.00)
+- 2026-11-06 fade_move: Will the price of XRP be above $1.20 on November 7? -> Yes at 0.601 ($5.00)
+- 2026-11-06 weather_forecast: Will the lowest temperature in Shenzhen be 25°C on November 7? -> No at 0.691 ($5.00)
+- 2026-11-06 coin_flip: Qingdao Hainiu FC vs. Shenzhen Xinpengcheng FC: 1st Half O/U 0.5 -> Over at 0.808 ($5.00)
+- 2026-11-06 sure_thing: Spread: FC Petrolul Ploieşti (-1.5) -> FC UTA Arad at 0.943 ($5.00)
+- 2026-11-06 safe_no_week: Will the price of XRP be above $1.40 on November 12? -> No at 0.972 ($5.00)
 - 2026-11-06 sports_underdog: Heat vs. Warriors: O/U 227.5 -> Under at 0.351 ($5.00)
-- 2026-11-06 follow_move: Will Elon Musk post 40-64 tweets from November 5 to November 7, 2026? -> Yes at 0.382 ($5.00)
-- 2026-11-06 fade_move: Will Elon Musk post 280-299 tweets from October 30 to November 6, 2026? -> No at 0.305 ($5.00)
-- 2026-11-06 weather_forecast: Will the highest temperature in Munich be 8°C on November 7? -> No at 0.691 ($5.00)
-- 2026-11-06 coin_flip: Atalanta BC U23 vs. Reggiana 1919: O/U 2.5 -> Over at 0.602 ($5.00)
-- 2026-11-06 sure_thing: Spread: Thunder (-19.5) -> Grizzlies at 0.933 ($5.00)
-- 2026-11-06 safe_no_week: Will Argentina's monthly inflation in October 2026 be between 2.2% and 2.4%? -> No at 0.961 ($5.00)
-- 2026-11-06 sports_underdog: Will Alacranes de Durango vs. Leones Negros UDEG end in a draw? -> Yes at 0.300 ($5.00)
-- 2026-11-06 follow_move: Will the Labour Party win 30-34 seats in the New Zealand House of Representatives in the 2026 New Zealand legislative election? -> Yes at 0.479 ($5.00)
-- 2026-11-06 fade_move: Will Elon Musk post 40-64 tweets from November 5 to November 7, 2026? -> No at 0.661 ($5.00)
+- 2026-11-06 follow_move: Will the price of Bitcoin be above $74,000 on November 8? -> No at 0.180 ($5.00)
+- 2026-11-06 fade_move: Will the price of Ethereum be above $2,200 on November 8? -> Yes at 0.697 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 1 (0 with a problem).
+Runs in the last 24 hours: 2 (0 with a problem).
