@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 14:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 15:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sports_underdog | 15 | 4/15 | -17.3% | -$12.40 | 1 | 60 | too early |
-| 2 | sure_thing | 6 | 6/6 | +5.4% | +$1.61 | 1 | 146 | too early |
-| 3 | follow_move | 1 | 0/1 | -100.0% | -$5.00 | 1 | 104 | too early |
-| 4 | fade_move | 1 | 1/1 | +227.4% | +$11.37 | 1 | 117 | too early |
-| 5 | safe_no_week | 0 | - | - | +$0.00 | 0 | 146 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 109 | too early |
+| 1 | sports_underdog | 17 | 4/17 | -27.4% | -$22.40 | 1 | 66 | too early |
+| 2 | sure_thing | 7 | 7/7 | +5.6% | +$1.97 | 1 | 153 | too early |
+| 3 | follow_move | 1 | 0/1 | -100.0% | -$5.00 | 1 | 106 | too early |
+| 4 | fade_move | 1 | 1/1 | +227.4% | +$11.37 | 1 | 119 | too early |
+| 5 | safe_no_week | 0 | - | - | +$0.00 | 0 | 154 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 110 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 6 | 3/6 | -4.3% | -$1.29 | 1 | 146 | yardstick |
+| 8 | coin_flip | 6 | 3/6 | -4.3% | -$1.29 | 1 | 154 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sports_underdog | sure_thing | follow_move | fade_move | coin_flip |
 |---|---|---|---|---|---|
-| 2026-11-06 | -$12.40 | +$1.61 | -$5.00 | +$11.37 | -$1.29 |
+| 2026-11-06 | -$22.40 | +$1.97 | -$5.00 | +$11.37 | -$1.29 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sports_underdog: Will NK Lokomotiva Zagreb vs. NK Rudeš end in a draw? -> Yes at 0.280 ($5.00)
-- 2026-11-06 sure_thing: Exact Score: SV Waldhof Mannheim 07 1 - 0 Fortuna Cologne? -> No at 0.952 ($5.00)
-- 2026-11-06 follow_move: S&P 500 (SPY) closes above $745 on November 6? -> No at 0.777 ($5.00)
-- 2026-11-06 fade_move: Will Apple (AAPL) close above $345 on November 6? -> Yes at 0.187 ($5.00)
-- 2026-11-06 safe_no_week: Will the highest temperature in Munich be 5°C on November 8? -> No at 0.971 ($5.00)
-- 2026-11-06 weather_forecast: Will the highest temperature in Houston be between 64-65°F on November 8? -> No at 0.798 ($5.00)
-- 2026-11-06 coin_flip: Dogecoin Up or Down - November 8, 3AM ET -> Down at 0.527 ($5.00)
-- 2026-11-06 sports_underdog: Will SG Dynamo Dresden vs. SpVgg Greuther Fürth end in a draw? -> Yes at 0.270 ($5.00)
-- 2026-11-06 sure_thing: Will Everton FC win on 2026-11-07? -> No at 0.952 ($5.00)
-- 2026-11-06 follow_move: Will Meta (META) close above $620 on November 6? -> Yes at 0.456 ($5.00)
-- 2026-11-06 fade_move: Gold (XAUUSD) Up or Down on November 6? -> Up at 0.120 ($5.00)
-- 2026-11-06 safe_no_week: Will the price of Bitcoin be between $70,000 and $72,000 on November 9? -> No at 0.975 ($5.00)
+- 2026-11-06 sports_underdog: Drexel Dragons vs. Penn Quakers (W) -> Drexel Dragons at 0.280 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: Jeju SK FC 0 - 0 Gwangju FC? -> No at 0.943 ($5.00)
+- 2026-11-06 follow_move: WTI Crude Oil (WTI) Up or Down on November 6? -> Down at 0.816 ($5.00)
+- 2026-11-06 fade_move: WTI Crude Oil (WTI) Up or Down on November 6? -> Up at 0.247 ($5.00)
+- 2026-11-06 safe_no_week: Will the price of Ethereum be between $2,300 and $2,400 on November 7? -> No at 0.944 ($5.00)
+- 2026-11-06 weather_forecast: Will the lowest temperature in Shenzhen be 25°C on November 8? -> No at 0.572 ($5.00)
+- 2026-11-06 coin_flip: Hyperliquid Up or Down - November 6, 4:05PM-4:10PM ET -> Down at 0.527 ($5.00)
+- 2026-11-06 sports_underdog: Spread: Botev Plovdiv (-2.5) -> Botev Plovdiv at 0.249 ($5.00)
+- 2026-11-06 sure_thing: Exact Score: SS Juve Stabia 0 - 0 SS Arezzo? -> No at 0.933 ($5.00)
+- 2026-11-06 follow_move: Will StubHub (STUB) beat quarterly earnings? -> No at 0.681 ($5.00)
+- 2026-11-06 fade_move: Will StubHub (STUB) beat quarterly earnings? -> Yes at 0.382 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Buenos Aires be 21°C on November 8? -> No at 0.943 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 19 (0 with a problem).
+Runs in the last 24 hours: 20 (0 with a problem).
