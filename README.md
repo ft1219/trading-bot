@@ -8,6 +8,7 @@ The research behind this plan is in [Trading Bot Plan: What Survived the Stress 
 | --- | --- | --- | --- |
 | [`metaculus-bot/`](metaculus-bot/) | Answers forecasting questions in Metaculus's AI tournaments, which pay prizes to the most accurate bots | None (only AI costs, capped) | Running since 17 October 2026 |
 | [`polymarket-shadow/`](polymarket-shadow/) | Practice mode for a Polymarket reward bot: records, with no money, what keeping small orders in the book would have earned and lost | None (paper trading on public data) | Stopped 3 November 2026: it failed its 14-day check, so there is no real pilot |
+| [`polymarket-lab/`](polymarket-lab/) | Strategy lab: tests several Polymarket strategies side by side with pretend money, buying at real asking prices, and ranks them against a fixed pass rule | None (paper trading on public data; free weather data) | Running from November 2026; results on the `polymarket-lab-data` branch, `report.md` |
 
 ## Setting up the Metaculus bot
 
@@ -40,4 +41,4 @@ The report has a go/no-go check fixed in advance: over the first 14 well-covered
 ## Costs
 
 - **AI:** main-tournament questions, where most of the prize money is, use Gemini 3.7 Flash at about 6-7 US cents each. MiniBench and Metaculus Cup questions use DeepSeek V3.2 at about 2-3 cents each (both measured in October 2026). Together that is roughly $8-15 a month, depending on how many questions Metaculus releases. The OpenRouter key limit caps the season total. Each run also stops starting new questions once it has spent $2, and every run's log ends with what it spent.
-- **GitHub:** free. Private repositories get 2,000 free Actions minutes a month. The timer starts the bots 36 times a day; a quick check first asks Metaculus whether any open question still needs a forecast from the bot, and when none does the run ends in under a minute. That is about 1,100 minutes a month plus the runs that actually forecast. If GitHub warns about minutes, change `JOBS` in `metaculus-bot/timer_setup.py` to hourly and run the setup workflow again.
+- **GitHub:** free while this repository is public (public repositories get unlimited Actions minutes on standard runners). The timer starts the bots 36 times a day; a quick check first asks Metaculus whether any open question still needs a forecast from the bot, and when none does that job ends in about a minute. The Polymarket strategy lab runs beside it as its own job of 2-4 minutes. If the repository were ever made private again, that would be roughly 3,000-4,000 minutes a month against the 2,000 free ones: pause the lab first (repository variable `POLYMARKET_LAB` = `off`) or change `JOBS` in `metaculus-bot/timer_setup.py` to hourly and run the setup workflow again.

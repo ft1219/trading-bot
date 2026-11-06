@@ -1,11 +1,18 @@
 name: Bots - every 40 minutes
 
 # The first job asks Metaculus, with nothing but the runner's built-in Python,
-# whether any open question needs a forecast, so a run with nothing to
-# forecast is billed as one GitHub Actions minute. The forecast job, which
-# installs third-party packages, starts only when a question needs a
-# forecast. Neither job can write to the repository. Set the repository
-# variable METACULUS_BOT to "off" to pause the bot.
+# whether any open question needs a forecast, so when nothing needs one that
+# job takes about one GitHub Actions minute. The forecast job, which installs
+# third-party packages, starts only when a question needs a forecast. Neither
+# of those jobs can write to the repository. Set the repository variable
+# METACULUS_BOT to "off" to pause the bot.
+#
+# The polymarket-lab job runs beside them, on its own: pretend trading only
+# (public data, no keys, no money), saved to the polymarket-lab-data branch.
+# It is the only job that may write, and only that branch. It takes 2-4
+# minutes a run and is billed as its own job (free while the repository is
+# public). If it fails, the run turns red and GitHub emails the owner, but
+# the forecasting jobs are not affected. Set POLYMARKET_LAB to "off" to pause it.
 
 # Started every 40 minutes (:07 and :47 of even hours, :27 of odd hours, UTC)
 # by two cron-job.org jobs that call this workflow's dispatch endpoint; see
@@ -92,3 +99,19 @@ jobs:
           MAX_COST_PER_RUN_USD: ${{ vars.MAX_COST_PER_RUN_USD }}
           MAX_LLM_CALLS_PER_RUN: ${{ vars.MAX_LLM_CALLS_PER_RUN }}
           QUESTIONS_IN_PARALLEL: ${{ vars.QUESTIONS_IN_PARALLEL }}
+
+  polymarket-lab:
+    if: vars.POLYMARKET_LAB != 'off'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write  # for the polymarket-lab-data branch only
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pretend trades (Polymarket strategy lab)
+        working-directory: polymarket-lab
+        run: bash run.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
