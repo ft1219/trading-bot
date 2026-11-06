@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-06 21:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-06 22:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 50 | 49/50 | +4.0% | +$9.97 | 1 | 182 | too early |
-| 2 | sports_underdog | 75 | 16/75 | -21.8% | -$81.03 | 1 | 80 | too early |
-| 3 | follow_move | 33 | 17/33 | -27.5% | -$45.28 | 1 | 100 | too early |
-| 4 | fade_move | 42 | 11/42 | -47.5% | -$99.66 | 1 | 107 | too early |
-| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 193 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 127 | too early |
+| 1 | sure_thing | 61 | 60/61 | +4.3% | +$13.19 | 1 | 179 | too early |
+| 2 | sports_underdog | 85 | 19/85 | -19.3% | -$81.26 | 1 | 78 | too early |
+| 3 | follow_move | 38 | 17/38 | -37.1% | -$70.28 | 1 | 98 | too early |
+| 4 | fade_move | 49 | 15/49 | -39.6% | -$96.91 | 1 | 103 | too early |
+| 5 | safe_no_week | 1 | 1/1 | +2.3% | +$0.12 | 1 | 197 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 128 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 26 | 13/26 | -8.8% | -$11.47 | 1 | 206 | yardstick |
+| 8 | coin_flip | 32 | 17/32 | +3.7% | +$5.88 | 1 | 208 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-06 | +$9.97 | -$81.03 | -$45.28 | -$99.66 | +$0.12 | -$11.47 |
+| 2026-11-06 | +$13.19 | -$81.26 | -$70.28 | -$96.91 | +$0.12 | +$5.88 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-06 sure_thing: Spread: Columbus Crew (-2.5) -> Chicago Fire FC at 0.952 ($5.00)
-- 2026-11-06 sports_underdog: UNCG Spartans vs. Elon Phoenix -> UNCG Spartans at 0.229 ($5.00)
-- 2026-11-06 follow_move: Will 170-189 ships transit the Bab el-Mandeb Strait between November 2-November 8? -> No at 0.840 ($5.00)
-- 2026-11-06 fade_move: Will 170-189 ships transit the Bab el-Mandeb Strait between November 2-November 8? -> Yes at 0.200 ($5.00)
-- 2026-11-06 safe_no_week: Will the lowest temperature in Hong Kong be 24°C on November 8? -> No at 0.962 ($5.00)
-- 2026-11-06 weather_forecast: Will the lowest temperature in Helsinki be -1°C on November 7? -> No at 0.740 ($5.00)
-- 2026-11-06 coin_flip: Timberwolves vs. Pelicans -> Pelicans at 0.422 ($5.00)
-- 2026-11-06 sure_thing: Spread: Garuda Yaksa (-2.5) -> Persijap Jepara at 0.943 ($5.00)
-- 2026-11-06 sports_underdog: Northern Iowa Panthers vs. South Dakota State Jackrabbits (W) -> Northern Iowa Panthers at 0.167 ($5.00)
-- 2026-11-06 follow_move: Will the price of Ethereum be between $2,200 and $2,300 on November 10? -> Yes at 0.417 ($5.00)
-- 2026-11-06 fade_move: Will the price of Ethereum be between $2,200 and $2,300 on November 10? -> No at 0.676 ($5.00)
-- 2026-11-06 safe_no_week: Will the lowest temperature in Seoul (Incheon) be 5°C on November 8? -> No at 0.952 ($5.00)
+- 2026-11-06 sure_thing: Queens (NC) Royals vs. Oklahoma State Cowboys -> Oklahoma State Cowboys at 0.952 ($5.00)
+- 2026-11-06 sports_underdog: Missouri Tigers vs. Little Rock Trojans (W) -> Little Rock Trojans at 0.208 ($5.00)
+- 2026-11-06 follow_move: Will Pixelworks (PXLW) beat quarterly earnings? -> No at 0.800 ($5.00)
+- 2026-11-06 fade_move: Ethereum Up or Down on November 7? -> Down at 0.386 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in New York City be between 58-59°F on November 8? -> No at 0.952 ($5.00)
+- 2026-11-06 weather_forecast: Will the highest temperature in New York City be between 58-59°F on November 8? -> Yes at 0.073 ($5.00)
+- 2026-11-06 coin_flip: Atletico Morelia vs. Venados FC: O/U 2.5 -> Over at 0.681 ($5.00)
+- 2026-11-06 sure_thing: Spread: AC Trento (-2.5) -> US Albinoleffe at 0.914 ($5.00)
+- 2026-11-06 sports_underdog: Will Fortaleza FC win on 2026-11-06? -> Yes at 0.310 ($5.00)
+- 2026-11-06 follow_move: Will the National Party win 35-39 seats in the New Zealand House of Representatives in the 2026 New Zealand legislative election? -> Yes at 0.550 ($5.00)
+- 2026-11-06 fade_move: Will Pixelworks (PXLW) beat quarterly earnings? -> Yes at 0.239 ($5.00)
+- 2026-11-06 safe_no_week: Will the highest temperature in Chicago be between 62-63°F on November 8? -> No at 0.971 ($5.00)
 
 ## Price gaps seen today
 
 2 near-gaps recorded (full sets within a few cents of their payout). Cheapest: NZ Election: Labour Party # of seats? (yes), 1.002 for a $1 payout.
 
-Runs in the last 24 hours: 29 (0 with a problem).
+Runs in the last 24 hours: 30 (0 with a problem).
