@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 18:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 19:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 24 | 24/24 | +4.4% | +$5.23 | 2 | 271 | too early |
-| 2 | sure_thing | 249 | 239/249 | +1.8% | +$21.79 | 2 | 238 | too early |
-| 3 | sports_underdog | 321 | 69/321 | -16.5% | -$262.91 | 2 | 83 | too early |
-| 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 96 | too early |
-| 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 106 | too early |
-| 6 | weather_forecast | 31 | 9/31 | -55.6% | -$86.16 | 1 | 165 | too early |
+| 1 | safe_no_week | 26 | 26/26 | +4.2% | +$5.44 | 2 | 269 | too early |
+| 2 | sure_thing | 271 | 260/271 | +1.6% | +$22.31 | 2 | 224 | too early |
+| 3 | sports_underdog | 330 | 73/330 | -14.3% | -$234.65 | 2 | 82 | too early |
+| 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 101 | too early |
+| 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 110 | too early |
+| 6 | weather_forecast | 34 | 9/34 | -59.5% | -$101.16 | 1 | 162 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 157 | 87/157 | +7.4% | +$57.62 | 2 | 331 | yardstick |
+| 8 | coin_flip | 165 | 89/165 | +4.3% | +$35.26 | 2 | 331 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$4.87 | +$7.68 | -$263.74 | +$7.49 | -$74.83 | -$86.16 | +$50.18 |
+| 2026-11-07 | +$5.08 | +$8.20 | -$235.49 | +$7.49 | -$74.83 | -$101.16 | +$27.83 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-07 safe_no_week: Will Brian Thomas Jr.'s next team be the San Francisco 49ers? -> No at 0.952 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Viking FK 1 - 0 KFUM-Kameratene Oslo? -> No at 0.943 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Deportivo Tachira (-1.5) -> Deportivo Tachira at 0.280 ($5.00)
-- 2026-11-07 follow_move: Will the price of XRP be above $1.20 on November 13? -> No at 0.724 ($5.00)
-- 2026-11-07 fade_move: Will the price of Bitcoin be above $80,000 on November 13? -> Yes at 0.147 ($5.00)
+- 2026-11-07 sure_thing: FC Dallas vs. Colorado Rapids SC: Neither team to score first? -> No at 0.960 ($5.00)
+- 2026-11-07 sports_underdog: Spread: CSD Mixco (-2.5) -> CSD Mixco at 0.198 ($5.00)
+- 2026-11-07 follow_move: Will the price of Bitcoin be between $74,000 and $76,000 on November 13? -> No at 0.811 ($5.00)
+- 2026-11-07 fade_move: Will TikTok Pro - Events be #2 Free App in the US Apple App Store on November 13? -> Yes at 0.280 ($5.00)
 - 2026-11-07 weather_forecast: Will the lowest temperature in New York City be between 50-51°F on November 9? -> No at 0.691 ($5.00)
-- 2026-11-07 coin_flip: Colorado vs. Arizona State: O/U 35.5 -> Under at 0.225 ($5.00)
+- 2026-11-07 coin_flip: CD Universidad de Concepción vs. O'Higgins FC: O/U 1.5 -> Under at 0.229 ($5.00)
 - 2026-11-07 safe_no_week: Will UKMTO publish 12-15 notices between November 2-November 8? -> No at 0.970 ($5.00)
-- 2026-11-07 sure_thing: Spread: Kalmar FF (-2.5) -> IK Sirius at 0.971 ($5.00)
-- 2026-11-07 sports_underdog: Bethune-Cookman vs. Southern University: O/U 57.5 -> Over at 0.357 ($5.00)
-- 2026-11-07 follow_move: Will the price of Ethereum be between $2,100 and $2,200 on November 12? -> No at 0.802 ($5.00)
-- 2026-11-07 fade_move: Will the price of Ethereum be between $2,000 and $2,100 on November 13? -> Yes at 0.127 ($5.00)
+- 2026-11-07 sure_thing: Spread: Aston Villa WFC (-1.5) -> Manchester United WFC at 0.971 ($5.00)
+- 2026-11-07 sports_underdog: UFC Fight Night: Wellington Turman vs. Seokhyeon Ko (Welterweight, Main Card) -> Wellington Turman at 0.167 ($5.00)
+- 2026-11-07 follow_move: Will TikTok Pro - Events be #2 Free App in the US Apple App Store on November 13? -> No at 0.750 ($5.00)
+- 2026-11-07 fade_move: Will TikTok Pro - Events be #1 Free App in the US Apple App Store on November 13? -> No at 0.300 ($5.00)
 
 ## Price gaps seen today
 
