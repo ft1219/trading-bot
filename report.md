@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 21:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 22:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 28 | 28/28 | +4.1% | +$5.77 | 2 | 272 | too early |
-| 2 | sure_thing | 354 | 334/354 | +0.1% | +$1.26 | 2 | 165 | too early |
-| 3 | sports_underdog | 358 | 77/358 | -15.8% | -$281.57 | 2 | 77 | too early |
-| 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 105 | too early |
-| 5 | fade_move | 75 | 22/75 | -44.6% | -$167.24 | 2 | 114 | too early |
-| 6 | weather_forecast | 35 | 10/35 | -56.3% | -$98.48 | 1 | 162 | too early |
+| 1 | safe_no_week | 29 | 28/29 | +0.5% | +$0.77 | 2 | 271 | too early |
+| 2 | sure_thing | 369 | 347/369 | -0.2% | -$4.60 | 2 | 158 | too early |
+| 3 | sports_underdog | 368 | 82/368 | -12.9% | -$234.90 | 2 | 75 | too early |
+| 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 106 | too early |
+| 5 | fade_move | 75 | 22/75 | -44.6% | -$167.24 | 2 | 115 | too early |
+| 6 | weather_forecast | 37 | 11/37 | -53.8% | -$99.59 | 1 | 162 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 221 | 116/221 | +4.6% | +$50.41 | 2 | 299 | yardstick |
+| 8 | coin_flip | 235 | 124/235 | +4.6% | +$53.36 | 2 | 293 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$5.41 | -$12.85 | -$282.40 | +$2.49 | -$72.89 | -$98.48 | +$42.98 |
+| 2026-11-07 | +$0.41 | -$18.71 | -$235.74 | +$2.49 | -$72.89 | -$99.59 | +$45.93 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-07 safe_no_week: Will Trump's approval rating be at least 40.0 on November 13, 2026? -> No at 0.971 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: FC Wurzburger Kickers 1 - 1 TSG Hoffenheim II? -> No at 0.933 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Louisville City FC (-1.5) -> Louisville City FC at 0.341 ($5.00)
+- 2026-11-07 sure_thing: CF Universidad de Chile vs. CD Cobresal: O/U 6.5 -> Under at 0.962 ($5.00)
+- 2026-11-07 sports_underdog: Southern Indiana Screaming Eagles vs. Evansville Aces -> Southern Indiana Screaming Eagles at 0.267 ($5.00)
+- 2026-11-07 follow_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> No at 0.818 ($5.00)
+- 2026-11-07 fade_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> Yes at 0.249 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Chongqing be 12°C on November 9? -> No at 0.723 ($5.00)
+- 2026-11-07 coin_flip: Fredrikstad FK vs. SK Brann: SK Brann O/U 1.5 -> Under at 0.542 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Kuala Lumpur be 34°C on November 9? -> No at 0.971 ($5.00)
+- 2026-11-07 sure_thing: Spread: NK Brinje Grosuplje (-2.5) -> Aluminij Kidricevo at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Indiana State (-3.5) -> Indiana State at 0.306 ($5.00)
 - 2026-11-07 follow_move: Dogecoin Up or Down on November 8? -> Down at 0.753 ($5.00)
 - 2026-11-07 fade_move: Dogecoin Up or Down on November 8? -> Up at 0.325 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in Miami be between 74-75°F on November 9? -> No at 0.750 ($5.00)
-- 2026-11-07 coin_flip: Will the highest temperature in Tel Aviv be 22°C on November 9? -> No at 0.502 ($5.00)
-- 2026-11-07 safe_no_week: Will the highest temperature in Kuala Lumpur be 34°C on November 9? -> No at 0.971 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Vila Nova FC 0 - 0 Criciúma EC? -> No at 0.914 ($5.00)
-- 2026-11-07 sports_underdog: Will Seattle Sounders FC vs. Los Angeles FC end in a draw? -> Yes at 0.270 ($5.00)
-- 2026-11-07 follow_move: Will the price of Solana be between $80 and $90 on November 10? -> Yes at 0.656 ($5.00)
-- 2026-11-07 fade_move: Will the price of Solana be between $80 and $90 on November 10? -> No at 0.427 ($5.00)
 
 ## Price gaps seen today
 
