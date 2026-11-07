@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 20:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 20:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 26 | 26/26 | +4.2% | +$5.44 | 2 | 272 | too early |
-| 2 | sure_thing | 307 | 292/307 | +0.8% | +$12.76 | 2 | 196 | too early |
-| 3 | sports_underdog | 338 | 73/338 | -16.4% | -$274.65 | 2 | 82 | too early |
-| 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 102 | too early |
-| 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 111 | too early |
+| 1 | safe_no_week | 26 | 26/26 | +4.2% | +$5.44 | 2 | 273 | too early |
+| 2 | sure_thing | 336 | 318/336 | +0.3% | +$5.83 | 2 | 175 | too early |
+| 3 | sports_underdog | 346 | 75/346 | -15.0% | -$257.98 | 2 | 82 | too early |
+| 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 104 | too early |
+| 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 113 | too early |
 | 6 | weather_forecast | 34 | 9/34 | -59.5% | -$101.16 | 1 | 163 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 184 | 100/184 | +5.0% | +$45.99 | 2 | 320 | yardstick |
+| 8 | coin_flip | 204 | 110/204 | +6.5% | +$66.24 | 2 | 308 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$5.08 | -$1.35 | -$275.49 | +$7.49 | -$74.83 | -$101.16 | +$38.56 |
+| 2026-11-07 | +$5.08 | -$8.28 | -$258.82 | +$7.49 | -$74.83 | -$101.16 | +$58.81 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 safe_no_week: Will the highest temperature in Moscow be 4°C on November 9? -> No at 0.924 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Aarhus GF 0 - 0 AC Horsens? -> No at 0.955 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Utah State Aggies (-23.5) -> Omaha Mavericks at 0.361 ($5.00)
-- 2026-11-07 follow_move: Will HotSchedules be #2 Paid App in the US Apple App Store on November 13? -> No at 0.808 ($5.00)
-- 2026-11-07 fade_move: Will HotSchedules be #2 Paid App in the US Apple App Store on November 13? -> Yes at 0.239 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Kuala Lumpur be 34°C on November 9? -> No at 0.971 ($5.00)
+- 2026-11-07 sure_thing: Ratchaburi FC vs. Buriram United: O/U 5.5 -> Under at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Libertad Asuncion (-1.5) -> Libertad Asuncion at 0.218 ($5.00)
+- 2026-11-07 follow_move: Solana Up or Down on November 8? -> Down at 0.646 ($5.00)
+- 2026-11-07 fade_move: XRP Up or Down on November 8? -> Up at 0.407 ($5.00)
 - 2026-11-07 weather_forecast: Will the lowest temperature in Miami be between 74-75°F on November 9? -> No at 0.750 ($5.00)
-- 2026-11-07 coin_flip: FK Zenit vs. FK Rostov: FK Zenit O/U 1.5 -> Over at 0.661 ($5.00)
-- 2026-11-07 safe_no_week: Will the price of Ethereum be between $2,400 and $2,500 on November 14? -> No at 0.935 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Gamba Ōsaka 0 - 0 Cerezo Ōsaka? -> No at 0.952 ($5.00)
-- 2026-11-07 sports_underdog: Will Atlas FC vs. CF Pachuca end in a draw? -> Yes at 0.280 ($5.00)
-- 2026-11-07 follow_move: Will the price of Bitcoin be between $74,000 and $76,000 on November 13? -> No at 0.811 ($5.00)
-- 2026-11-07 fade_move: Will TikTok Pro - Events be #2 Free App in the US Apple App Store on November 13? -> Yes at 0.280 ($5.00)
+- 2026-11-07 coin_flip: FK Haugesund vs. Odds BK: Odds BK O/U 1.5 -> Over at 0.442 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Moscow be 4°C on November 9? -> No at 0.924 ($5.00)
+- 2026-11-07 sure_thing: Will FK Akron Tolyatti win on 2026-11-08? -> No at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Kentucky vs. Tennessee -> Kentucky at 0.357 ($5.00)
+- 2026-11-07 follow_move: XRP Up or Down on November 8? -> Down at 0.650 ($5.00)
+- 2026-11-07 fade_move: Solana Up or Down on November 8? -> Up at 0.402 ($5.00)
 
 ## Price gaps seen today
 
