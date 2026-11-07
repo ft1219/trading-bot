@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 03:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 102 | 97/102 | +0.9% | +$4.46 | 2 | 194 | too early |
-| 2 | sports_underdog | 137 | 34/137 | -3.6% | -$24.86 | 2 | 79 | too early |
+| 1 | sure_thing | 107 | 102/107 | +1.1% | +$6.15 | 2 | 196 | too early |
+| 2 | sports_underdog | 147 | 36/147 | -4.5% | -$32.59 | 2 | 77 | too early |
 | 3 | follow_move | 44 | 20/44 | -36.7% | -$80.65 | 2 | 95 | too early |
 | 4 | fade_move | 59 | 18/59 | -38.2% | -$112.78 | 2 | 96 | too early |
 | 5 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 214 | too early |
 | 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 141 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 52 | 27/52 | +4.1% | +$10.55 | 2 | 244 | yardstick |
+| 8 | coin_flip | 54 | 27/54 | +0.2% | +$0.55 | 2 | 250 | yardstick |
 
 What each one does:
 
@@ -32,20 +32,20 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-07 | -$9.65 | -$25.70 | -$5.37 | -$18.43 | +$0.25 | +$3.12 |
+| 2026-11-07 | -$7.96 | -$33.42 | -$5.37 | -$18.43 | +$0.25 | -$6.88 |
 | 2026-11-06 | +$14.11 | +$0.84 | -$75.28 | -$94.35 | +$0.37 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Exact Score: Atlético Nacional 1 - 0 Deportivo Pereira? -> No at 0.924 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Iwaki FC (-1.5) -> Iwaki FC at 0.239 ($5.00)
+- 2026-11-07 sure_thing: Spread: Thespa Gunma (-1.5) -> FC Osaka at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Nagoya Grampus (-1.5) -> Nagoya Grampus at 0.310 ($5.00)
 - 2026-11-07 follow_move: Dogecoin Up or Down on November 7? -> Down at 0.792 ($5.00)
 - 2026-11-07 fade_move: Will "Thriller - Michael Jackson" be the Billboard Hot 100 #2 song for the week of November 14? -> Yes at 0.156 ($5.00)
 - 2026-11-07 safe_no_week: Will the highest temperature in Moscow be 5°C on November 8? -> No at 0.952 ($5.00)
 - 2026-11-07 weather_forecast: Will the lowest temperature in Los Angeles be between 64-65°F on November 8? -> No at 0.877 ($5.00)
-- 2026-11-07 coin_flip: Villarreal CF to score first vs. Getafe CF? -> No at 0.338 ($5.00)
-- 2026-11-07 sure_thing: Spread: Merthyr Town (-2.5) -> Hebburn Town at 0.914 ($5.00)
-- 2026-11-07 sports_underdog: Will Sagan Tosu vs. Kataller Toyama end in a draw? -> Yes at 0.259 ($5.00)
+- 2026-11-07 coin_flip: Will Western Sydney Wanderers FC win on 2026-11-07? -> No at 0.720 ($5.00)
+- 2026-11-07 sure_thing: Dogecoin Up or Down - November 6, 8:00PM-12:00AM ET -> Down at 0.906 ($5.00)
+- 2026-11-07 sports_underdog: Will Tokushima Vortis win on 2026-11-07? -> Yes at 0.249 ($5.00)
 - 2026-11-07 follow_move: Will the price of XRP be between $1.10 and $1.20 on November 9? -> Yes at 0.698 ($5.00)
 - 2026-11-07 fade_move: Dogecoin Up or Down on November 7? -> Up at 0.279 ($5.00)
 - 2026-11-07 safe_no_week: Will the price of XRP be between $1.30 and $1.40 on November 11? -> No at 0.981 ($5.00)
