@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 02:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 102 | 97/102 | +0.9% | +$4.46 | 2 | 186 | too early |
-| 2 | sports_underdog | 134 | 34/134 | -1.5% | -$9.86 | 2 | 74 | too early |
+| 1 | sure_thing | 102 | 97/102 | +0.9% | +$4.46 | 2 | 194 | too early |
+| 2 | sports_underdog | 137 | 34/137 | -3.6% | -$24.86 | 2 | 79 | too early |
 | 3 | follow_move | 44 | 20/44 | -36.7% | -$80.65 | 2 | 95 | too early |
-| 4 | fade_move | 59 | 18/59 | -38.2% | -$112.78 | 2 | 95 | too early |
-| 5 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 211 | too early |
+| 4 | fade_move | 59 | 18/59 | -38.2% | -$112.78 | 2 | 96 | too early |
+| 5 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 214 | too early |
 | 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 141 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 50 | 27/50 | +8.2% | +$20.55 | 2 | 238 | yardstick |
+| 8 | coin_flip | 52 | 27/52 | +4.1% | +$10.55 | 2 | 244 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-07 | -$9.65 | -$10.70 | -$5.37 | -$18.43 | +$0.25 | +$13.12 |
+| 2026-11-07 | -$9.65 | -$25.70 | -$5.37 | -$18.43 | +$0.25 | +$3.12 |
 | 2026-11-06 | +$14.11 | +$0.84 | -$75.28 | -$94.35 | +$0.37 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Isenmulang Kalteng FC leading at halftime? -> No at 0.914 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Jeju SK FC (-1.5) -> Jeju SK FC at 0.300 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: Atlético Nacional 1 - 0 Deportivo Pereira? -> No at 0.924 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Iwaki FC (-1.5) -> Iwaki FC at 0.239 ($5.00)
 - 2026-11-07 follow_move: Dogecoin Up or Down on November 7? -> Down at 0.792 ($5.00)
-- 2026-11-07 fade_move: Dogecoin Up or Down on November 7? -> Up at 0.279 ($5.00)
-- 2026-11-07 safe_no_week: Will Google (GOOGL) close at <$265 on the final day of trading of the week of Nov 9 – Nov 13? -> No at 0.942 ($5.00)
+- 2026-11-07 fade_move: Will "Thriller - Michael Jackson" be the Billboard Hot 100 #2 song for the week of November 14? -> Yes at 0.156 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Moscow be 5°C on November 8? -> No at 0.952 ($5.00)
 - 2026-11-07 weather_forecast: Will the lowest temperature in Los Angeles be between 64-65°F on November 8? -> No at 0.877 ($5.00)
-- 2026-11-07 coin_flip: Bali United vs. Persik Kediri: Draw at halftime? -> No at 0.684 ($5.00)
-- 2026-11-07 sure_thing: Will Stade Lavallois Mayenne FC win on 2026-11-07? -> No at 0.914 ($5.00)
-- 2026-11-07 sports_underdog: Will Yokohama F·Marinos vs. Fagiano Okayama end in a draw? -> Yes at 0.283 ($5.00)
+- 2026-11-07 coin_flip: Villarreal CF to score first vs. Getafe CF? -> No at 0.338 ($5.00)
+- 2026-11-07 sure_thing: Spread: Merthyr Town (-2.5) -> Hebburn Town at 0.914 ($5.00)
+- 2026-11-07 sports_underdog: Will Sagan Tosu vs. Kataller Toyama end in a draw? -> Yes at 0.259 ($5.00)
 - 2026-11-07 follow_move: Will the price of XRP be between $1.10 and $1.20 on November 9? -> Yes at 0.698 ($5.00)
-- 2026-11-07 fade_move: Will the price of XRP be between $1.10 and $1.20 on November 9? -> No at 0.386 ($5.00)
-- 2026-11-07 safe_no_week: Will the highest temperature in Tel Aviv be 24°C on November 8? -> No at 0.943 ($5.00)
+- 2026-11-07 fade_move: Dogecoin Up or Down on November 7? -> Up at 0.279 ($5.00)
+- 2026-11-07 safe_no_week: Will the price of XRP be between $1.30 and $1.40 on November 11? -> No at 0.981 ($5.00)
 
 ## Price gaps seen today
 
