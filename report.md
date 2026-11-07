@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 17:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 18:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 19 | 19/19 | +4.6% | +$4.35 | 2 | 273 | too early |
-| 2 | sure_thing | 217 | 209/217 | +2.2% | +$23.75 | 2 | 254 | too early |
-| 3 | sports_underdog | 311 | 67/311 | -16.1% | -$248.64 | 2 | 77 | too early |
-| 4 | follow_move | 45 | 20/45 | -38.1% | -$85.65 | 2 | 110 | too early |
-| 5 | fade_move | 60 | 18/60 | -39.3% | -$117.78 | 2 | 120 | too early |
-| 6 | weather_forecast | 31 | 9/31 | -55.6% | -$86.16 | 1 | 163 | too early |
+| 1 | safe_no_week | 24 | 24/24 | +4.4% | +$5.23 | 2 | 271 | too early |
+| 2 | sure_thing | 242 | 233/242 | +2.1% | +$25.34 | 2 | 237 | too early |
+| 3 | sports_underdog | 320 | 69/320 | -16.2% | -$257.91 | 2 | 76 | too early |
+| 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 96 | too early |
+| 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 106 | too early |
+| 6 | weather_forecast | 31 | 9/31 | -55.6% | -$86.16 | 1 | 164 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 137 | 75/137 | +8.5% | +$57.72 | 2 | 335 | yardstick |
+| 8 | coin_flip | 153 | 85/153 | +8.1% | +$62.03 | 2 | 327 | yardstick |
 
 What each one does:
 
@@ -32,21 +32,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$3.98 | +$9.64 | -$249.48 | -$10.37 | -$23.43 | -$86.16 | +$50.29 |
+| 2026-11-07 | +$4.87 | +$11.23 | -$258.74 | +$7.49 | -$74.83 | -$86.16 | +$54.59 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 safe_no_week: Will Microsoft (MSFT) finish week of November 9 above $500? -> Yes at 0.942 ($5.00)
-- 2026-11-07 sure_thing: Spread: PSS Sleman (-1.5) -> Bhayangkara Presisi Lampung FC at 0.905 ($5.00)
-- 2026-11-07 sports_underdog: Spread: São Bernardo FC (-1.5) -> São Bernardo FC at 0.187 ($5.00)
+- 2026-11-07 safe_no_week: Will Brian Thomas Jr.'s next team be the San Francisco 49ers? -> No at 0.952 ($5.00)
+- 2026-11-07 sure_thing: Will Birmingham City WFC win on 2026-11-08? -> No at 0.971 ($5.00)
+- 2026-11-07 sports_underdog: Spread: SBV Excelsior (-1.5) -> SBV Excelsior at 0.167 ($5.00)
 - 2026-11-07 follow_move: Will the price of XRP be above $1.20 on November 13? -> No at 0.724 ($5.00)
 - 2026-11-07 fade_move: Will the price of Bitcoin be above $80,000 on November 13? -> Yes at 0.147 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in London be 5°C on November 9? -> No at 0.652 ($5.00)
-- 2026-11-07 coin_flip: Will KFC Komárno win on 2026-11-08? -> Yes at 0.592 ($5.00)
-- 2026-11-07 safe_no_week: Will the price of Ethereum be above $2,500 on November 14? -> No at 0.972 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: CA Boca Juniors 0 - 0 CSyD Defensa y Justicia? -> No at 0.952 ($5.00)
-- 2026-11-07 sports_underdog: UNCW Seahawks vs. East Carolina Pirates -> East Carolina Pirates at 0.361 ($5.00)
+- 2026-11-07 weather_forecast: Will the highest temperature in Paris be 10°C on November 8? -> No at 0.730 ($5.00)
+- 2026-11-07 coin_flip: Hyperliquid Up or Down - November 8, 6:00AM-6:05AM ET -> Down at 0.527 ($5.00)
+- 2026-11-07 safe_no_week: Will UKMTO publish 12-15 notices between November 2-November 8? -> No at 0.970 ($5.00)
+- 2026-11-07 sure_thing: Spread: Texas A&M (-10.5) -> South Carolina at 0.922 ($5.00)
+- 2026-11-07 sports_underdog: Will AA Argentinos Juniors vs. CA Huracán end in a draw? -> Yes at 0.331 ($5.00)
 - 2026-11-07 follow_move: Will the price of Ethereum be between $2,100 and $2,200 on November 12? -> No at 0.802 ($5.00)
 - 2026-11-07 fade_move: Will the price of Ethereum be between $2,000 and $2,100 on November 13? -> Yes at 0.127 ($5.00)
 
