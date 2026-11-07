@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 22:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 23:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 31 | 30/31 | +0.7% | +$1.04 | 2 | 271 | too early |
-| 2 | sure_thing | 376 | 353/376 | -0.4% | -$7.83 | 2 | 159 | too early |
-| 3 | sports_underdog | 372 | 82/372 | -13.8% | -$254.90 | 2 | 79 | too early |
+| 1 | safe_no_week | 33 | 32/33 | +0.8% | +$1.27 | 2 | 269 | too early |
+| 2 | sure_thing | 381 | 357/381 | -0.6% | -$11.72 | 2 | 162 | too early |
+| 3 | sports_underdog | 384 | 87/384 | -12.7% | -$242.10 | 2 | 75 | too early |
 | 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 106 | too early |
 | 5 | fade_move | 75 | 22/75 | -44.6% | -$167.24 | 2 | 115 | too early |
-| 6 | weather_forecast | 42 | 13/42 | -52.7% | -$110.71 | 1 | 158 | too early |
+| 6 | weather_forecast | 47 | 17/47 | -45.6% | -$107.27 | 1 | 154 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 240 | 126/240 | +3.7% | +$43.85 | 2 | 296 | yardstick |
+| 8 | coin_flip | 251 | 133/251 | +4.8% | +$60.36 | 2 | 293 | yardstick |
 
 What each one does:
 
@@ -32,21 +32,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$0.68 | -$21.94 | -$255.74 | +$2.49 | -$72.89 | -$110.71 | +$36.41 |
+| 2026-11-07 | +$0.90 | -$25.83 | -$242.94 | +$2.49 | -$72.89 | -$107.27 | +$52.92 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-07 safe_no_week: Will the price of Bitcoin be above $68,000 on November 14? -> Yes at 0.981 ($5.00)
-- 2026-11-07 sure_thing: Suwon Bluewings vs. Yongin FC: O/U 0.5 -> Over at 0.971 ($5.00)
-- 2026-11-07 sports_underdog: Will Real Cartagena FC vs. Real Cundinamarca end in a draw? -> Yes at 0.259 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: SK Slavia Praha 1 - 0 SK Artis Brno? -> No at 0.933 ($5.00)
+- 2026-11-07 sports_underdog: Spread: CF Cruz Azul (-1.5) -> CF Cruz Azul at 0.270 ($5.00)
 - 2026-11-07 follow_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> No at 0.818 ($5.00)
 - 2026-11-07 fade_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> Yes at 0.249 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in Shanghai be 10°C on November 9? -> No at 0.711 ($3.55)
-- 2026-11-07 coin_flip: XRP Up or Down - November 8, 4:55AM-5:00AM ET -> Up at 0.527 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Jeddah be 25°C on November 9? -> No at 0.655 ($5.00)
+- 2026-11-07 coin_flip: Bitcoin Up or Down - November 8, 7:25AM-7:30AM ET -> Up at 0.527 ($5.00)
 - 2026-11-07 safe_no_week: Will the highest temperature in Jeddah be 30°C on November 9? -> No at 0.962 ($5.00)
-- 2026-11-07 sure_thing: Rio Ave FC vs. SC Braga: Neither team to score first? -> No at 0.971 ($5.00)
-- 2026-11-07 sports_underdog: Michigan State vs. Michigan -> Michigan State at 0.174 ($5.00)
+- 2026-11-07 sure_thing: Spread: FC Seoul (-2.5) -> Ulsan HD FC at 0.904 ($5.00)
+- 2026-11-07 sports_underdog: Spread: CR Brasil (-2.5) -> CR Brasil at 0.270 ($5.00)
 - 2026-11-07 follow_move: Dogecoin Up or Down on November 8? -> Down at 0.753 ($5.00)
 - 2026-11-07 fade_move: Dogecoin Up or Down on November 8? -> Up at 0.325 ($5.00)
 
