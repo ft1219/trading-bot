@@ -30,3 +30,4 @@
 {"at": 1794002840, "markets": 112927, "new_trades": 35, "open": 991, "problems": [], "seconds": 24.3, "settled": 39, "timing": {"fill": 0.2, "list": 17.9, "pick": 0.3, "price_gap": 0.0, "settle": 5.8, "weather": 0.1}}
 {"at": 1794005241, "markets": 112980, "new_trades": 33, "open": 1005, "problems": [], "seconds": 51.2, "settled": 19, "timing": {"fill": 0.2, "list": 14.3, "pick": 0.3, "price_gap": -0.0, "settle": 4.9, "weather": 31.5}}
 {"at": 1794007641, "markets": 113152, "new_trades": 33, "open": 998, "problems": [], "seconds": 66.7, "settled": 40, "timing": {"fill": 0.3, "list": 21.2, "pick": 0.3, "price_gap": 0.0, "settle": 9.3, "weather": 35.5}}
+{"at": 1794010041, "markets": 112335, "new_trades": 30, "open": 1000, "problems": [], "seconds": 32.2, "settled": 28, "timing": {"fill": 0.3, "list": 19.7, "pick": 0.2, "price_gap": 0.0, "settle": 7.3, "weather": 4.7}}
