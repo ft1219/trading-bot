@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 18:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 18:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | safe_no_week | 24 | 24/24 | +4.4% | +$5.23 | 2 | 271 | too early |
-| 2 | sure_thing | 242 | 233/242 | +2.1% | +$25.34 | 2 | 237 | too early |
-| 3 | sports_underdog | 320 | 69/320 | -16.2% | -$257.91 | 2 | 76 | too early |
+| 2 | sure_thing | 249 | 239/249 | +1.8% | +$21.79 | 2 | 238 | too early |
+| 3 | sports_underdog | 321 | 69/321 | -16.5% | -$262.91 | 2 | 83 | too early |
 | 4 | follow_move | 59 | 31/59 | -23.0% | -$67.78 | 2 | 96 | too early |
 | 5 | fade_move | 74 | 21/74 | -45.7% | -$169.18 | 2 | 106 | too early |
-| 6 | weather_forecast | 31 | 9/31 | -55.6% | -$86.16 | 1 | 164 | too early |
+| 6 | weather_forecast | 31 | 9/31 | -55.6% | -$86.16 | 1 | 165 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 153 | 85/153 | +8.1% | +$62.03 | 2 | 327 | yardstick |
+| 8 | coin_flip | 157 | 87/157 | +7.4% | +$57.62 | 2 | 331 | yardstick |
 
 What each one does:
 
@@ -32,21 +32,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$4.87 | +$11.23 | -$258.74 | +$7.49 | -$74.83 | -$86.16 | +$54.59 |
+| 2026-11-07 | +$4.87 | +$7.68 | -$263.74 | +$7.49 | -$74.83 | -$86.16 | +$50.18 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-07 safe_no_week: Will Brian Thomas Jr.'s next team be the San Francisco 49ers? -> No at 0.952 ($5.00)
-- 2026-11-07 sure_thing: Will Birmingham City WFC win on 2026-11-08? -> No at 0.971 ($5.00)
-- 2026-11-07 sports_underdog: Spread: SBV Excelsior (-1.5) -> SBV Excelsior at 0.167 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: Viking FK 1 - 0 KFUM-Kameratene Oslo? -> No at 0.943 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Deportivo Tachira (-1.5) -> Deportivo Tachira at 0.280 ($5.00)
 - 2026-11-07 follow_move: Will the price of XRP be above $1.20 on November 13? -> No at 0.724 ($5.00)
 - 2026-11-07 fade_move: Will the price of Bitcoin be above $80,000 on November 13? -> Yes at 0.147 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in Paris be 10°C on November 8? -> No at 0.730 ($5.00)
-- 2026-11-07 coin_flip: Hyperliquid Up or Down - November 8, 6:00AM-6:05AM ET -> Down at 0.527 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in New York City be between 50-51°F on November 9? -> No at 0.691 ($5.00)
+- 2026-11-07 coin_flip: Colorado vs. Arizona State: O/U 35.5 -> Under at 0.225 ($5.00)
 - 2026-11-07 safe_no_week: Will UKMTO publish 12-15 notices between November 2-November 8? -> No at 0.970 ($5.00)
-- 2026-11-07 sure_thing: Spread: Texas A&M (-10.5) -> South Carolina at 0.922 ($5.00)
-- 2026-11-07 sports_underdog: Will AA Argentinos Juniors vs. CA Huracán end in a draw? -> Yes at 0.331 ($5.00)
+- 2026-11-07 sure_thing: Spread: Kalmar FF (-2.5) -> IK Sirius at 0.971 ($5.00)
+- 2026-11-07 sports_underdog: Bethune-Cookman vs. Southern University: O/U 57.5 -> Over at 0.357 ($5.00)
 - 2026-11-07 follow_move: Will the price of Ethereum be between $2,100 and $2,200 on November 12? -> No at 0.802 ($5.00)
 - 2026-11-07 fade_move: Will the price of Ethereum be between $2,000 and $2,100 on November 13? -> Yes at 0.127 ($5.00)
 
