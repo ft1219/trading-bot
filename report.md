@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 00:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 00:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 92 | 88/92 | +1.3% | +$5.98 | 2 | 172 | too early |
-| 2 | sports_underdog | 118 | 30/118 | -5.4% | -$31.93 | 2 | 69 | too early |
-| 3 | follow_move | 41 | 19/41 | -35.5% | -$72.71 | 2 | 97 | too early |
-| 4 | fade_move | 54 | 16/54 | -42.4% | -$114.35 | 2 | 99 | too early |
+| 1 | sure_thing | 98 | 93/98 | +0.6% | +$2.83 | 2 | 174 | too early |
+| 2 | sports_underdog | 131 | 33/131 | -2.1% | -$13.40 | 2 | 64 | too early |
+| 3 | follow_move | 41 | 19/41 | -35.5% | -$72.71 | 2 | 98 | too early |
+| 4 | fade_move | 55 | 16/55 | -43.4% | -$119.35 | 2 | 99 | too early |
 | 5 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 208 | too early |
-| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 136 | too early |
+| 6 | weather_forecast | 0 | - | - | +$0.00 | 0 | 137 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 45 | 23/45 | +3.1% | +$6.91 | 2 | 219 | yardstick |
+| 8 | coin_flip | 48 | 26/48 | +8.8% | +$21.07 | 2 | 224 | yardstick |
 
 What each one does:
 
@@ -32,26 +32,26 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|
-| 2026-11-07 | -$8.13 | -$32.76 | +$2.57 | -$20.00 | +$0.25 | -$0.52 |
+| 2026-11-07 | -$11.28 | -$14.24 | +$2.57 | -$25.00 | +$0.25 | +$13.64 |
 | 2026-11-06 | +$14.11 | +$0.84 | -$75.28 | -$94.35 | +$0.37 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Spread: Wycombe Wanderers FC (-2.5) -> Accrington Stanley FC at 0.914 ($5.00)
-- 2026-11-07 sports_underdog: Trail Blazers vs. Lakers: O/U 222.5 -> Under at 0.328 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: FC Cajamarca 0 - 0 Club Alianza Atlético? -> No at 0.962 ($5.00)
+- 2026-11-07 sports_underdog: Tarleton State Texans vs. San Diego Toreros -> Tarleton State Texans at 0.280 ($5.00)
+- 2026-11-07 follow_move: Dogecoin Up or Down on November 7? -> Down at 0.792 ($5.00)
+- 2026-11-07 fade_move: Dogecoin Up or Down on November 7? -> Up at 0.279 ($5.00)
+- 2026-11-07 safe_no_week: S&P 500 (SPY) closes above $720 on November 9? -> Yes at 0.962 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Lucknow be 17°C on November 8? -> No at 0.750 ($5.00)
+- 2026-11-07 coin_flip: Bitcoin Up or Down - November 7, 11AM ET -> Up at 0.524 ($5.00)
+- 2026-11-07 sure_thing: Spread: Blackburn Rovers FC (-1.5) -> West Ham United FC at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Rainbow Six Siege: TYLOO vs All Gamers (BO3) - BLAST R6 Major Osaka Phase 1 -> TYLOO at 0.218 ($5.00)
 - 2026-11-07 follow_move: Will the price of XRP be between $1.10 and $1.20 on November 9? -> Yes at 0.698 ($5.00)
 - 2026-11-07 fade_move: Will the price of XRP be between $1.10 and $1.20 on November 9? -> No at 0.386 ($5.00)
-- 2026-11-07 safe_no_week: S&P 500 (SPY) closes above $720 on November 9? -> Yes at 0.962 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in San Francisco be between 70-71°F on November 8? -> Yes at 0.187 ($5.00)
-- 2026-11-07 coin_flip: FK Epitsentr Dunaivtsi vs. FK Kryvbas Kryvyi Rih: O/U 2.5 -> Over at 0.572 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Thespa Gunma 0 - 0 FC Osaka? -> No at 0.962 ($5.00)
-- 2026-11-07 sports_underdog: Spurs vs. Kings: O/U 222.5 -> Under at 0.331 ($5.00)
-- 2026-11-06 follow_move: Will "Thriller - Michael Jackson" be the Billboard Hot 100 #2 song for the week of November 14? -> Yes at 0.156 ($5.00)
-- 2026-11-06 fade_move: Ethereum Up or Down on November 7? -> Down at 0.386 ($5.00)
 - 2026-11-06 safe_no_week: Will the highest temperature in Houston be between 62-63°F on November 8? -> No at 0.925 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 33 (0 with a problem).
+Runs in the last 24 hours: 34 (0 with a problem).
