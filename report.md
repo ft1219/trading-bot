@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 22:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 22:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 29 | 28/29 | +0.5% | +$0.77 | 2 | 271 | too early |
-| 2 | sure_thing | 369 | 347/369 | -0.2% | -$4.60 | 2 | 158 | too early |
-| 3 | sports_underdog | 368 | 82/368 | -12.9% | -$234.90 | 2 | 75 | too early |
+| 1 | safe_no_week | 31 | 30/31 | +0.7% | +$1.04 | 2 | 271 | too early |
+| 2 | sure_thing | 376 | 353/376 | -0.4% | -$7.83 | 2 | 159 | too early |
+| 3 | sports_underdog | 372 | 82/372 | -13.8% | -$254.90 | 2 | 79 | too early |
 | 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 106 | too early |
 | 5 | fade_move | 75 | 22/75 | -44.6% | -$167.24 | 2 | 115 | too early |
-| 6 | weather_forecast | 37 | 11/37 | -53.8% | -$99.59 | 1 | 162 | too early |
+| 6 | weather_forecast | 42 | 13/42 | -52.7% | -$110.71 | 1 | 158 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 235 | 124/235 | +4.6% | +$53.36 | 2 | 293 | yardstick |
+| 8 | coin_flip | 240 | 126/240 | +3.7% | +$43.85 | 2 | 296 | yardstick |
 
 What each one does:
 
@@ -32,21 +32,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | +$0.41 | -$18.71 | -$235.74 | +$2.49 | -$72.89 | -$99.59 | +$45.93 |
+| 2026-11-07 | +$0.68 | -$21.94 | -$255.74 | +$2.49 | -$72.89 | -$110.71 | +$36.41 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 safe_no_week: Will Trump's approval rating be at least 40.0 on November 13, 2026? -> No at 0.971 ($5.00)
-- 2026-11-07 sure_thing: CF Universidad de Chile vs. CD Cobresal: O/U 6.5 -> Under at 0.962 ($5.00)
-- 2026-11-07 sports_underdog: Southern Indiana Screaming Eagles vs. Evansville Aces -> Southern Indiana Screaming Eagles at 0.267 ($5.00)
+- 2026-11-07 safe_no_week: Will the price of Bitcoin be above $68,000 on November 14? -> Yes at 0.981 ($5.00)
+- 2026-11-07 sure_thing: Suwon Bluewings vs. Yongin FC: O/U 0.5 -> Over at 0.971 ($5.00)
+- 2026-11-07 sports_underdog: Will Real Cartagena FC vs. Real Cundinamarca end in a draw? -> Yes at 0.259 ($5.00)
 - 2026-11-07 follow_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> No at 0.818 ($5.00)
 - 2026-11-07 fade_move: Will Rocket Lab (RKLB) beat quarterly earnings? -> Yes at 0.249 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in Chongqing be 12°C on November 9? -> No at 0.723 ($5.00)
-- 2026-11-07 coin_flip: Fredrikstad FK vs. SK Brann: SK Brann O/U 1.5 -> Under at 0.542 ($5.00)
-- 2026-11-07 safe_no_week: Will the highest temperature in Kuala Lumpur be 34°C on November 9? -> No at 0.971 ($5.00)
-- 2026-11-07 sure_thing: Spread: NK Brinje Grosuplje (-2.5) -> Aluminij Kidricevo at 0.952 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Indiana State (-3.5) -> Indiana State at 0.306 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Shanghai be 10°C on November 9? -> No at 0.711 ($3.55)
+- 2026-11-07 coin_flip: XRP Up or Down - November 8, 4:55AM-5:00AM ET -> Up at 0.527 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Jeddah be 30°C on November 9? -> No at 0.962 ($5.00)
+- 2026-11-07 sure_thing: Rio Ave FC vs. SC Braga: Neither team to score first? -> No at 0.971 ($5.00)
+- 2026-11-07 sports_underdog: Michigan State vs. Michigan -> Michigan State at 0.174 ($5.00)
 - 2026-11-07 follow_move: Dogecoin Up or Down on November 8? -> Down at 0.753 ($5.00)
 - 2026-11-07 fade_move: Dogecoin Up or Down on November 8? -> Up at 0.325 ($5.00)
 
@@ -54,4 +54,4 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 9 near-gaps recorded (full sets within a few cents of their payout). Cheapest: October Inflation China - Annual (yes), 1.002 for a $1 payout.
 
-Runs in the last 24 hours: 36 (0 with a problem).
+Runs in the last 24 hours: 37 (0 with a problem).
