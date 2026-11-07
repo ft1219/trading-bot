@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 14:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 14:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 170 | 162/170 | +1.3% | +$10.84 | 2 | 261 | too early |
-| 2 | sports_underdog | 261 | 60/261 | -10.9% | -$140.47 | 2 | 87 | too early |
+| 1 | sure_thing | 182 | 174/182 | +1.5% | +$13.96 | 2 | 257 | too early |
+| 2 | sports_underdog | 272 | 64/272 | -8.2% | -$110.31 | 2 | 84 | too early |
 | 3 | follow_move | 45 | 20/45 | -38.1% | -$85.65 | 2 | 103 | too early |
 | 4 | fade_move | 60 | 18/60 | -39.3% | -$117.78 | 2 | 112 | too early |
 | 5 | weather_forecast | 10 | 2/10 | -68.6% | -$34.32 | 1 | 177 | too early |
-| 6 | safe_no_week | 4 | 4/4 | +4.3% | +$0.87 | 2 | 270 | too early |
+| 6 | safe_no_week | 4 | 4/4 | +4.3% | +$0.87 | 2 | 272 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 103 | 56/103 | +6.9% | +$35.41 | 2 | 329 | yardstick |
+| 8 | coin_flip | 110 | 58/110 | +4.0% | +$21.95 | 2 | 330 | yardstick |
 
 What each one does:
 
@@ -32,26 +32,26 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | -$3.27 | -$141.31 | -$10.37 | -$23.43 | -$34.32 | +$0.50 | +$27.98 |
+| 2026-11-07 | -$0.15 | -$111.15 | -$10.37 | -$23.43 | -$34.32 | +$0.50 | +$14.52 |
 | 2026-11-06 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$0.37 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Exact Score: AD Tarma 0 - 0 CS Cristal? -> No at 0.943 ($5.00)
-- 2026-11-07 sports_underdog: Iowa State vs. Baylor -> Iowa State at 0.245 ($5.00)
+- 2026-11-07 sure_thing: Spread: SV Werder Bremen (-2.5) -> VfB Stuttgart at 0.962 ($5.00)
+- 2026-11-07 sports_underdog: Will Folkestone Invicta win on 2026-11-07? -> Yes at 0.300 ($5.00)
 - 2026-11-07 follow_move: NVIDIA (NVDA) Up or Down on November 9? -> Up at 0.629 ($5.00)
 - 2026-11-07 fade_move: NVIDIA (NVDA) Up or Down on November 9? -> Down at 0.435 ($5.00)
 - 2026-11-07 weather_forecast: Will the highest temperature in Shanghai be 18°C on November 9? -> Yes at 0.159 ($3.27)
-- 2026-11-07 safe_no_week: Will the highest temperature in Karachi be 32°C on November 9? -> No at 0.971 ($5.00)
-- 2026-11-07 coin_flip: FK Teplice vs. FK Pardubice: O/U 2.5 -> Over at 0.562 ($5.00)
-- 2026-11-07 sure_thing: Carrick Rangers vs. Glentoran FC: O/U 5.5 -> Under at 0.943 ($5.00)
-- 2026-11-07 sports_underdog: North Carolina vs. UConn -> UConn at 0.276 ($5.00)
+- 2026-11-07 safe_no_week: Will the highest temperature in Panama City be 35°C or higher on November 9? -> No at 0.971 ($5.00)
+- 2026-11-07 coin_flip: Spread: Florida State (-16.5) -> Boston College at 0.765 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: Adelaide United FC 0 - 0 Melbourne Victory FC? -> No at 0.957 ($5.00)
+- 2026-11-07 sports_underdog: Dota 2: HULIGANI vs Zero Tenacity (BO3) - DreamLeague Division 2 Group B -> Zero Tenacity at 0.193 ($5.00)
 - 2026-11-07 follow_move: Will NVIDIA (NVDA) close above $195 on November 9? -> No at 0.845 ($5.00)
 - 2026-11-07 fade_move: Will Amazon (AMZN) close above $250 on November 9? -> No at 0.159 ($5.00)
 - 2026-11-07 weather_forecast: Will the highest temperature in Los Angeles be between 84-85°F on November 9? -> No at 0.818 ($4.30)
 
 ## Price gaps seen today
 
-6 near-gaps recorded (full sets within a few cents of their payout). Cheapest: October Inflation China - Annual (yes), 1.002 for a $1 payout.
+7 near-gaps recorded (full sets within a few cents of their payout). Cheapest: October Inflation China - Annual (yes), 1.002 for a $1 payout.
 
-Runs in the last 24 hours: 37 (0 with a problem).
+Runs in the last 24 hours: 36 (0 with a problem).
