@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 14:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 15:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 182 | 174/182 | +1.5% | +$13.96 | 2 | 257 | too early |
-| 2 | sports_underdog | 272 | 64/272 | -8.2% | -$110.31 | 2 | 84 | too early |
+| 1 | sure_thing | 188 | 180/188 | +1.6% | +$15.38 | 2 | 259 | too early |
+| 2 | sports_underdog | 280 | 65/280 | -9.4% | -$130.24 | 2 | 84 | too early |
 | 3 | follow_move | 45 | 20/45 | -38.1% | -$85.65 | 2 | 103 | too early |
 | 4 | fade_move | 60 | 18/60 | -39.3% | -$117.78 | 2 | 112 | too early |
-| 5 | weather_forecast | 10 | 2/10 | -68.6% | -$34.32 | 1 | 177 | too early |
-| 6 | safe_no_week | 4 | 4/4 | +4.3% | +$0.87 | 2 | 272 | too early |
+| 5 | weather_forecast | 15 | 3/15 | -67.2% | -$50.43 | 1 | 175 | too early |
+| 6 | safe_no_week | 9 | 9/9 | +4.5% | +$2.03 | 2 | 269 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 110 | 58/110 | +4.0% | +$21.95 | 2 | 330 | yardstick |
+| 8 | coin_flip | 114 | 61/114 | +7.1% | +$39.98 | 2 | 334 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | sports_underdog | follow_move | fade_move | weather_forecast | safe_no_week | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-07 | -$0.15 | -$111.15 | -$10.37 | -$23.43 | -$34.32 | +$0.50 | +$14.52 |
+| 2026-11-07 | +$1.27 | -$131.08 | -$10.37 | -$23.43 | -$50.43 | +$1.66 | +$32.54 |
 | 2026-11-06 | +$14.11 | +$0.84 | -$75.28 | -$94.35 |  | +$0.37 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Spread: SV Werder Bremen (-2.5) -> VfB Stuttgart at 0.962 ($5.00)
-- 2026-11-07 sports_underdog: Will Folkestone Invicta win on 2026-11-07? -> Yes at 0.300 ($5.00)
+- 2026-11-07 sure_thing: Exact Score: Imisli FK 0 - 0 Sumqayit FK? -> No at 0.933 ($5.00)
+- 2026-11-07 sports_underdog: Costa do Sauipe: Gonzalo Bueno vs Camilo Ugo Carabelli -> Gonzalo Bueno at 0.259 ($5.00)
 - 2026-11-07 follow_move: NVIDIA (NVDA) Up or Down on November 9? -> Up at 0.629 ($5.00)
 - 2026-11-07 fade_move: NVIDIA (NVDA) Up or Down on November 9? -> Down at 0.435 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in Shanghai be 18°C on November 9? -> Yes at 0.159 ($3.27)
-- 2026-11-07 safe_no_week: Will the highest temperature in Panama City be 35°C or higher on November 9? -> No at 0.971 ($5.00)
-- 2026-11-07 coin_flip: Spread: Florida State (-16.5) -> Boston College at 0.765 ($5.00)
-- 2026-11-07 sure_thing: Exact Score: Adelaide United FC 0 - 0 Melbourne Victory FC? -> No at 0.957 ($5.00)
-- 2026-11-07 sports_underdog: Dota 2: HULIGANI vs Zero Tenacity (BO3) - DreamLeague Division 2 Group B -> Zero Tenacity at 0.193 ($5.00)
+- 2026-11-07 weather_forecast: Will the highest temperature in Busan be 14°C on November 9? -> No at 0.642 ($5.00)
+- 2026-11-07 safe_no_week: Will Microsoft (MSFT) close at $490-$500 on the final day of trading of the week of Nov 9 – Nov 13? -> No at 0.981 ($5.00)
+- 2026-11-07 coin_flip: Dogecoin Up or Down - November 8, 4:30AM-4:35AM ET -> Up at 0.527 ($5.00)
+- 2026-11-07 sure_thing: Brighton & Hove Albion FC vs. Brentford FC: Neither team to score first? -> No at 0.968 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Norfolk State (-3.5) -> Norfolk State at 0.306 ($5.00)
 - 2026-11-07 follow_move: Will NVIDIA (NVDA) close above $195 on November 9? -> No at 0.845 ($5.00)
 - 2026-11-07 fade_move: Will Amazon (AMZN) close above $250 on November 9? -> No at 0.159 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in Los Angeles be between 84-85°F on November 9? -> No at 0.818 ($4.30)
+- 2026-11-07 weather_forecast: Will the highest temperature in Qingdao be 11°C on November 9? -> No at 0.691 ($5.00)
 
 ## Price gaps seen today
 
