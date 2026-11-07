@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-07 09:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-07 10:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 158 | 150/158 | +0.9% | +$7.45 | 2 | 217 | too early |
-| 2 | sports_underdog | 229 | 51/229 | -12.1% | -$137.14 | 2 | 63 | too early |
+| 1 | sure_thing | 158 | 150/158 | +0.9% | +$7.45 | 2 | 225 | too early |
+| 2 | sports_underdog | 229 | 51/229 | -12.1% | -$137.14 | 2 | 71 | too early |
 | 3 | follow_move | 44 | 20/44 | -36.7% | -$80.65 | 2 | 100 | too early |
 | 4 | fade_move | 59 | 18/59 | -38.2% | -$112.78 | 2 | 102 | too early |
-| 5 | weather_forecast | 9 | 2/9 | -65.2% | -$29.32 | 1 | 158 | too early |
-| 6 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 243 | too early |
+| 5 | weather_forecast | 9 | 2/9 | -65.2% | -$29.32 | 1 | 160 | too early |
+| 6 | safe_no_week | 3 | 3/3 | +4.1% | +$0.62 | 2 | 248 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 83 | 44/83 | +5.2% | +$21.31 | 2 | 293 | yardstick |
+| 8 | coin_flip | 83 | 44/83 | +5.2% | +$21.31 | 2 | 301 | yardstick |
 
 What each one does:
 
@@ -37,18 +37,18 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 sure_thing: Exact Score: Atlas FC 0 - 0 CF Pachuca? -> No at 0.950 ($5.00)
-- 2026-11-07 sports_underdog: Will FC Belshina Bobruisk vs. FC Isloch end in a draw? -> Yes at 0.216 ($5.00)
+- 2026-11-07 sure_thing: Preston North End FC vs. Southampton FC: Neither team to score first? -> No at 0.960 ($5.00)
+- 2026-11-07 sports_underdog: Will FC Ingolstadt 04 vs. Fortuna Dusseldorf end in a draw? -> Yes at 0.280 ($5.00)
 - 2026-11-07 follow_move: Will PPI YoY be 6.4% in October? -> Yes at 0.227 ($5.00)
 - 2026-11-07 fade_move: Will Khamenei post 0-4 posts from November 6 to November 13, 2026? -> No at 0.270 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in New York City be between 58-59°F on November 9? -> No at 0.582 ($5.00)
-- 2026-11-07 safe_no_week: Will Khamenei post 10-14 posts from November 3 to November 10, 2026? -> No at 0.981 ($5.00)
-- 2026-11-07 coin_flip: Leyton Orient FC vs. Harborough Town FC: Harborough Town FC O/U 0.5 -> Under at 0.432 ($5.00)
-- 2026-11-07 sure_thing: Spread: South Alabama (-16.5) -> Louisiana at 0.957 ($5.00)
-- 2026-11-07 sports_underdog: Spread: Safa (-1.5) -> Safa at 0.187 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Wellington be 15°C on November 8? -> No at 0.567 ($5.00)
+- 2026-11-07 safe_no_week: Will the lowest temperature in Tokyo be 13°C on November 8? -> No at 0.971 ($5.00)
+- 2026-11-07 coin_flip: Shanghai Shenhua FC vs. Qingdao Xihaian FC: Shanghai Shenhua FC O/U 2.5 -> Over at 0.482 ($5.00)
+- 2026-11-07 sure_thing: St Johnstone FC vs. Dundee FC: Neither team to score first? -> No at 0.952 ($5.00)
+- 2026-11-07 sports_underdog: Spread: Samsunspor (-1.5) -> Samsunspor at 0.218 ($5.00)
 - 2026-11-07 follow_move: Will Khamenei post 0-4 posts from November 6 to November 13, 2026? -> Yes at 0.759 ($5.00)
 - 2026-11-07 fade_move: Will PPI YoY be 6.4% in October? -> No at 0.833 ($5.00)
-- 2026-11-07 weather_forecast: Will the highest temperature in Miami be between 84-85°F on November 9? -> No at 0.472 ($5.00)
+- 2026-11-07 weather_forecast: Will the lowest temperature in Beijing be -5°C or below on November 9? -> No at 0.818 ($5.00)
 
 ## Price gaps seen today
 
