@@ -4,19 +4,19 @@
  "strategies": {
   "coin_flip": {
    "active": true,
-   "break_even_rate": 0.509,
+   "break_even_rate": 0.5093,
    "days": 3,
    "days_running": 3.2,
-   "open": 289,
-   "open_cost": 1440.41,
-   "p_luck": 0.4461919236479357,
-   "pnl": 36.68,
-   "roi": 0.0236933130211158,
-   "settled": 311,
-   "staked": 1548.31,
-   "trades": 600,
+   "open": 292,
+   "open_cost": 1455.41,
+   "p_luck": 0.5192514496296172,
+   "pnl": 22.38,
+   "roi": 0.014225354619365192,
+   "settled": 316,
+   "staked": 1573.31,
+   "trades": 608,
    "verdict": "yardstick",
-   "wins": 160
+   "wins": 161
   },
   "fade_move": {
    "active": true,
@@ -71,48 +71,48 @@
    "break_even_rate": 0.9628,
    "days": 3,
    "days_running": 3.2,
-   "open": 270,
-   "open_cost": 1349.74,
+   "open": 271,
+   "open_cost": 1354.74,
    "p_luck": 0.5840132763545348,
    "pnl": 2.11,
    "roi": 0.011102905263157894,
    "settled": 38,
    "staked": 190.0,
-   "trades": 308,
+   "trades": 309,
    "verdict": "too early",
    "wins": 37
   },
   "sports_underdog": {
    "active": true,
-   "break_even_rate": 0.2602,
+   "break_even_rate": 0.2601,
    "days": 3,
    "days_running": 3.2,
-   "open": 70,
-   "open_cost": 350.0,
-   "p_luck": 0.9775477411758713,
-   "pnl": -357.51,
-   "roi": -0.16171334060073514,
-   "settled": 445,
-   "staked": 2210.74,
-   "trades": 515,
+   "open": 69,
+   "open_cost": 345.0,
+   "p_luck": 0.9421785303973021,
+   "pnl": -277.99,
+   "roi": -0.12323467382417116,
+   "settled": 454,
+   "staked": 2255.74,
+   "trades": 523,
    "verdict": "too early",
-   "wins": 98
+   "wins": 104
   },
   "sure_thing": {
    "active": true,
-   "break_even_rate": 0.9431,
+   "break_even_rate": 0.943,
    "days": 3,
    "days_running": 3.2,
-   "open": 162,
-   "open_cost": 810.0,
-   "p_luck": 0.7136188523232746,
-   "pnl": -11.31,
-   "roi": -0.005178645041446457,
-   "settled": 437,
-   "staked": 2184.22,
-   "trades": 599,
+   "open": 167,
+   "open_cost": 835.0,
+   "p_luck": 0.6994099120238264,
+   "pnl": -10.25,
+   "roi": -0.004660508300274722,
+   "settled": 440,
+   "staked": 2199.22,
+   "trades": 607,
    "verdict": "too early",
-   "wins": 410
+   "wins": 413
   },
   "weather_forecast": {
    "active": true,
@@ -131,5 +131,5 @@
    "wins": 23
   }
  },
- "updated": 1794110840
+ "updated": 1794113241
 }
