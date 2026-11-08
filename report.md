@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 20:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 21:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 652 | 606/652 | -1.4% | -$46.94 | 3 | 144 | too early |
-| 2 | safe_no_week | 80 | 74/80 | -4.0% | -$16.14 | 3 | 292 | too early |
-| 3 | sports_underdog | 638 | 141/638 | -15.7% | -$499.14 | 3 | 74 | too early |
-| 4 | follow_move | 74 | 38/74 | -22.7% | -$84.00 | 3 | 119 | too early |
-| 5 | weather_forecast | 107 | 53/107 | -23.7% | -$125.44 | 2 | 162 | too early |
-| 6 | fade_move | 90 | 29/90 | -40.8% | -$183.57 | 3 | 132 | too early |
+| 1 | sure_thing | 663 | 614/663 | -1.8% | -$59.57 | 3 | 141 | too early |
+| 2 | safe_no_week | 85 | 79/85 | -3.5% | -$14.99 | 3 | 287 | too early |
+| 3 | sports_underdog | 645 | 144/645 | -14.9% | -$478.71 | 3 | 75 | too early |
+| 4 | follow_move | 75 | 38/75 | -23.8% | -$89.00 | 3 | 118 | too early |
+| 5 | weather_forecast | 110 | 53/110 | -25.8% | -$140.10 | 2 | 159 | too early |
+| 6 | fade_move | 91 | 30/91 | -38.1% | -$173.46 | 3 | 131 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 582 | 290/582 | -4.3% | -$124.52 | 3 | 218 | yardstick |
+| 8 | coin_flip | 598 | 298/598 | -3.8% | -$113.89 | 3 | 210 | yardstick |
 
 What each one does:
 
@@ -32,22 +32,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | -$35.22 | -$17.41 | -$257.04 | -$11.21 | -$18.16 | -$16.33 | -$184.87 |
+| 2026-11-08 | -$47.86 | -$16.26 | -$236.60 | -$16.21 | -$32.83 | -$6.21 | -$174.25 |
 | 2026-11-07 | -$25.83 | +$0.90 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-08 sure_thing: Spread: Buccaneers (-7.5) -> Bears at 0.903 ($5.00)
+- 2026-11-08 sure_thing: East Texas A&M Lions vs. SMU Mustangs (W) -> SMU Mustangs at 0.943 ($5.00)
 - 2026-11-08 safe_no_week: Will the price of Ethereum be above $1,900 on November 15? -> Yes at 0.972 ($5.00)
-- 2026-11-08 sports_underdog: Will Barcelona SC vs. LDU Quito end in a draw? -> Yes at 0.310 ($5.00)
+- 2026-11-08 sports_underdog: Will Antigua GFC win on 2026-11-08? -> No at 0.351 ($5.00)
 - 2026-11-08 follow_move: Will the price of Solana be above $90 on November 14? -> No at 0.577 ($5.00)
 - 2026-11-08 weather_forecast: Will the highest temperature in Madrid be 17°C on November 9? -> No at 0.684 ($5.00)
 - 2026-11-08 fade_move: Will "Housewife - Tate McRae" be the #1 US song this week? -> No at 0.552 ($5.00)
-- 2026-11-08 coin_flip: Solana Up or Down - November 9, 1:15PM-1:30PM ET -> Down at 0.527 ($5.00)
-- 2026-11-08 sure_thing: Spread: Cancun FC (-1.5) -> Piratas Veracruz at 0.951 ($5.00)
+- 2026-11-08 coin_flip: Hyperliquid Up or Down - November 9, 6:15AM-6:30AM ET -> Down at 0.527 ($5.00)
+- 2026-11-08 sure_thing: Bucky Irving: 2+ Touchdowns -> No at 0.924 ($5.00)
 - 2026-11-08 safe_no_week: Will the highest temperature in Atlanta be between 68-69°F on November 10? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Will Deportivo La Guaira win on 2026-11-08? -> Yes at 0.328 ($5.00)
+- 2026-11-08 sports_underdog: Spread: CD Tolima (-1.5) -> CD Tolima at 0.187 ($5.00)
 - 2026-11-08 follow_move: Will "Housewife - Tate McRae" be the #1 US song this week? -> Yes at 0.512 ($5.00)
 - 2026-11-08 weather_forecast: Will the lowest temperature in Milan be 6°C on November 9? -> Yes at 0.163 ($4.55)
 
