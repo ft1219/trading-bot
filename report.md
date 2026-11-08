@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 03:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 37 | 36/37 | +1.1% | +$1.99 | 3 | 269 | too early |
-| 2 | sure_thing | 427 | 400/427 | -0.7% | -$15.01 | 3 | 156 | too early |
-| 3 | sports_underdog | 419 | 95/419 | -13.3% | -$276.77 | 3 | 80 | too early |
+| 1 | safe_no_week | 38 | 37/38 | +1.1% | +$2.11 | 3 | 270 | too early |
+| 2 | sure_thing | 436 | 409/436 | -0.5% | -$11.72 | 3 | 155 | too early |
+| 3 | sports_underdog | 432 | 97/432 | -14.5% | -$310.37 | 3 | 75 | too early |
 | 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 113 | too early |
-| 5 | weather_forecast | 52 | 21/52 | -38.6% | -$100.35 | 2 | 157 | too early |
+| 5 | weather_forecast | 55 | 23/55 | -36.3% | -$99.79 | 2 | 154 | too early |
 | 6 | fade_move | 76 | 23/76 | -43.6% | -$165.84 | 3 | 121 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 298 | 153/298 | +1.3% | +$19.41 | 3 | 286 | yardstick |
+| 8 | coin_flip | 308 | 159/308 | +1.9% | +$29.48 | 3 | 284 | yardstick |
 
 What each one does:
 
@@ -32,22 +32,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | +$0.72 | -$3.29 | -$34.66 |  | +$6.92 | +$1.40 | -$40.95 |
+| 2026-11-08 | +$0.84 | -$0.01 | -$68.27 |  | +$7.48 | +$1.40 | -$30.88 |
 | 2026-11-07 | +$0.90 | -$25.83 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-08 safe_no_week: Will the highest temperature in San Francisco be between 74-75°F on November 9? -> No at 0.981 ($5.00)
-- 2026-11-08 sure_thing: Persikad Depok vs. Persiku Kudus: O/U 1.5 -> Over at 0.905 ($5.00)
-- 2026-11-08 sports_underdog: Spread: Kagoshima United (-1.5) -> Kagoshima United at 0.229 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in Istanbul be 15°C on November 9? -> No at 0.960 ($5.00)
+- 2026-11-08 sure_thing: Manchester United FC vs. Aston Villa FC: Manchester United FC O/U 2.5 Corners -> Over at 0.914 ($5.00)
+- 2026-11-08 sports_underdog: Spread: Adelaide United FC (-1.5) -> Adelaide United FC at 0.156 ($5.00)
 - 2026-11-08 follow_move: Will Microsoft Corporation (MSFT) hit (LOW) $525 Week of November 9 2026? -> Yes at 0.797 ($5.00)
 - 2026-11-08 weather_forecast: Will the highest temperature in Sao Paulo be 17°C on November 9? -> No at 0.671 ($5.00)
 - 2026-11-08 fade_move: Will Alphabet Inc. (GOOGL) hit (LOW) $280 Week of November 9 2026? -> No at 0.288 ($5.00)
-- 2026-11-08 coin_flip: Çorum FK vs. Fenerbahçe SK: Fenerbahçe SK O/U 2.5 -> Under at 0.723 ($5.00)
-- 2026-11-08 safe_no_week: Will the highest temperature in Houston be between 62-63°F on November 9? -> No at 0.952 ($5.00)
-- 2026-11-08 sure_thing: Exact Score: Sportivo Trinidense 0 - 0 Sportivo Ameliano? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Will Vanraure Hachinohe FC win on 2026-11-07? -> Yes at 0.341 ($5.00)
+- 2026-11-08 coin_flip: Solana Up or Down - November 8, 7:45AM-7:50AM ET -> Down at 0.527 ($5.00)
+- 2026-11-08 safe_no_week: Will SpaceX (SPCX) finish week of November 9 above $120? -> Yes at 0.923 ($5.00)
+- 2026-11-08 sure_thing: Exact Score: WSG Tirol 0 - 0 FK Austria Wien? -> No at 0.952 ($5.00)
+- 2026-11-08 sports_underdog: Will Adelaide United FC win on 2026-11-08? -> Yes at 0.341 ($5.00)
 - 2026-11-08 follow_move: Will Alphabet Inc. (GOOGL) hit (LOW) $280 Week of November 9 2026? -> Yes at 0.767 ($5.00)
 - 2026-11-08 weather_forecast: Will the highest temperature in Karachi be 35°C on November 9? -> No at 0.642 ($5.00)
 
