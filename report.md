@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 17:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 18:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 563 | 530/563 | -0.2% | -$5.21 | 3 | 195 | too early |
-| 2 | safe_no_week | 78 | 73/78 | -2.9% | -$11.29 | 3 | 284 | too early |
-| 3 | sports_underdog | 599 | 134/599 | -14.7% | -$438.99 | 3 | 73 | too early |
-| 4 | follow_move | 74 | 38/74 | -22.7% | -$84.00 | 3 | 115 | too early |
+| 1 | sure_thing | 577 | 542/577 | -0.4% | -$11.59 | 3 | 189 | too early |
+| 2 | safe_no_week | 78 | 73/78 | -2.9% | -$11.29 | 3 | 287 | too early |
+| 3 | sports_underdog | 604 | 134/604 | -15.5% | -$463.99 | 3 | 76 | too early |
+| 4 | follow_move | 74 | 38/74 | -22.7% | -$84.00 | 3 | 117 | too early |
 | 5 | weather_forecast | 103 | 51/103 | -23.6% | -$120.21 | 2 | 159 | too early |
-| 6 | fade_move | 90 | 29/90 | -40.8% | -$183.57 | 3 | 128 | too early |
+| 6 | fade_move | 90 | 29/90 | -40.8% | -$183.57 | 3 | 130 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 487 | 242/487 | -4.4% | -$107.21 | 3 | 273 | yardstick |
+| 8 | coin_flip | 499 | 248/499 | -4.4% | -$109.80 | 3 | 269 | yardstick |
 
 What each one does:
 
@@ -32,23 +32,23 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | +$6.51 | -$12.56 | -$196.89 | -$11.21 | -$12.94 | -$16.33 | -$167.57 |
+| 2026-11-08 | +$0.12 | -$12.56 | -$221.89 | -$11.21 | -$12.94 | -$16.33 | -$170.16 |
 | 2026-11-07 | -$25.83 | +$0.90 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-08 sure_thing: Spread: CD Malacateco (-1.5) -> Antigua GFC at 0.971 ($5.00)
-- 2026-11-08 safe_no_week: Will the price of Bitcoin be above $70,000 on November 15? -> Yes at 0.944 ($5.00)
-- 2026-11-08 sports_underdog: Lions vs. Dolphins -> Dolphins at 0.276 ($5.00)
-- 2026-11-08 follow_move: Will the price of XRP be above $1.20 on November 14? -> No at 0.744 ($5.00)
+- 2026-11-08 sure_thing: L.R. Vicenza vs. US Cremonese: Neither team to score first? -> No at 0.933 ($5.00)
+- 2026-11-08 safe_no_week: Will the price of Bitcoin be between $70,000 and $72,000 on November 15? -> No at 0.981 ($5.00)
+- 2026-11-08 sports_underdog: Spread: CA Nacional Potosí (-1.5) -> CA Nacional Potosí at 0.208 ($5.00)
+- 2026-11-08 follow_move: Will "Housewife - Tate McRae" be the #2 song this week? -> Yes at 0.612 ($5.00)
 - 2026-11-08 weather_forecast: Will the lowest temperature in Paris be 3°C on November 9? -> No at 0.623 ($5.00)
-- 2026-11-08 fade_move: Will "Adin Ross's Team" lose the most weight in Nozempic 2? -> Yes at 0.351 ($5.00)
-- 2026-11-08 coin_flip: XRP Up or Down - November 9, 12:05PM-12:10PM ET -> Down at 0.527 ($5.00)
-- 2026-11-08 sure_thing: AA Ponte Preta leading at halftime? -> No at 0.952 ($5.00)
-- 2026-11-08 safe_no_week: Will the price of Solana be between $70 and $80 on November 14? -> No at 0.953 ($5.00)
-- 2026-11-08 sports_underdog: Will L.R. Vicenza win on 2026-11-08? -> Yes at 0.310 ($5.00)
-- 2026-11-08 follow_move: Will the price of Bitcoin be above $72,000 on November 14? -> Yes at 0.859 ($5.00)
+- 2026-11-08 fade_move: Will the price of Ethereum be between $2,200 and $2,300 on November 14? -> Yes at 0.304 ($5.00)
+- 2026-11-08 coin_flip: Bitcoin Up or Down - November 9, 1:05AM-1:10AM ET -> Down at 0.517 ($5.00)
+- 2026-11-08 sure_thing: Spread: Flames (-3.5) -> Flyers at 0.962 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in Kuala Lumpur be 30°C on November 10? -> No at 0.971 ($5.00)
+- 2026-11-08 sports_underdog: Spread: Fredrikstad FK (-1.5) -> Fredrikstad FK at 0.177 ($5.00)
+- 2026-11-08 follow_move: Will the price of Ethereum be between $2,200 and $2,300 on November 14? -> No at 0.753 ($5.00)
 - 2026-11-08 weather_forecast: Will the lowest temperature in Seoul (Incheon) be 4°C on November 10? -> No at 0.798 ($5.00)
 
 ## Price gaps seen today
