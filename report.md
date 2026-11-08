@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 06:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 06:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 447 | 420/447 | -0.4% | -$8.15 | 3 | 176 | too early |
-| 2 | safe_no_week | 40 | 38/40 | -1.4% | -$2.80 | 3 | 276 | too early |
-| 3 | sports_underdog | 468 | 107/468 | -12.2% | -$284.20 | 3 | 71 | too early |
-| 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 116 | too early |
-| 5 | weather_forecast | 57 | 25/57 | -33.3% | -$94.77 | 2 | 157 | too early |
-| 6 | fade_move | 76 | 23/76 | -43.6% | -$165.84 | 3 | 125 | too early |
+| 1 | sure_thing | 449 | 422/449 | -0.3% | -$7.70 | 3 | 182 | too early |
+| 2 | safe_no_week | 42 | 40/42 | -1.1% | -$2.31 | 3 | 280 | too early |
+| 3 | sports_underdog | 471 | 107/471 | -12.8% | -$299.20 | 3 | 76 | too early |
+| 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 117 | too early |
+| 5 | weather_forecast | 62 | 29/62 | -27.9% | -$86.49 | 2 | 158 | too early |
+| 6 | fade_move | 76 | 23/76 | -43.6% | -$165.84 | 3 | 126 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 334 | 173/334 | +1.9% | +$31.74 | 3 | 290 | yardstick |
+| 8 | coin_flip | 342 | 175/342 | +0.6% | +$10.79 | 3 | 290 | yardstick |
 
 What each one does:
 
@@ -32,27 +32,27 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | +$3.57 | -$4.07 | -$42.09 |  | +$12.50 | +$1.40 | -$28.61 |
+| 2026-11-08 | +$4.01 | -$3.57 | -$57.09 |  | +$20.78 | +$1.40 | -$49.57 |
 | 2026-11-07 | -$25.83 | +$0.90 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-08 sure_thing: CD Malacateco leading at halftime? -> No at 0.924 ($5.00)
-- 2026-11-08 safe_no_week: Will Hims & Hers (HIMS) beat quarterly earnings? -> No at 0.924 ($5.00)
-- 2026-11-08 sports_underdog: Spread: Bhayangkara Presisi Lampung FC (-1.5) -> Bhayangkara Presisi Lampung FC at 0.239 ($5.00)
+- 2026-11-08 sure_thing: Asteras Tripolis vs. PAE PS Kalamata: Neither team to score first? -> No at 0.953 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in London be 9°C on November 10? -> No at 0.924 ($5.00)
+- 2026-11-08 sports_underdog: Will Yunnan Yukun FC win on 2026-11-08? -> No at 0.361 ($5.00)
+- 2026-11-08 follow_move: Will the biggest earthquake on November 8, 2026 be under 5.3? -> Yes at 0.302 ($5.00)
+- 2026-11-08 weather_forecast: Will the highest temperature in Manila be 30°C on November 10? -> Yes at 0.107 ($4.10)
+- 2026-11-08 fade_move: Will the biggest earthquake on November 8, 2026 be under 5.3? -> No at 0.730 ($5.00)
+- 2026-11-08 coin_flip: Çaykur Rizespor leading at halftime? -> No at 0.632 ($5.00)
+- 2026-11-08 sure_thing: Spread: FC Wurzburger Kickers (-2.5) -> TSG Hoffenheim II at 0.952 ($5.00)
+- 2026-11-08 safe_no_week: Will the biggest earthquake on November 8, 2026 be 5.9 to 6.0? -> No at 0.924 ($5.00)
+- 2026-11-08 sports_underdog: Will Shanghai Shenhua FC vs. Qingdao Xihaian FC end in a draw? -> Yes at 0.208 ($5.00)
 - 2026-11-08 follow_move: Will South Korea be in the top 3 at Eurovision Asia 2026? -> No at 0.798 ($5.00)
-- 2026-11-08 weather_forecast: Will the highest temperature in Tokyo be 15°C on November 10? -> No at 0.759 ($5.00)
-- 2026-11-08 fade_move: Will Hims & Hers (HIMS) beat quarterly earnings? -> Yes at 0.136 ($5.00)
-- 2026-11-08 coin_flip: Bengals vs. Falcons: O/U 52.5 -> Over at 0.517 ($5.00)
-- 2026-11-08 sure_thing: Spread: Packers (-13.5) -> Patriots at 0.922 ($5.00)
-- 2026-11-08 safe_no_week: Will Bhutan be in the top 3 at Eurovision Asia 2026? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Will Bali United vs. Persik Kediri end in a draw? -> Yes at 0.218 ($5.00)
-- 2026-11-08 follow_move: Will Malaysia be the Jury Winner in the Eurovision Asia 2026 Grand Final? -> Yes at 0.691 ($5.00)
-- 2026-11-08 weather_forecast: Will the highest temperature in Taipei be 20°C on November 10? -> No at 0.701 ($3.50)
+- 2026-11-08 weather_forecast: Will the highest temperature in Seoul (Incheon) be 12°C on November 10? -> No at 0.600 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (0 with a problem).
+Runs in the last 24 hours: 37 (0 with a problem).
