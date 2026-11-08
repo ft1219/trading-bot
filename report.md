@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 00:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 00:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 36 | 35/36 | +0.9% | +$1.63 | 3 | 266 | too early |
-| 2 | sure_thing | 398 | 374/398 | -0.4% | -$7.08 | 3 | 153 | too early |
-| 3 | sports_underdog | 397 | 90/397 | -13.1% | -$257.71 | 3 | 70 | too early |
+| 1 | safe_no_week | 37 | 36/37 | +1.1% | +$1.99 | 3 | 267 | too early |
+| 2 | sure_thing | 410 | 383/410 | -1.0% | -$19.53 | 3 | 149 | too early |
+| 3 | sports_underdog | 400 | 92/400 | -11.8% | -$233.82 | 3 | 75 | too early |
 | 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 108 | too early |
-| 5 | weather_forecast | 50 | 19/50 | -42.5% | -$106.14 | 2 | 151 | too early |
+| 5 | weather_forecast | 52 | 21/52 | -38.6% | -$100.35 | 2 | 154 | too early |
 | 6 | fade_move | 75 | 22/75 | -44.6% | -$167.24 | 2 | 117 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 263 | 139/263 | +3.8% | +$49.36 | 3 | 289 | yardstick |
+| 8 | coin_flip | 279 | 144/279 | +2.5% | +$34.89 | 3 | 281 | yardstick |
 
 What each one does:
 
@@ -32,24 +32,24 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | safe_no_week | sure_thing | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | +$0.37 | +$4.64 | -$15.61 |  | +$1.13 |  | -$11.00 |
+| 2026-11-08 | +$0.72 | -$7.81 | +$8.28 |  | +$6.92 |  | -$25.47 |
 | 2026-11-07 | +$0.90 | -$25.83 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$0.37 | +$14.11 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-07 safe_no_week: Will the price of Bitcoin be above $68,000 on November 14? -> Yes at 0.981 ($5.00)
-- 2026-11-08 sure_thing: Exact Score: FK Transinvest 0 - 0 FK Kauno Zalgiris? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Spread: Deportivo Toluca FC (-2.5) -> Deportivo Toluca FC at 0.198 ($5.00)
+- 2026-11-08 safe_no_week: Will Adin Ross lose the most weight in Nozempic 2? -> No at 0.952 ($5.00)
+- 2026-11-08 sure_thing: Exact Score: Bandirmaspor 0 - 0 Fatih Karagumruk Istanbul? -> No at 0.924 ($5.00)
+- 2026-11-08 sports_underdog: Knicks vs. Cavaliers: O/U 230.5 -> Over at 0.351 ($5.00)
 - 2026-11-08 follow_move: Will Apple (AAPL) hit (LOW) $324 Week of November 9 2026? -> No at 0.845 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in Jeddah be 25°C on November 9? -> No at 0.655 ($5.00)
+- 2026-11-08 weather_forecast: Will the lowest temperature in Warsaw be -6°C on November 9? -> No at 0.886 ($5.00)
 - 2026-11-08 fade_move: Will Constellation Energy say "Trump" during earnings call? -> Yes at 0.359 ($5.00)
-- 2026-11-08 coin_flip: Will CS Cienciano vs. CS Huancayo end in a draw? -> Yes at 0.270 ($5.00)
-- 2026-11-07 safe_no_week: Will the highest temperature in Jeddah be 30°C on November 9? -> No at 0.962 ($5.00)
-- 2026-11-08 sure_thing: Exact Score: NK Varaždin 0 - 0 GNK Dinamo Zagreb? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Portland State Vikings vs. Seattle Redhawks -> Portland State Vikings at 0.177 ($5.00)
+- 2026-11-08 coin_flip: Vasas FC vs. Ferencvarosi Budapest: O/U 2.5 -> Under at 0.392 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in Los Angeles be between 80-81°F on November 9? -> No at 0.980 ($5.00)
+- 2026-11-08 sure_thing: Exact Score: St. Truidense VV 0 - 0 SV Zulte Waregem? -> No at 0.962 ($5.00)
+- 2026-11-08 sports_underdog: Will CS Cienciano vs. CS Huancayo end in a draw? -> Yes at 0.270 ($5.00)
 - 2026-11-08 follow_move: Will Constellation Energy say "Trump" during earnings call? -> No at 0.699 ($5.00)
-- 2026-11-07 weather_forecast: Will the lowest temperature in Shanghai be 10°C on November 9? -> No at 0.711 ($3.55)
+- 2026-11-08 weather_forecast: Will the lowest temperature in Sao Paulo be 14°C on November 9? -> No at 0.402 ($5.00)
 
 ## Price gaps seen today
 
