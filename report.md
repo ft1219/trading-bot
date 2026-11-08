@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-08 08:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-08 08:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 456 | 428/456 | -0.5% | -$11.02 | 3 | 191 | too early |
-| 2 | safe_no_week | 46 | 44/46 | -0.8% | -$1.74 | 3 | 280 | too early |
-| 3 | sports_underdog | 489 | 110/489 | -13.7% | -$333.82 | 3 | 71 | too early |
+| 1 | sure_thing | 458 | 430/458 | -0.5% | -$10.41 | 3 | 197 | too early |
+| 2 | safe_no_week | 46 | 44/46 | -0.8% | -$1.74 | 3 | 286 | too early |
+| 3 | sports_underdog | 491 | 110/491 | -14.1% | -$343.82 | 3 | 77 | too early |
 | 4 | follow_move | 60 | 31/60 | -24.3% | -$72.78 | 2 | 121 | too early |
-| 5 | weather_forecast | 69 | 32/69 | -27.6% | -$94.75 | 2 | 164 | too early |
+| 5 | weather_forecast | 70 | 32/70 | -28.7% | -$99.75 | 2 | 171 | too early |
 | 6 | fade_move | 76 | 23/76 | -43.6% | -$165.84 | 3 | 129 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 351 | 178/351 | -0.4% | -$6.27 | 3 | 297 | yardstick |
+| 8 | coin_flip | 355 | 178/355 | -1.5% | -$26.27 | 3 | 301 | yardstick |
 
 What each one does:
 
@@ -32,27 +32,27 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | sports_underdog | follow_move | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-08 | +$0.70 | -$3.01 | -$91.72 |  | +$12.53 | +$1.40 | -$66.62 |
+| 2026-11-08 | +$1.31 | -$3.01 | -$101.72 |  | +$7.53 | +$1.40 | -$86.62 |
 | 2026-11-07 | -$25.83 | +$0.90 | -$242.94 | +$2.49 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | +$0.84 | -$75.28 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-08 sure_thing: Alanyaspor vs. Trabzonspor: Neither team to score first? -> No at 0.971 ($5.00)
-- 2026-11-08 safe_no_week: Will the highest temperature in Tel Aviv be 22°C on November 10? -> No at 0.924 ($5.00)
-- 2026-11-08 sports_underdog: Spread: Bangkok United FC (-2.5) -> Bangkok United FC at 0.290 ($5.00)
+- 2026-11-08 sure_thing: TSV Hartberg vs. SCR Altach: Neither team to score first? -> No at 0.952 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in Paris be 11°C on November 10? -> No at 0.932 ($5.00)
+- 2026-11-08 sports_underdog: Will Rasisalai United vs. Bangkok United FC end in a draw? -> Yes at 0.187 ($5.00)
 - 2026-11-08 follow_move: Will Meta Platforms, Inc. (META) hit (HIGH) $630 Week of November 9 2026? -> Yes at 0.625 ($5.00)
-- 2026-11-08 weather_forecast: Will the highest temperature in Tel Aviv be 24°C on November 10? -> No at 0.682 ($5.00)
+- 2026-11-08 weather_forecast: Will the lowest temperature in Amsterdam be 1°C on November 10? -> No at 0.711 ($5.00)
 - 2026-11-08 fade_move: Ethereum Up or Down on November 8? -> Down at 0.417 ($5.00)
-- 2026-11-08 coin_flip: Spread: Bowling Green (-16.5) -> Bowling Green at 0.259 ($5.00)
-- 2026-11-08 sure_thing: CS Cartaginés vs. Escorpiones de Belén: O/U 5.5 -> Under at 0.904 ($5.00)
-- 2026-11-08 safe_no_week: Will the highest temperature in Manila be 30°C on November 10? -> No at 0.952 ($5.00)
-- 2026-11-08 sports_underdog: Spread: Villarreal CF B (-2.5) -> Villarreal CF B at 0.249 ($5.00)
+- 2026-11-08 coin_flip: BNB Up or Down - November 8, 9:50AM-9:55AM ET -> Down at 0.527 ($5.00)
+- 2026-11-08 sure_thing: Will Stafford Rangers FC win on 2026-11-07? -> No at 0.904 ($5.00)
+- 2026-11-08 safe_no_week: Will the highest temperature in Shanghai be 13°C on November 10? -> No at 0.981 ($5.00)
+- 2026-11-08 sports_underdog: Will FK Grobina win on 2026-11-08? -> Yes at 0.229 ($5.00)
 - 2026-11-08 follow_move: Ethereum Up or Down on November 8? -> Up at 0.627 ($5.00)
-- 2026-11-08 weather_forecast: Will the highest temperature in Helsinki be 5°C on November 10? -> No at 0.572 ($5.00)
+- 2026-11-08 weather_forecast: Will the highest temperature in New York City be between 62-63°F on November 10? -> No at 0.711 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 37 (0 with a problem).
+Runs in the last 24 hours: 36 (0 with a problem).
