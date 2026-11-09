@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-09 08:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-09 09:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 813 | 751/813 | -2.0% | -$80.84 | 4 | 112 | too early |
-| 2 | safe_no_week | 122 | 113/122 | -3.7% | -$22.59 | 4 | 297 | too early |
-| 3 | follow_move | 79 | 41/79 | -15.6% | -$61.73 | 4 | 152 | too early |
-| 4 | sports_underdog | 744 | 164/744 | -16.2% | -$600.98 | 4 | 12 | too early |
-| 5 | weather_forecast | 146 | 73/146 | -23.9% | -$172.77 | 3 | 160 | too early |
-| 6 | fade_move | 93 | 30/93 | -39.5% | -$183.46 | 3 | 165 | too early |
+| 1 | sure_thing | 819 | 756/819 | -2.1% | -$84.16 | 4 | 109 | too early |
+| 2 | safe_no_week | 125 | 116/125 | -3.5% | -$22.02 | 4 | 300 | too early |
+| 3 | follow_move | 79 | 41/79 | -15.6% | -$61.73 | 4 | 155 | too early |
+| 4 | sports_underdog | 744 | 164/744 | -16.2% | -$600.98 | 4 | 13 | too early |
+| 5 | weather_forecast | 150 | 74/150 | -25.1% | -$186.35 | 3 | 160 | too early |
+| 6 | fade_move | 93 | 30/93 | -39.5% | -$183.46 | 3 | 168 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 749 | 377/749 | -3.3% | -$124.02 | 4 | 195 | yardstick |
+| 8 | coin_flip | 755 | 381/755 | -3.1% | -$116.10 | 4 | 197 | yardstick |
 
 What each one does:
 
@@ -32,28 +32,28 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-09 | -$16.42 | -$3.94 | -$5.00 | -$96.03 | -$31.30 |  | +$24.62 |
+| 2026-11-09 | -$19.75 | -$3.37 | -$5.00 | -$96.03 | -$44.88 |  | +$32.54 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | -$75.28 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-09 sure_thing: Will Amazon (AMZN) close above $255 on November 9? -> Yes at 0.913 ($5.00)
-- 2026-11-09 safe_no_week: Will the highest temperature in Dallas be between 84-85°F on November 11? -> No at 0.981 ($5.00)
-- 2026-11-09 follow_move: Russell 2000 (RUT) Up or Down on November 9? -> Up at 0.855 ($5.00)
+- 2026-11-09 sure_thing: BNB Up or Down - November 9, 4AM ET -> Down at 0.906 ($5.00)
+- 2026-11-09 safe_no_week: Will S&P 500 (SPY) hit (HIGH) $770 Week of November 9 2026? -> No at 0.933 ($5.00)
+- 2026-11-09 follow_move: Will Micron (MU) finish week of November 9 above $720? -> No at 0.731 ($5.00)
+- 2026-11-09 sports_underdog: Mobile Legends Bang Bang: The World vs Rakuzan (BO3) - BetBoom Rise of Legends Group A -> The World at 0.331 ($5.00)
+- 2026-11-09 weather_forecast: Will the lowest temperature in Chongqing be 11°C on November 11? -> No at 0.759 ($5.00)
+- 2026-11-09 fade_move: Will Micron (MU) finish week of November 9 above $720? -> Yes at 0.339 ($5.00)
+- 2026-11-09 coin_flip: ZCash Up or Down - November 9, 2:30PM-2:45PM ET -> Up at 0.527 ($5.00)
+- 2026-11-09 sure_thing: Bitcoin Up or Down - November 9, 4AM ET -> Down at 0.943 ($5.00)
+- 2026-11-09 safe_no_week: Will NVIDIA (NVDA) hit (HIGH) $208 Week of November 9 2026? -> No at 0.981 ($5.00)
+- 2026-11-09 follow_move: WTI Crude Oil (WTI) Up or Down on November 9? -> Down at 0.836 ($5.00)
 - 2026-11-09 sports_underdog: Dota 2: Froglings vs Team Synapse (BO3) - DreamLeague Division 2 Group A -> Team Synapse at 0.352 ($5.00)
-- 2026-11-09 weather_forecast: Will the highest temperature in New York City be between 62-63°F on November 11? -> No at 0.701 ($5.00)
-- 2026-11-09 fade_move: Russell 2000 (RUT) Up or Down on November 9? -> Down at 0.438 ($5.00)
-- 2026-11-09 coin_flip: Dogecoin Up or Down - November 9, 10:35PM-10:40PM ET -> Up at 0.527 ($5.00)
-- 2026-11-09 sure_thing: Will Meta (META) close above $590 on November 9? -> Yes at 0.962 ($5.00)
-- 2026-11-09 safe_no_week: Will the highest temperature in Ankara be 11°C on November 11? -> No at 0.943 ($5.00)
-- 2026-11-09 follow_move: Amazon (AMZN) Up or Down on November 9? -> Up at 0.649 ($5.00)
-- 2026-11-09 sports_underdog: Dota 2: Power Rangers vs Nemiga Gaming (BO3) - DreamLeague Division 2 Group A -> Nemiga Gaming at 0.280 ($5.00)
-- 2026-11-09 weather_forecast: Will the lowest temperature in Shanghai be 12°C on November 11? -> Yes at 0.132 ($3.68)
+- 2026-11-09 weather_forecast: Will the highest temperature in Paris be 16°C on November 11? -> No at 0.701 ($5.00)
 
 ## Price gaps seen today
 
 1 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Vietnam vs. Chinese Taipei (yes), 1.001 for a $1 payout.
 
-Runs in the last 24 hours: 37 (0 with a problem).
+Runs in the last 24 hours: 36 (0 with a problem).
