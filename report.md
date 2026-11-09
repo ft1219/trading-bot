@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-09 00:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-09 00:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 724 | 670/724 | -1.9% | -$67.40 | 4 | 111 | too early |
-| 2 | safe_no_week | 97 | 90/97 | -3.7% | -$18.10 | 4 | 287 | too early |
-| 3 | follow_move | 78 | 41/78 | -14.6% | -$56.73 | 3 | 129 | too early |
-| 4 | sports_underdog | 676 | 151/676 | -14.8% | -$497.08 | 4 | 73 | too early |
-| 5 | weather_forecast | 125 | 63/125 | -22.8% | -$140.96 | 3 | 148 | too early |
+| 1 | sure_thing | 736 | 681/736 | -1.9% | -$68.44 | 4 | 107 | too early |
+| 2 | safe_no_week | 99 | 92/99 | -3.6% | -$17.72 | 4 | 288 | too early |
+| 3 | follow_move | 78 | 41/78 | -14.6% | -$56.73 | 3 | 130 | too early |
+| 4 | sports_underdog | 682 | 151/682 | -15.5% | -$527.08 | 4 | 67 | too early |
+| 5 | weather_forecast | 127 | 65/127 | -21.7% | -$136.50 | 3 | 148 | too early |
 | 6 | fade_move | 93 | 30/93 | -39.5% | -$183.46 | 3 | 142 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 648 | 323/648 | -4.2% | -$136.73 | 4 | 192 | yardstick |
+| 8 | coin_flip | 664 | 333/664 | -3.5% | -$116.39 | 4 | 184 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-09 | -$2.98 | +$0.55 |  | +$7.87 | +$0.51 |  | +$11.92 |
+| 2026-11-09 | -$4.02 | +$0.93 |  | -$22.13 | +$4.97 |  | +$32.25 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | -$75.28 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-09 sure_thing: XRP Up or Down on November 9? -> Down at 0.906 ($5.00)
-- 2026-11-09 safe_no_week: Will the highest temperature in Warsaw be 6°C on November 10? -> No at 0.952 ($5.00)
-- 2026-11-09 follow_move: EWY (EWY) Up or Down on November 9? -> Down at 0.728 ($5.00)
+- 2026-11-09 sure_thing: XRP Up or Down - November 8, 7PM ET -> Up at 0.935 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Amsterdam be 6°C on November 10? -> No at 0.924 ($5.00)
+- 2026-11-09 follow_move: Will WTI Crude Oil (WTI) hit (HIGH) $100 Week of November 9 2026? -> No at 0.855 ($5.00)
 - 2026-11-09 sports_underdog: Matsuyama: Joel Schwaerzler vs Mitsuki Wei Kang Leong -> Mitsuki Wei Kang Leong at 0.270 ($5.00)
-- 2026-11-09 weather_forecast: Will the highest temperature in Istanbul be 13°C on November 10? -> No at 0.572 ($5.00)
+- 2026-11-09 weather_forecast: Will the lowest temperature in Tel Aviv be 9°C on November 10? -> No at 0.800 ($5.00)
 - 2026-11-09 fade_move: EWY (EWY) Up or Down on November 9? -> Up at 0.378 ($5.00)
-- 2026-11-09 coin_flip: Dogecoin Up or Down - November 10, 12AM ET -> Down at 0.527 ($5.00)
-- 2026-11-09 sure_thing: Spread: Ducks (-3.5) -> Penguins at 0.933 ($5.00)
-- 2026-11-09 safe_no_week: Will Micron (MU) close at $620-$640 on the final day of trading of the week of Nov 9 – Nov 13? -> No at 0.952 ($5.00)
-- 2026-11-09 follow_move: BNB Up or Down on November 9? -> Down at 0.849 ($5.00)
+- 2026-11-09 coin_flip: Solana Up or Down - November 9, 8:00AM-8:05AM ET -> Down at 0.527 ($5.00)
+- 2026-11-09 sure_thing: Spread: Sportivo Luqueno (-2.5) -> CS 2 de Mayo at 0.962 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Madrid be 19°C on November 10? -> No at 0.960 ($5.00)
+- 2026-11-09 follow_move: EWY (EWY) Up or Down on November 9? -> Down at 0.728 ($5.00)
 - 2026-11-09 sports_underdog: Rainbow Six Siege: 100 Thieves vs ENTERPRISE Esports (BO3) - BLAST R6 Major Osaka Phase 2 -> ENTERPRISE Esports at 0.300 ($5.00)
-- 2026-11-09 weather_forecast: Will the lowest temperature in Wellington be 15°C on November 10? -> No at 0.572 ($5.00)
+- 2026-11-09 weather_forecast: Will the highest temperature in Denver be between 66-67°F on November 10? -> No at 0.512 ($5.00)
 
 ## Price gaps seen today
 
