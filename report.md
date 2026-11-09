@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-09 02:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-09 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 751 | 694/751 | -2.0% | -$74.54 | 4 | 107 | too early |
-| 2 | safe_no_week | 99 | 92/99 | -3.6% | -$17.72 | 4 | 289 | too early |
-| 3 | follow_move | 78 | 41/78 | -14.6% | -$56.73 | 3 | 132 | too early |
-| 4 | sports_underdog | 696 | 155/696 | -15.3% | -$528.25 | 4 | 55 | too early |
-| 5 | weather_forecast | 127 | 65/127 | -21.7% | -$136.50 | 3 | 150 | too early |
-| 6 | fade_move | 93 | 30/93 | -39.5% | -$183.46 | 3 | 146 | too early |
+| 1 | sure_thing | 756 | 699/756 | -1.9% | -$72.98 | 4 | 110 | too early |
+| 2 | safe_no_week | 99 | 92/99 | -3.6% | -$17.72 | 4 | 290 | too early |
+| 3 | follow_move | 78 | 41/78 | -14.6% | -$56.73 | 3 | 137 | too early |
+| 4 | sports_underdog | 702 | 157/702 | -15.0% | -$524.91 | 4 | 50 | too early |
+| 5 | weather_forecast | 127 | 65/127 | -21.7% | -$136.50 | 3 | 152 | too early |
+| 6 | fade_move | 93 | 30/93 | -39.5% | -$183.46 | 3 | 151 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 677 | 341/677 | -3.1% | -$103.71 | 4 | 187 | yardstick |
+| 8 | coin_flip | 688 | 346/688 | -2.9% | -$98.67 | 4 | 184 | yardstick |
 
 What each one does:
 
@@ -32,28 +32,28 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-09 | -$10.12 | +$0.93 |  | -$23.30 | +$4.97 |  | +$44.93 |
+| 2026-11-09 | -$8.56 | +$0.93 |  | -$19.96 | +$4.97 |  | +$49.97 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | -$75.28 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-09 sure_thing: Gold (XAUUSD) Up or Down on November 9? -> Up at 0.904 ($5.00)
+- 2026-11-09 sure_thing: Exact Score: Chelmsford City 0 - 0 Ebbsfleet United FC? -> No at 0.962 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Moscow be 3°C on November 10? -> No at 0.962 ($5.00)
+- 2026-11-09 follow_move: Will Silver (XAGUSD) hit (LOW) $50 Week of November 9 2026? -> No at 0.718 ($5.00)
+- 2026-11-09 sports_underdog: Rainbow Six Siege: Fluxo W7M vs EDward Gaming (BO3) - BLAST R6 Major Osaka Phase 2 -> EDward Gaming at 0.187 ($5.00)
+- 2026-11-09 weather_forecast: Will the lowest temperature in Chongqing be 11°C on November 10? -> No at 0.671 ($5.00)
+- 2026-11-09 fade_move: Dogecoin Up or Down on November 9? -> Up at 0.356 ($5.00)
+- 2026-11-09 coin_flip: Solana Up or Down - November 9, 6:30PM-6:45PM ET -> Up at 0.527 ($5.00)
+- 2026-11-09 sure_thing: Spread: ASC Oțelul Galați (-1.5) -> FC Botoşani at 0.904 ($5.00)
 - 2026-11-09 safe_no_week: Will the highest temperature in Houston be between 70-71°F on November 10? -> No at 0.924 ($5.00)
-- 2026-11-09 follow_move: Will Applied Materials say "TSMC" during earnings call? -> No at 0.797 ($5.00)
+- 2026-11-09 follow_move: Dow Jones (DJIA) Up or Down on November 9? -> Up at 0.826 ($5.00)
 - 2026-11-09 sports_underdog: USC Trojans vs. Wichita State Shockers -> Wichita State Shockers at 0.310 ($5.00)
-- 2026-11-09 weather_forecast: Will the lowest temperature in Chicago be between 44-45°F on November 10? -> No at 0.694 ($5.00)
-- 2026-11-09 fade_move: Will Applied Materials say "TSMC" during earnings call? -> Yes at 0.258 ($5.00)
-- 2026-11-09 coin_flip: XRP Up or Down - November 9, 3:15AM-3:30AM ET -> Up at 0.527 ($5.00)
-- 2026-11-09 sure_thing: Bitcoin above 75,800 on November 8, 10PM ET? -> No at 0.953 ($5.00)
-- 2026-11-09 safe_no_week: Will the highest temperature in Amsterdam be 6°C on November 10? -> No at 0.924 ($5.00)
-- 2026-11-09 follow_move: Will the biggest earthquake on November 9, 2026 be 5.3 to 5.4? -> Yes at 0.351 ($5.00)
-- 2026-11-09 sports_underdog: UT Arlington Mavericks vs. Hawaii Rainbow Warriors -> UT Arlington Mavericks at 0.229 ($5.00)
-- 2026-11-09 weather_forecast: Will the highest temperature in Houston be between 74-75°F on November 10? -> No at 0.661 ($5.00)
+- 2026-11-09 weather_forecast: Will the lowest temperature in Houston be between 60-61°F on November 10? -> No at 0.681 ($5.00)
 
 ## Price gaps seen today
 
-No near-gaps today.
+1 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Vietnam vs. Chinese Taipei (yes), 1.001 for a $1 payout.
 
-Runs in the last 24 hours: 36 (0 with a problem).
+Runs in the last 24 hours: 37 (0 with a problem).
