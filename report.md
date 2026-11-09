@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-09 20:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-09 20:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 881 | 813/881 | -1.6% | -$69.28 | 4 | 144 | too early |
-| 2 | safe_no_week | 164 | 154/164 | -2.4% | -$20.07 | 4 | 313 | too early |
-| 3 | follow_move | 100 | 58/100 | -8.6% | -$43.21 | 4 | 164 | too early |
-| 4 | sports_underdog | 759 | 167/759 | -17.0% | -$642.37 | 4 | 62 | too early |
-| 5 | weather_forecast | 175 | 89/175 | -23.1% | -$199.33 | 3 | 156 | too early |
+| 1 | sure_thing | 882 | 814/882 | -1.6% | -$68.98 | 4 | 151 | too early |
+| 2 | safe_no_week | 165 | 155/165 | -2.4% | -$19.95 | 4 | 318 | too early |
+| 3 | follow_move | 100 | 58/100 | -8.6% | -$43.21 | 4 | 165 | too early |
+| 4 | sports_underdog | 765 | 167/765 | -17.7% | -$672.37 | 4 | 60 | too early |
+| 5 | weather_forecast | 175 | 89/175 | -23.1% | -$199.33 | 3 | 157 | too early |
 | 6 | fade_move | 115 | 32/115 | -47.4% | -$272.72 | 4 | 179 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 864 | 436/864 | -2.8% | -$119.13 | 4 | 215 | yardstick |
+| 8 | coin_flip | 871 | 439/871 | -2.9% | -$125.69 | 4 | 216 | yardstick |
 
 What each one does:
 
@@ -32,29 +32,29 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-09 | -$4.86 | -$1.43 | +$13.52 | -$137.41 | -$57.85 | -$89.27 | +$29.51 |
+| 2026-11-09 | -$4.57 | -$1.30 | +$13.52 | -$167.41 | -$57.85 | -$89.27 | +$22.95 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | -$75.28 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-09 sure_thing: Exact Score: FC Internazionale Milano 0 - 1 Manchester City WFC? -> No at 0.924 ($5.00)
-- 2026-11-09 safe_no_week: Will Coinbase Global, Inc. (COIN) hit (LOW) $117.50 Week of November 9 2026? -> No at 0.933 ($5.00)
-- 2026-11-09 follow_move: Will there be 0 earthquakes of 6.5 or above magnitude worldwide? -> Yes at 0.517 ($5.00)
-- 2026-11-09 sports_underdog: Spread: Sportivo Luqueno (-1.5) -> Sportivo Luqueno at 0.177 ($5.00)
-- 2026-11-09 weather_forecast: Will the highest temperature in Manila be 32°C on November 11? -> No at 0.592 ($5.00)
+- 2026-11-09 sure_thing: BNB Up or Down - November 9, 3PM ET -> Up at 0.972 ($5.00)
+- 2026-11-09 safe_no_week: Will there be 3 earthquakes of 6.5 or above magnitude worldwide? -> No at 0.943 ($5.00)
+- 2026-11-09 follow_move: Will the price of XRP be above $1.10 on November 15? -> No at 0.577 ($5.00)
+- 2026-11-09 sports_underdog: South Alabama Jaguars vs. UCF Knights (W) -> South Alabama Jaguars at 0.208 ($5.00)
+- 2026-11-09 weather_forecast: Will the highest temperature in Chongqing be 17°C on November 11? -> No at 0.632 ($5.00)
 - 2026-11-09 fade_move: Bitcoin Up or Down on November 10? -> Up at 0.417 ($5.00)
-- 2026-11-09 coin_flip: Ethereum Up or Down - November 9, 5:00PM-5:05PM ET -> Down at 0.527 ($5.00)
-- 2026-11-09 sure_thing: Real Madrid CF Femenino vs. Paris FC: Neither team to score first? -> No at 0.971 ($5.00)
-- 2026-11-09 safe_no_week: Will Microsoft (MSFT) close above $530 on November 10? -> Yes at 0.981 ($5.00)
-- 2026-11-09 follow_move: Will Palantir Technologies Inc. (PLTR) hit (LOW) $153 Week of November 9 2026? -> No at 0.855 ($5.00)
-- 2026-11-09 sports_underdog: Lima: Miguel Tobon vs Henrique Rocha -> Miguel Tobon at 0.229 ($5.00)
-- 2026-11-09 weather_forecast: Will the highest temperature in Buenos Aires be 29°C on November 11? -> No at 0.612 ($5.00)
+- 2026-11-09 coin_flip: Dogecoin Up or Down - November 11, 9AM ET -> Down at 0.527 ($5.00)
+- 2026-11-09 sure_thing: Will Servette FC Chênois Féminin win on 2026-11-10? -> No at 0.924 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Los Angeles be between 84-85°F on November 11? -> No at 0.943 ($5.00)
+- 2026-11-09 follow_move: Will there be 0 earthquakes of 6.5 or above magnitude worldwide? -> Yes at 0.517 ($5.00)
+- 2026-11-09 sports_underdog: Syracuse Orange vs. Indiana Hoosiers -> Syracuse Orange at 0.331 ($5.00)
+- 2026-11-09 weather_forecast: Will the highest temperature in Manila be 32°C on November 11? -> No at 0.592 ($5.00)
 
 ## Price gaps seen today
 
 1 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Vietnam vs. Chinese Taipei (yes), 1.001 for a $1 payout.
 
-Runs in the last 24 hours: 36 (7 with a problem).
+Runs in the last 24 hours: 36 (8 with a problem).
 Latest problem: 5 position(s) still open more than 3 days after their market ended
