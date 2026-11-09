@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-09 10:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-09 10:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 820 | 756/820 | -2.2% | -$89.16 | 4 | 116 | too early |
-| 2 | safe_no_week | 127 | 118/127 | -3.4% | -$21.69 | 4 | 301 | too early |
-| 3 | follow_move | 79 | 41/79 | -15.6% | -$61.73 | 4 | 158 | too early |
-| 4 | sports_underdog | 744 | 164/744 | -16.2% | -$600.98 | 4 | 17 | too early |
-| 5 | weather_forecast | 150 | 74/150 | -25.1% | -$186.35 | 3 | 161 | too early |
-| 6 | fade_move | 94 | 30/94 | -40.1% | -$188.46 | 4 | 170 | too early |
+| 1 | sure_thing | 826 | 762/826 | -2.1% | -$86.87 | 4 | 113 | too early |
+| 2 | safe_no_week | 129 | 120/129 | -3.3% | -$21.52 | 4 | 304 | too early |
+| 3 | follow_move | 79 | 41/79 | -15.6% | -$61.73 | 4 | 161 | too early |
+| 4 | sports_underdog | 745 | 165/745 | -16.1% | -$598.42 | 4 | 17 | too early |
+| 5 | weather_forecast | 150 | 74/150 | -25.1% | -$186.35 | 3 | 163 | too early |
+| 6 | fade_move | 94 | 30/94 | -40.1% | -$188.46 | 4 | 173 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 762 | 383/762 | -3.5% | -$132.14 | 4 | 198 | yardstick |
+| 8 | coin_flip | 767 | 384/767 | -3.9% | -$147.67 | 4 | 201 | yardstick |
 
 What each one does:
 
@@ -32,25 +32,25 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-09 | -$24.75 | -$3.04 | -$5.00 | -$96.03 | -$44.88 | -$5.00 | +$16.50 |
+| 2026-11-09 | -$22.46 | -$2.87 | -$5.00 | -$93.47 | -$44.88 | -$5.00 | +$0.98 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
 | 2026-11-06 | +$14.11 | +$0.37 | -$75.28 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-09 sure_thing: Ethereum above 2,120 on November 9, 6AM ET? -> No at 0.925 ($5.00)
-- 2026-11-09 safe_no_week: Will Micron Technology, Inc. (MU) hit (HIGH) $900 Week of November 9 2026? -> No at 0.971 ($5.00)
-- 2026-11-09 follow_move: Will NVIDIA (NVDA) hit (LOW) $168 Week of November 9 2026? -> Yes at 0.490 ($5.00)
+- 2026-11-09 sure_thing: Solana Up or Down - November 9, 4:00AM-8:00AM ET -> Down at 0.935 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Shenzhen be 27°C on November 11? -> No at 0.981 ($5.00)
+- 2026-11-09 follow_move: Robinhood (HOOD) Up or Down on November 9? -> Down at 0.718 ($5.00)
+- 2026-11-09 sports_underdog: BNP Paribas Nordic Open: Adolfo Vallejo vs Ugo Humbert -> Adolfo Vallejo at 0.331 ($5.00)
+- 2026-11-09 weather_forecast: Will the lowest temperature in Tel Aviv be 14°C on November 11? -> Yes at 0.173 ($5.00)
+- 2026-11-09 fade_move: Will Micron Technology, Inc. (MU) hit (LOW) $570 Week of November 9 2026? -> Yes at 0.206 ($5.00)
+- 2026-11-09 coin_flip: HYPE Up or Down - November 10, 7PM ET -> Up at 0.527 ($5.00)
+- 2026-11-09 sure_thing: S&P 500 (SPX) Opens Up or Down on November 9? -> Up at 0.942 ($5.00)
+- 2026-11-09 safe_no_week: Will the highest temperature in Denver be between 62-63°F on November 11? -> No at 0.924 ($5.00)
+- 2026-11-09 follow_move: Will Micron Technology, Inc. (MU) hit (LOW) $570 Week of November 9 2026? -> No at 0.855 ($5.00)
 - 2026-11-09 sports_underdog: BNP Paribas Nordic Open: Alex Michelsen vs Yannick Hanfmann -> Yannick Hanfmann at 0.270 ($5.00)
-- 2026-11-09 weather_forecast: Will the lowest temperature in Sao Paulo be 14°C on November 10? -> No at 0.602 ($5.00)
-- 2026-11-09 fade_move: Will NVIDIA (NVDA) hit (HIGH) $204 Week of November 9 2026? -> Yes at 0.123 ($5.00)
-- 2026-11-09 coin_flip: XRP Up or Down - November 9, 8:15AM-8:30AM ET -> Down at 0.527 ($5.00)
-- 2026-11-09 sure_thing: FTSE 100 (UKX) Up or Down on November 9? -> Up at 0.923 ($5.00)
-- 2026-11-09 safe_no_week: Will the highest temperature in Busan be 16°C on November 11? -> No at 0.952 ($5.00)
-- 2026-11-09 follow_move: Will S&P 500 (SPY) hit (LOW) $705 Week of November 9 2026? -> No at 0.855 ($5.00)
-- 2026-11-09 sports_underdog: Dota 2: Team Lynx vs potn9ki (BO3) - Asgard Championship Group B -> potn9ki at 0.321 ($5.00)
-- 2026-11-09 weather_forecast: Will the lowest temperature in Chongqing be 11°C on November 11? -> No at 0.759 ($5.00)
+- 2026-11-09 weather_forecast: Will the highest temperature in Denver be between 62-63°F on November 11? -> Yes at 0.138 ($5.00)
 
 ## Price gaps seen today
 
