@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 20:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 20:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 158 | 96/158 | +1.1% | +$8.57 | 5 | 164 | too early |
-| 2 | safe_no_week | 251 | 238/251 | -1.2% | -$15.24 | 5 | 340 | too early |
-| 3 | sure_thing | 1091 | 1008/1091 | -1.4% | -$77.60 | 5 | 151 | too early |
-| 4 | sports_underdog | 896 | 201/896 | -16.5% | -$733.39 | 5 | 59 | too early |
-| 5 | weather_forecast | 241 | 118/241 | -26.7% | -$316.13 | 4 | 160 | too early |
+| 2 | safe_no_week | 251 | 238/251 | -1.2% | -$15.24 | 5 | 341 | too early |
+| 3 | sure_thing | 1096 | 1011/1096 | -1.6% | -$86.25 | 5 | 153 | too early |
+| 4 | sports_underdog | 901 | 204/901 | -15.7% | -$702.39 | 5 | 54 | too early |
+| 5 | weather_forecast | 241 | 118/241 | -26.7% | -$316.13 | 4 | 162 | too early |
 | 6 | fade_move | 178 | 52/178 | -29.6% | -$262.97 | 5 | 176 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1135 | 554/1135 | -6.6% | -$370.83 | 5 | 232 | yardstick |
+| 8 | coin_flip | 1144 | 561/1144 | -6.0% | -$340.75 | 5 | 231 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | safe_no_week | sure_thing | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | +$54.23 | +$8.69 | -$14.82 | -$46.45 | -$98.25 | -$12.52 | -$248.68 |
+| 2026-11-10 | +$54.23 | +$8.69 | -$23.47 | -$15.44 | -$98.25 | -$12.52 | -$218.60 |
 | 2026-11-09 | +$11.06 | -$5.28 | +$1.64 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$19.92 | -$52.70 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | +$2.49 | +$0.90 | -$25.83 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -41,17 +41,17 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-10 follow_move: Will OpenRouter process between 220T and 230T tokens the week of November 9? -> No at 0.738 ($5.00)
-- 2026-11-10 safe_no_week: Will Airbnb, Inc. (ABNB) hit (HIGH) $202 Week of November 9 2026? -> No at 0.981 ($5.00)
-- 2026-11-10 sure_thing: Exact Score: Sport Lisboa e Benfica 3 - 0 FK Austria Wien? -> No at 0.971 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in Chicago be between 42-43°F on November 12? -> No at 0.952 ($5.00)
+- 2026-11-10 sure_thing: Meta (META) Up or Down on November 10? -> Up at 0.942 ($5.00)
 - 2026-11-10 sports_underdog: Howard Bison vs. Marshall Thundering Herd (W) -> Howard Bison at 0.300 ($5.00)
-- 2026-11-10 weather_forecast: Will the lowest temperature in San Francisco be between 56-57°F on November 11? -> No at 0.626 ($5.00)
+- 2026-11-10 weather_forecast: Will the lowest temperature in London be 4°C on November 12? -> No at 0.402 ($5.00)
 - 2026-11-10 fade_move: Will OpenRouter process between 220T and 230T tokens the week of November 9? -> Yes at 0.329 ($5.00)
-- 2026-11-10 coin_flip: BNB Up or Down - November 11, 2:30PM-2:45PM ET -> Down at 0.527 ($5.00)
+- 2026-11-10 coin_flip: Ethereum Up or Down - November 11, 8:55AM-9:00AM ET -> Up at 0.527 ($5.00)
 - 2026-11-10 follow_move: XRP Up or Down on November 11? -> Up at 0.756 ($5.00)
-- 2026-11-10 safe_no_week: Will the price of Solana be between $60 and $70 on November 17? -> No at 0.986 ($5.00)
-- 2026-11-10 sure_thing: Dogecoin Up or Down - November 10, 3:00PM-3:15PM ET -> Down at 0.815 ($5.00)
+- 2026-11-10 safe_no_week: Will Airbnb, Inc. (ABNB) hit (HIGH) $202 Week of November 9 2026? -> No at 0.981 ($5.00)
+- 2026-11-10 sure_thing: Will the price of Solana be above $80 on November 11? -> Yes at 0.927 ($5.00)
 - 2026-11-10 sports_underdog: Florida Gators vs. Florida State Seminoles -> Florida State Seminoles at 0.208 ($5.00)
-- 2026-11-10 weather_forecast: Will the highest temperature in Denver be between 68-69°F on November 12? -> No at 0.492 ($5.00)
+- 2026-11-10 weather_forecast: Will the lowest temperature in Milan be 8°C on November 11? -> Yes at 0.146 ($5.00)
 
 ## Price gaps seen today
 
