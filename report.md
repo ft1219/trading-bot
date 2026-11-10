@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 04:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 05:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 1003 | 926/1003 | -1.5% | -$74.91 | 5 | 107 | too early |
-| 2 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 134 | too early |
-| 3 | safe_no_week | 198 | 186/198 | -2.1% | -$21.23 | 5 | 304 | too early |
-| 4 | sports_underdog | 840 | 190/840 | -15.3% | -$638.33 | 5 | 27 | too early |
-| 5 | weather_forecast | 200 | 98/200 | -26.2% | -$258.26 | 4 | 139 | too early |
-| 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 144 | too early |
+| 1 | sure_thing | 1017 | 940/1017 | -1.3% | -$68.09 | 5 | 99 | too early |
+| 2 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 135 | too early |
+| 3 | safe_no_week | 199 | 187/199 | -2.1% | -$20.93 | 5 | 308 | too early |
+| 4 | sports_underdog | 846 | 192/846 | -14.9% | -$626.15 | 5 | 22 | too early |
+| 5 | weather_forecast | 201 | 98/201 | -26.5% | -$263.26 | 4 | 138 | too early |
+| 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 145 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 989 | 488/989 | -5.3% | -$262.85 | 5 | 194 | yardstick |
+| 8 | coin_flip | 1000 | 494/1000 | -5.3% | -$266.21 | 5 | 191 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | follow_move | safe_no_week | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | -$12.13 | +$31.68 | +$2.70 | +$48.61 | -$40.38 | -$9.16 | -$140.70 |
+| 2026-11-10 | -$5.31 | +$31.68 | +$3.00 | +$60.80 | -$45.38 | -$9.16 | -$144.06 |
 | 2026-11-09 | +$1.64 | +$11.06 | -$5.28 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | -$52.70 | +$16.06 | -$19.92 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$2.49 | +$0.90 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -40,22 +40,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 sure_thing: Ethereum Up or Down - November 9, 11PM ET -> Up at 0.953 ($5.00)
-- 2026-11-10 follow_move: XRP Up or Down on November 10? -> Down at 0.636 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Sao Paulo be 25°C on November 11? -> No at 0.924 ($5.00)
-- 2026-11-10 sports_underdog: Brisbane 3: Christian Langmo vs Ymerali Ibraimi -> Ymerali Ibraimi at 0.173 ($5.00)
+- 2026-11-10 sure_thing: Will Ethereum reach $2,250 on November 10? -> No at 0.972 ($5.00)
+- 2026-11-10 follow_move: Will Kai Cenat finish his GTA marathon by November 11, 2:59 PM ET? -> Yes at 0.701 ($5.00)
+- 2026-11-10 safe_no_week: Will Japan Q3 GDP growth (annualized) be between 1.6% and 2.4%? -> No at 0.939 ($5.00)
+- 2026-11-10 sports_underdog: Hersonissos 3: Michael Geerts vs Juan Martin -> Juan Martin at 0.351 ($5.00)
 - 2026-11-10 weather_forecast: Will the lowest temperature in Seattle be between 52-53°F on November 11? -> No at 0.652 ($5.00)
-- 2026-11-10 fade_move: XRP Up or Down on November 10? -> Up at 0.423 ($5.00)
-- 2026-11-10 coin_flip: ZCash Up or Down - November 10, 6:45AM-7:00AM ET -> Down at 0.527 ($5.00)
-- 2026-11-10 sure_thing: Gold Up or Down - November 9, 11:00PM-12:00AM ET -> Up at 0.617 ($5.00)
-- 2026-11-10 follow_move: Ethereum Up or Down on November 10? -> Down at 0.617 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Warsaw be 2°C on November 11? -> No at 0.981 ($5.00)
-- 2026-11-10 sports_underdog: Matsuyama: Ryuki Matsuda vs Max Schoenhaus -> Ryuki Matsuda at 0.187 ($5.00)
+- 2026-11-10 fade_move: Will Kai Cenat finish his GTA marathon by November 11, 2:59 PM ET? -> No at 0.331 ($5.00)
+- 2026-11-10 coin_flip: BNB Up or Down - November 10, 10:45PM-10:50PM ET -> Up at 0.527 ($5.00)
+- 2026-11-10 sure_thing: Will a dozen eggs cost between $2.30 and $2.40 in October? -> No at 0.943 ($5.00)
+- 2026-11-10 follow_move: XRP Up or Down on November 10? -> Down at 0.636 ($5.00)
+- 2026-11-10 safe_no_week: Will gemini-4-argon-high be the best AI model on November 16, 2026? -> No at 0.985 ($5.00)
+- 2026-11-10 sports_underdog: Brisbane 3: Christian Langmo vs Ymerali Ibraimi -> Ymerali Ibraimi at 0.173 ($5.00)
 - 2026-11-10 weather_forecast: Will the highest temperature in Karachi be 33°C on November 11? -> No at 0.612 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (20 with a problem).
+Runs in the last 24 hours: 37 (21 with a problem).
 Latest problem: 6 position(s) still open more than 3 days after their market ended
