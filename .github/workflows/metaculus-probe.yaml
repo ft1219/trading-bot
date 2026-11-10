@@ -10,4 +10,4 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: python3 -u probe/openrouter_prices.py
+      - run: python3 -u probe/futureeval_board.py
