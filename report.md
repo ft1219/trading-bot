@@ -1,28 +1,28 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 16:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 17:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | safe_no_week | 235 | 223/235 | -1.1% | -$13.21 | 5 | 342 | too early |
-| 2 | sure_thing | 1062 | 981/1062 | -1.4% | -$74.85 | 5 | 148 | too early |
-| 3 | follow_move | 139 | 85/139 | -1.6% | -$11.44 | 5 | 169 | too early |
-| 4 | sports_underdog | 883 | 199/883 | -15.9% | -$699.84 | 5 | 52 | too early |
-| 5 | fade_move | 158 | 47/158 | -26.1% | -$206.28 | 5 | 180 | too early |
-| 6 | weather_forecast | 238 | 116/238 | -27.0% | -$315.99 | 4 | 159 | too early |
+| 1 | follow_move | 152 | 94/152 | +1.5% | +$11.37 | 5 | 163 | too early |
+| 2 | sure_thing | 1078 | 997/1078 | -1.3% | -$70.61 | 5 | 139 | too early |
+| 3 | safe_no_week | 243 | 230/243 | -1.4% | -$16.83 | 5 | 341 | too early |
+| 4 | sports_underdog | 885 | 200/885 | -15.8% | -$693.50 | 5 | 58 | too early |
+| 5 | weather_forecast | 238 | 116/238 | -27.0% | -$315.99 | 4 | 159 | too early |
+| 6 | fade_move | 172 | 49/172 | -29.8% | -$256.01 | 5 | 174 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1112 | 544/1112 | -6.3% | -$350.62 | 5 | 215 | yardstick |
+| 8 | coin_flip | 1118 | 546/1118 | -6.5% | -$361.66 | 5 | 217 | yardstick |
 
 What each one does:
 
-- **safe_no_week**: Buy the almost-sure side (92-98.5c), 1-7 days before the end, no sports.
-- **sure_thing**: Buy the almost-sure side (90-97c) in the last 24 hours (sports and other markets).
 - **follow_move**: After a traded 10c+ move in a day, buy the side that went up.
+- **sure_thing**: Buy the almost-sure side (90-97c) in the last 24 hours (sports and other markets).
+- **safe_no_week**: Buy the almost-sure side (92-98.5c), 1-7 days before the end, no sports.
 - **sports_underdog**: Buy the cheap side (15-35c) of sports games in the 3 hours before kick-off (history says this loses; kept as a check).
-- **fade_move**: After a traded 10c+ move in a day, buy the side that went down.
 - **weather_forecast**: Daily temperature markets, before the day starts: buy No on a range when 82 weather-model runs give it 10c+ less chance than the market (or Yes when they give it 10c+ more), with and without allowing for model error; in practice nearly always No against the market favourite.
+- **fade_move**: After a traded 10c+ move in a day, buy the side that went down.
 - **price_gap**: Multi-choice markets whose prices add up to less than $1: buy every choice.
 - **coin_flip**: Yardstick: random side, random market (should lose a little).
 
@@ -30,32 +30,32 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Profit by day (trades that finished that day)
 
-| Day | safe_no_week | sure_thing | follow_move | sports_underdog | fade_move | weather_forecast | coin_flip |
+| Day | follow_move | sure_thing | safe_no_week | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | +$10.72 | -$12.08 | +$34.22 | -$12.89 | +$44.18 | -$98.10 | -$228.47 |
-| 2026-11-09 | -$5.28 | +$1.64 | +$11.06 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
-| 2026-11-08 | -$19.92 | -$52.70 | +$16.06 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
-| 2026-11-07 | +$0.90 | -$25.83 | +$2.49 | -$242.94 | -$72.89 | -$107.27 | +$52.92 |
-| 2026-11-06 | +$0.37 | +$14.11 | -$75.28 | +$0.84 | -$94.35 |  | +$7.43 |
+| 2026-11-10 | +$57.03 | -$7.83 | +$7.10 | -$6.56 | -$98.10 | -$5.55 | -$239.51 |
+| 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
+| 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
+| 2026-11-07 | +$2.49 | -$25.83 | +$0.90 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
+| 2026-11-06 | -$75.28 | +$14.11 | +$0.37 | +$0.84 |  | -$94.35 | +$7.43 |
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 safe_no_week: Will the lowest temperature in Shanghai be 17°C on November 12? -> No at 0.971 ($5.00)
-- 2026-11-10 sure_thing: Will the US national average gas price be less than $3.9600 on November 11? -> Yes at 0.971 ($4.86)
-- 2026-11-10 follow_move: Will the price of XRP be between $1.00 and $1.10 on November 11? -> Yes at 0.805 ($5.00)
-- 2026-11-10 sports_underdog: Monastir: Gabriel Debru vs Mae Malige -> Mae Malige at 0.229 ($5.00)
-- 2026-11-10 fade_move: Will Palantir (PLTR) close at >$170 on the final day of trading of the week of Nov 9 – Nov 13? -> Yes at 0.359 ($5.00)
+- 2026-11-10 follow_move: Will CZ post 20-39 posts from November 10 to November 17, 2026? -> No at 0.562 ($5.00)
+- 2026-11-10 sure_thing: Hyperliquid Up or Down - November 10, 12:15PM-12:30PM ET -> Up at 0.963 ($5.00)
+- 2026-11-10 safe_no_week: Will the price of Bitcoin be above $66,000 on November 17? -> Yes at 0.963 ($5.00)
+- 2026-11-10 sports_underdog: UE Tavernes vs. Valencia CF: O/U 4.5 -> Under at 0.218 ($5.00)
 - 2026-11-10 weather_forecast: Will the lowest temperature in Houston be between 64-65°F on November 11? -> No at 0.701 ($5.00)
-- 2026-11-10 coin_flip: BNB Up or Down - November 10, 6:15PM-6:30PM ET -> Down at 0.527 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Qingdao be 16°C on November 12? -> No at 0.942 ($5.00)
-- 2026-11-10 sure_thing: Micron (MU) Up or Down on November 10? -> Down at 0.971 ($5.00)
-- 2026-11-10 follow_move: Will Elon Musk post 260-279 tweets from November 6 to November 13, 2026? -> Yes at 0.239 ($5.00)
-- 2026-11-10 sports_underdog: Monastir: Nicolas Tepmahc vs Lorenzo Giustino -> Nicolas Tepmahc at 0.218 ($5.00)
-- 2026-11-10 fade_move: Will Elon Musk post 260-279 tweets from November 6 to November 13, 2026? -> No at 0.808 ($5.00)
+- 2026-11-10 fade_move: Will the price of Ethereum be between $1,800 and $1,900 on November 16? -> Yes at 0.169 ($5.00)
+- 2026-11-10 coin_flip: Solana Up or Down - November 11, 6:50AM-6:55AM ET -> Up at 0.527 ($5.00)
+- 2026-11-10 follow_move: Will Airbnb, Inc. (ABNB) hit (LOW) $180 Week of November 9 2026? -> Yes at 0.440 ($5.00)
+- 2026-11-10 sure_thing: Will the price of Bitcoin be above $70,000 on November 11? -> Yes at 0.960 ($5.00)
+- 2026-11-10 safe_no_week: Will the price of Ethereum be above $1,800 on November 17? -> Yes at 0.944 ($5.00)
+- 2026-11-10 sports_underdog: Will Paris Saint-Germain FC win on 2026-11-10? -> Yes at 0.239 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Madrid be 18°C on November 12? -> No at 0.750 ($5.00)
 
 ## Price gaps seen today
 
-No near-gaps today.
+1 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Japan GDP growth in Q3 2026 (QoQ Annualized)? (yes), 1.003 for a $1 payout.
 
-Runs in the last 24 hours: 37 (37 with a problem).
+Runs in the last 24 hours: 36 (36 with a problem).
 Latest problem: 8 position(s) still open more than 3 days after their market ended
