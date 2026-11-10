@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 00:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 00:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 944 | 872/944 | -1.5% | -$71.25 | 5 | 120 | too early |
-| 2 | follow_move | 133 | 81/133 | -1.6% | -$10.82 | 5 | 134 | too early |
-| 3 | safe_no_week | 192 | 180/192 | -2.4% | -$22.76 | 5 | 299 | too early |
-| 4 | sports_underdog | 796 | 175/796 | -17.5% | -$692.51 | 5 | 61 | too early |
-| 5 | weather_forecast | 194 | 97/194 | -24.6% | -$235.94 | 4 | 142 | too early |
-| 6 | fade_move | 152 | 44/152 | -33.3% | -$252.81 | 5 | 144 | too early |
+| 1 | sure_thing | 959 | 886/959 | -1.5% | -$71.51 | 5 | 113 | too early |
+| 2 | follow_move | 133 | 81/133 | -1.6% | -$10.82 | 5 | 135 | too early |
+| 3 | safe_no_week | 193 | 181/193 | -2.3% | -$22.34 | 5 | 301 | too early |
+| 4 | sports_underdog | 806 | 178/806 | -17.2% | -$689.94 | 5 | 52 | too early |
+| 5 | weather_forecast | 196 | 98/196 | -24.6% | -$238.26 | 4 | 141 | too early |
+| 6 | fade_move | 152 | 44/152 | -33.3% | -$252.81 | 5 | 145 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 921 | 463/921 | -3.4% | -$157.77 | 5 | 206 | yardstick |
+| 8 | coin_flip | 934 | 468/934 | -3.8% | -$175.62 | 5 | 201 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | follow_move | safe_no_week | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | -$8.47 | +$34.85 | +$1.18 | -$5.57 | -$18.05 | -$2.36 | -$35.62 |
+| 2026-11-10 | -$8.73 | +$34.85 | +$1.59 | -$2.99 | -$20.38 | -$2.36 | -$53.47 |
 | 2026-11-09 | +$1.64 | +$11.06 | -$5.28 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | -$52.70 | +$16.06 | -$19.92 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$2.49 | +$0.90 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -40,22 +40,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 sure_thing: Maine Black Bears vs. Rhode Island Rams -> Rhode Island Rams at 0.971 ($5.00)
+- 2026-11-10 sure_thing: Panthers vs. Blue Jackets: O/U 2.5 -> Over at 0.971 ($5.00)
+- 2026-11-10 follow_move: Solana Up or Down on November 10? -> Down at 0.617 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in Buenos Aires be 31°C on November 11? -> No at 0.971 ($5.00)
+- 2026-11-10 sports_underdog: Rainbow Six Siege: DarkZero Esports vs Sharper Esport (BO3) - BLAST R6 Major Osaka Phase 2 - Swiss Stage -> Sharper Esport at 0.208 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Austin be between 76-77°F on November 11? -> No at 0.622 ($5.00)
+- 2026-11-10 fade_move: Solana Up or Down on November 10? -> Up at 0.427 ($5.00)
+- 2026-11-10 coin_flip: Will the highest temperature in Denver be between 68-69°F on November 10? -> Yes at 0.492 ($5.00)
+- 2026-11-10 sure_thing: Dogecoin Up or Down - November 9, 4:00PM-8:00PM ET -> Down at 0.944 ($5.00)
 - 2026-11-10 follow_move: BNB Up or Down on November 10? -> Up at 0.685 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Toronto be 10°C on November 11? -> No at 0.952 ($5.00)
+- 2026-11-10 safe_no_week: Will the White House call a full lid by 6:30 PM on November 12? -> Yes at 0.971 ($5.00)
 - 2026-11-10 sports_underdog: Brisbane 3: Dane Sweeny vs Anton Shepp -> Anton Shepp at 0.331 ($5.00)
 - 2026-11-10 weather_forecast: Will the highest temperature in Shanghai be 19°C on November 11? -> No at 0.759 ($5.00)
-- 2026-11-10 fade_move: BNB Up or Down on November 10? -> Down at 0.388 ($5.00)
-- 2026-11-10 coin_flip: Will Italy win on 2026-11-12? -> No at 0.808 ($5.00)
-- 2026-11-10 sure_thing: Devils vs. Jets: O/U 2.5 -> Over at 0.971 ($5.00)
-- 2026-11-09 follow_move: Will there be ≤6 earthquakes of 5.5 or above magnitude worldwide? -> Yes at 0.392 ($5.00)
-- 2026-11-09 safe_no_week: Will "BbY WOW - KAROL G, Judeline, rusowsky" be the #1 song this week? -> Yes at 0.962 ($5.00)
-- 2026-11-10 sports_underdog: Islanders vs. Sharks: O/U 4.5 -> Under at 0.218 ($5.00)
-- 2026-11-10 weather_forecast: Will the lowest temperature in London be 8°C on November 11? -> No at 0.562 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (13 with a problem).
+Runs in the last 24 hours: 36 (14 with a problem).
 Latest problem: 5 position(s) still open more than 3 days after their market ended
