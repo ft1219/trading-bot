@@ -19,13 +19,15 @@ from dataclasses import dataclass
 from typing import Mapping
 
 DEFAULT_FORECAST_MODEL = "openrouter/deepseek/deepseek-v3.2"
-# Main tournament only. On Metaculus's FutureEval model leaderboard (October
-# 2026) Gemini 3.7 Flash scores about 11.8 against 6.9 for DeepSeek 3.2 High,
-# for about $0.065 a question (11 practice questions cost $0.71 on
-# 2026-10-26, against about $0.024 for DeepSeek). Prizes go by the square of the season
-# score, so the main tournament is where a better model pays; MiniBench pays
-# only its top few bots each round.
-DEFAULT_TOURNAMENT_FORECAST_MODEL = "openrouter/google/gemini-3.7-flash"
+# Main tournament only. Metaculus's reference bots on the Fall 2026 tournament
+# use the same setup as ours (template bot + AskNews). On 2026-11-10, after 30
+# scored questions each, metac-gemini-3-8-flash+asknews was 72nd of 456
+# (+335) and metac-deepseek-3-2-reasoning+asknews 312th (-459). Gemini 3.8
+# Flash costs about 10% more per token than 3.7 Flash on OpenRouter ($0.825
+# and $4.125 per million tokens in and out), so about $0.07 a question.
+# Prizes go by the square of the season score, so the main tournament is where
+# a better model pays; MiniBench pays only its top few bots each round.
+DEFAULT_TOURNAMENT_FORECAST_MODEL = "openrouter/google/gemini-3.8-flash"
 DEFAULT_PARSER_MODEL = "openrouter/deepseek/deepseek-v3.2"
 DEFAULT_RESEARCHER = "asknews/news-summaries"
 
@@ -34,8 +36,8 @@ DEFAULT_PREDICTIONS_PER_QUESTION = 5
 # Metaculus releases at most 5 questions at a time; 12 leaves headroom for a
 # missed run while still bounding the cost of any single run.
 DEFAULT_MAX_QUESTIONS_PER_RUN = 12
-# A full run of 12 main-tournament questions on Gemini 3.7 Flash costs about
-# $0.80. The season-wide cap is the spending limit set on the OpenRouter key
+# A full run of 12 main-tournament questions on Gemini 3.8 Flash costs about
+# $0.90. The season-wide cap is the spending limit set on the OpenRouter key
 # itself.
 DEFAULT_MAX_COST_PER_RUN_USD = 2.00
 # Backstop for models litellm cannot price. A normal question takes about

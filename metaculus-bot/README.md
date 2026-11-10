@@ -15,7 +15,7 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `TOURNAMENT_FORECAST_MODEL` | `openrouter/google/gemini-3.7-flash` | Model that writes the forecasts for the main tournament and the practice run. Scores about 11.8 on Metaculus's FutureEval model leaderboard against 6.9 for DeepSeek 3.2, for about $0.065 a question (measured on 11 practice questions). |
+| `TOURNAMENT_FORECAST_MODEL` | `openrouter/google/gemini-3.8-flash` | Model that writes the forecasts for the main tournament and the practice run. Metaculus's reference bot with this model and AskNews was 72nd of 456 on the Fall 2026 tournament after 30 questions (10 November 2026), against 312th for DeepSeek 3.2. About $0.07 a question. |
 | `FORECAST_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that writes the forecasts for MiniBench and the Metaculus Cup. With AskNews this matches Metaculus's `metac-deepseek-3-2-reasoning+asknews` baseline (5th of the Metaculus baselines, Spring 2026). |
 | `FORECAST_REASONING` | `true` | Turns on the model's reasoning mode on OpenRouter. |
 | `PARSER_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that turns the forecast text into numbers. |

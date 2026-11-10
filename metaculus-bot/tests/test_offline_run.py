@@ -75,7 +75,7 @@ def test_build_llms_turns_on_reasoning_for_the_forecaster():
 def test_forecaster_waits_up_to_300_seconds_and_no_summary_is_made():
     budget = RunBudget(1.0, 100)
     assert main.build_llms(load_settings({}), budget)["default"].litellm_kwargs["timeout"] == 300
-    gemini = main.build_llms(load_settings({}), budget, "openrouter/google/gemini-3.7-flash")
+    gemini = main.build_llms(load_settings({}), budget, "openrouter/google/gemini-3.8-flash")
     assert gemini["default"].litellm_kwargs["timeout"] == 300
     bot = main.make_bot(load_settings({}), budget, publish=True)
     assert bot.enable_summarize_research is False
@@ -111,7 +111,7 @@ def test_tournament_questions_use_the_stronger_model_and_minibench_the_cheap_one
     assert not not_attempted
     assert not [r for r in reports if isinstance(r, BaseException)]
     forecaster_models = [k["model"] for k in fake_model["kwargs"] if "extra_body" in k]
-    assert forecaster_models.count("openrouter/google/gemini-3.7-flash") == 10
+    assert forecaster_models.count("openrouter/google/gemini-3.8-flash") == 10
     assert forecaster_models.count("openrouter/deepseek/deepseek-v3.2") == 5
     assert all(
         k["extra_body"] == {"reasoning": {"enabled": True}}
