@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 15:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 16:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 1059 | 980/1059 | -1.2% | -$65.10 | 5 | 139 | too early |
-| 2 | safe_no_week | 218 | 206/218 | -1.6% | -$17.20 | 5 | 351 | too early |
-| 3 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 166 | too early |
-| 4 | sports_underdog | 879 | 199/879 | -15.6% | -$679.84 | 5 | 40 | too early |
-| 5 | weather_forecast | 223 | 108/223 | -27.5% | -$303.12 | 4 | 168 | too early |
-| 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 177 | too early |
+| 1 | sure_thing | 1062 | 981/1062 | -1.4% | -$74.85 | 5 | 144 | too early |
+| 2 | safe_no_week | 221 | 209/221 | -1.5% | -$16.40 | 5 | 352 | too early |
+| 3 | follow_move | 137 | 84/137 | -1.7% | -$11.64 | 5 | 167 | too early |
+| 4 | sports_underdog | 882 | 199/882 | -15.8% | -$694.84 | 5 | 45 | too early |
+| 5 | weather_forecast | 223 | 108/223 | -27.5% | -$303.12 | 4 | 170 | too early |
+| 6 | fade_move | 156 | 45/156 | -34.0% | -$264.61 | 5 | 179 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1101 | 539/1101 | -6.2% | -$341.99 | 5 | 210 | yardstick |
+| 8 | coin_flip | 1106 | 542/1106 | -6.1% | -$338.55 | 5 | 213 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | -$2.33 | +$6.73 | +$31.68 | +$7.11 | -$85.24 | -$9.16 | -$219.83 |
+| 2026-11-10 | -$12.08 | +$7.53 | +$34.02 | -$7.89 | -$85.24 | -$14.16 | -$216.40 |
 | 2026-11-09 | +$1.64 | -$5.28 | +$11.06 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -40,18 +40,18 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 sure_thing: Amazon (AMZN) Up or Down on November 10? -> Up at 0.942 ($5.00)
-- 2026-11-10 safe_no_week: Will Google (GOOGL) close above $280 on November 11? -> Yes at 0.962 ($5.00)
-- 2026-11-10 follow_move: Will Sonos (SONO) beat quarterly earnings? -> No at 0.402 ($5.00)
-- 2026-11-10 sports_underdog: Spread: Deportivo Alavés (-1.5) -> CD Anaitasuna at 0.208 ($5.00)
-- 2026-11-10 weather_forecast: Will the highest temperature in Milan be 12°C on November 12? -> No at 0.632 ($5.00)
-- 2026-11-10 fade_move: Will the price of XRP be between $1.00 and $1.10 on November 15? -> No at 0.537 ($5.00)
-- 2026-11-10 coin_flip: Will Albania win on 2026-11-12? -> Yes at 0.512 ($5.00)
-- 2026-11-10 sure_thing: XRP Up or Down - November 10, 8:00AM-12:00PM ET -> Down at 0.944 ($5.00)
-- 2026-11-10 safe_no_week: Will Microsoft (MSFT) close above $530 on November 11? -> Yes at 0.933 ($5.00)
-- 2026-11-10 follow_move: Will the price of XRP be between $1.00 and $1.10 on November 15? -> Yes at 0.537 ($5.00)
-- 2026-11-10 sports_underdog: Spread: VfL Wolfsburg (-1.5) -> Feyenoord Rotterdam at 0.187 ($5.00)
-- 2026-11-10 weather_forecast: Will the highest temperature in Buenos Aires be 31°C on November 12? -> No at 0.711 ($5.00)
+- 2026-11-10 sure_thing: Will Rumble (RUM) beat quarterly earnings? -> No at 0.914 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in Munich be 14°C on November 12? -> No at 0.933 ($5.00)
+- 2026-11-10 follow_move: Will AECOM (ACM) beat quarterly earnings? -> No at 0.229 ($5.00)
+- 2026-11-10 sports_underdog: Will SD Amorebieta win on 2026-10-28? -> Yes at 0.297 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Munich be 12°C on November 12? -> No at 0.592 ($5.00)
+- 2026-11-10 fade_move: Will AECOM (ACM) beat quarterly earnings? -> Yes at 0.837 ($5.00)
+- 2026-11-10 coin_flip: Dogecoin Up or Down - November 11, 10:30AM-10:45AM ET -> Up at 0.527 ($5.00)
+- 2026-11-10 sure_thing: S&P 500 (SPX) Up or Down on November 10? -> Down at 0.913 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in Toronto be 9°C on November 12? -> No at 0.971 ($5.00)
+- 2026-11-10 follow_move: Will Tyson Foods (TSN) beat quarterly earnings? -> No at 0.351 ($5.00)
+- 2026-11-10 sports_underdog: Spread: UD Logroñés (-1.5) -> UD Logroñés at 0.247 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Toronto be 6°C on November 12? -> No at 0.711 ($5.00)
 
 ## Price gaps seen today
 
