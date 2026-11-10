@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 13:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 14:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 1053 | 974/1053 | -1.3% | -$68.38 | 5 | 132 | too early |
-| 2 | safe_no_week | 214 | 202/214 | -1.7% | -$17.92 | 5 | 343 | too early |
-| 3 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 148 | too early |
-| 4 | sports_underdog | 871 | 198/871 | -15.2% | -$656.49 | 5 | 30 | too early |
-| 5 | weather_forecast | 218 | 105/218 | -27.7% | -$297.73 | 4 | 164 | too early |
-| 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 159 | too early |
+| 1 | sure_thing | 1054 | 975/1054 | -1.3% | -$67.86 | 5 | 135 | too early |
+| 2 | safe_no_week | 214 | 202/214 | -1.7% | -$17.92 | 5 | 347 | too early |
+| 3 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 156 | too early |
+| 4 | sports_underdog | 873 | 198/873 | -15.4% | -$666.49 | 5 | 32 | too early |
+| 5 | weather_forecast | 218 | 105/218 | -27.7% | -$297.73 | 4 | 167 | too early |
+| 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 167 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1082 | 532/1082 | -5.8% | -$313.34 | 5 | 205 | yardstick |
+| 8 | coin_flip | 1088 | 535/1088 | -5.8% | -$314.90 | 5 | 207 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | -$5.60 | +$6.01 | +$31.68 | +$30.46 | -$79.84 | -$9.16 | -$191.18 |
+| 2026-11-10 | -$5.08 | +$6.01 | +$31.68 | +$20.46 | -$79.84 | -$9.16 | -$192.75 |
 | 2026-11-09 | +$1.64 | -$5.28 | +$11.06 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -40,22 +40,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 sure_thing: Ethereum above 2,110 on November 10, 9AM ET? -> No at 0.897 ($5.00)
-- 2026-11-10 safe_no_week: Will Iceman (Drake) be nominated for Best Rap Album at the 69th Annual GRAMMY Awards? -> No at 0.979 ($5.00)
-- 2026-11-10 follow_move: EWY (EWY) Up or Down on November 10? -> Down at 0.662 ($5.00)
-- 2026-11-10 sports_underdog: Orleans: Adrien Gobat vs Daniel Altmaier -> Adrien Gobat at 0.218 ($5.00)
-- 2026-11-10 weather_forecast: Will the lowest temperature in Jeddah be 24°C on November 11? -> No at 0.730 ($5.00)
-- 2026-11-10 fade_move: Will Google (GOOGL) close above $290 on November 10? -> Yes at 0.520 ($5.00)
-- 2026-11-10 coin_flip: XRP Up or Down - November 10, 12:10PM-12:15PM ET -> Down at 0.527 ($5.00)
-- 2026-11-10 sure_thing: Bitcoin above 74,800 on November 10, 9AM ET? -> No at 0.849 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Karachi be 30°C on November 12? -> No at 0.962 ($5.00)
-- 2026-11-10 follow_move: NVIDIA (NVDA) Up or Down on November 10? -> Down at 0.610 ($5.00)
-- 2026-11-10 sports_underdog: Dota 2: Xipto Esports vs Mena Warriors (BO3) - Esports Pro Circuit  Decider -> Mena Warriors at 0.190 ($5.00)
-- 2026-11-10 weather_forecast: Will the highest temperature in Helsinki be 5°C on November 12? -> Yes at 0.150 ($5.00)
+- 2026-11-10 sure_thing: XRP Up or Down on November 10? -> Down at 0.963 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in Shenzhen be 26°C on November 12? -> No at 0.924 ($5.00)
+- 2026-11-10 follow_move: S&P 500 (SPY) closes above $750 on November 10? -> Yes at 0.430 ($5.00)
+- 2026-11-10 sports_underdog: Monastir: Jay Clarke vs Maxime Janvier -> Maxime Janvier at 0.338 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Chongqing be 15°C on November 12? -> No at 0.701 ($5.00)
+- 2026-11-10 fade_move: Will Apple (AAPL) close above $350 on November 10? -> No at 0.299 ($5.00)
+- 2026-11-10 coin_flip: Counter-Strike: UPGRADE vs Butterfly (BO3) - NODWIN Clutch Series Group Stage -> Butterfly at 0.472 ($5.00)
+- 2026-11-10 sure_thing: Will the price of XRP be between $1.00 and $1.10 on November 10? -> Yes at 0.938 ($5.00)
+- 2026-11-10 safe_no_week: Will Tesla (TSLA) close above $390 on November 11? -> No at 0.933 ($5.00)
+- 2026-11-10 follow_move: S&P 500 (SPX) Up or Down on November 10? -> Down at 0.767 ($5.00)
+- 2026-11-10 sports_underdog: Cleveland State Vikings vs. Drake Bulldogs (W) -> Cleveland State Vikings at 0.259 ($5.00)
+- 2026-11-10 weather_forecast: Will the lowest temperature in Denver be between 42-43°F on November 11? -> Yes at 0.161 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (33 with a problem).
+Runs in the last 24 hours: 36 (34 with a problem).
 Latest problem: 8 position(s) still open more than 3 days after their market ended
