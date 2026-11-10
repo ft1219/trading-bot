@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-10 10:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-10 10:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | sure_thing | 1034 | 957/1034 | -1.2% | -$63.76 | 5 | 126 | too early |
-| 2 | safe_no_week | 212 | 200/212 | -1.7% | -$18.48 | 5 | 325 | too early |
+| 1 | sure_thing | 1041 | 963/1041 | -1.3% | -$66.68 | 5 | 126 | too early |
+| 2 | safe_no_week | 212 | 200/212 | -1.7% | -$18.48 | 5 | 326 | too early |
 | 3 | follow_move | 136 | 83/136 | -2.1% | -$13.99 | 5 | 138 | too early |
-| 4 | sports_underdog | 859 | 196/859 | -14.4% | -$616.68 | 5 | 28 | too early |
-| 5 | weather_forecast | 215 | 102/215 | -28.7% | -$304.92 | 4 | 154 | too early |
+| 4 | sports_underdog | 860 | 196/860 | -14.5% | -$621.68 | 5 | 28 | too early |
+| 5 | weather_forecast | 215 | 102/215 | -28.7% | -$304.92 | 4 | 156 | too early |
 | 6 | fade_move | 155 | 45/155 | -33.5% | -$259.61 | 5 | 149 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1048 | 513/1048 | -6.2% | -$323.43 | 5 | 199 | yardstick |
+| 8 | coin_flip | 1056 | 515/1056 | -6.5% | -$344.48 | 5 | 199 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | sure_thing | safe_no_week | follow_move | sports_underdog | weather_forecast | fade_move | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-10 | -$0.98 | +$5.45 | +$31.68 | +$70.26 | -$87.03 | -$9.16 | -$201.28 |
+| 2026-11-10 | -$3.90 | +$5.45 | +$31.68 | +$65.26 | -$87.03 | -$9.16 | -$222.32 |
 | 2026-11-09 | +$1.64 | -$5.28 | +$11.06 | -$181.99 | -$76.41 | -$67.00 | +$26.49 |
 | 2026-11-08 | -$52.70 | -$19.92 | +$16.06 | -$262.85 | -$34.20 | -$16.21 | -$209.00 |
 | 2026-11-07 | -$25.83 | +$0.90 | +$2.49 | -$242.94 | -$107.27 | -$72.89 | +$52.92 |
@@ -40,22 +40,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-10 sure_thing: BNB Up or Down - November 10, 5:00AM-5:15AM ET -> Down at 0.972 ($5.00)
-- 2026-11-10 safe_no_week: Will WORSHIP (ASAKE) be nominated for Best Dance Pop Recording at the 69th Annual GRAMMY Awards? -> No at 0.952 ($5.00)
+- 2026-11-10 sure_thing: Ethereum Up or Down - November 10, 4:00AM-8:00AM ET -> Down at 0.916 ($5.00)
+- 2026-11-10 safe_no_week: Will the highest temperature in New York City be between 60-61°F on November 12? -> No at 0.943 ($5.00)
 - 2026-11-10 follow_move: Dogecoin Up or Down on November 10? -> Down at 0.698 ($5.00)
-- 2026-11-10 sports_underdog: Dota 2: Zero Tenacity vs Inner Circle (BO3) - DreamLeague Division 2 Group B -> Zero Tenacity at 0.341 ($5.00)
-- 2026-11-10 weather_forecast: Will the highest temperature in Moscow be 2°C on November 12? -> No at 0.472 ($5.00)
+- 2026-11-10 sports_underdog: Monastir: Kasra Rahmani vs Alejandro Moro Canas -> Kasra Rahmani at 0.198 ($5.00)
+- 2026-11-10 weather_forecast: Will the highest temperature in Busan be 18°C on November 12? -> No at 0.652 ($5.00)
 - 2026-11-10 fade_move: Dogecoin Up or Down on November 10? -> Up at 0.345 ($5.00)
-- 2026-11-10 coin_flip: Dogecoin Up or Down - November 10, 2:35PM-2:40PM ET -> Down at 0.527 ($5.00)
-- 2026-11-10 sure_thing: Solana Up or Down - November 10, 5:00AM-5:15AM ET -> Down at 0.972 ($5.00)
-- 2026-11-10 safe_no_week: Will the highest temperature in Milan be 13°C on November 12? -> No at 0.972 ($5.00)
+- 2026-11-10 coin_flip: Counter-Strike: Butterfly vs Honvéd (BO3) - CCT Europe Group Stage -> Honvéd at 0.361 ($5.00)
+- 2026-11-10 sure_thing: Solana Up or Down on November 10? -> Down at 0.925 ($5.00)
+- 2026-11-10 safe_no_week: Will WORSHIP (ASAKE) be nominated for Best Dance Pop Recording at the 69th Annual GRAMMY Awards? -> No at 0.952 ($5.00)
 - 2026-11-10 follow_move: Will Ethereum dip to $2,000 November 9-15? -> No at 0.636 ($5.00)
-- 2026-11-10 sports_underdog: Hersonissos 3: Francesco Maestrelli vs Jack Loge -> Jack Loge at 0.341 ($5.00)
-- 2026-11-10 weather_forecast: Will the lowest temperature in Jeddah be 24°C on November 12? -> No at 0.711 ($5.00)
+- 2026-11-10 sports_underdog: Dota 2: Zero Tenacity vs Inner Circle (BO3) - DreamLeague Division 2 Group B -> Zero Tenacity at 0.341 ($5.00)
+- 2026-11-10 weather_forecast: Will the lowest temperature in Miami be between 74-75°F on November 11? -> No at 0.643 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (28 with a problem).
+Runs in the last 24 hours: 37 (29 with a problem).
 Latest problem: 6 position(s) still open more than 3 days after their market ended
