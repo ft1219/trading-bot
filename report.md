@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 09:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-11 10:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 187 | 114/187 | +0.6% | +$5.99 | 6 | 152 | too early |
-| 2 | sure_thing | 1255 | 1166/1255 | -0.4% | -$24.84 | 6 | 113 | too early |
-| 3 | safe_no_week | 304 | 286/304 | -1.9% | -$29.37 | 6 | 329 | too early |
-| 4 | sports_underdog | 986 | 226/986 | -14.6% | -$714.65 | 6 | 24 | too early |
-| 5 | fade_move | 208 | 63/208 | -23.8% | -$247.41 | 6 | 168 | too early |
-| 6 | weather_forecast | 286 | 143/286 | -25.4% | -$356.60 | 5 | 156 | too early |
-| 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1300 | 638/1300 | -6.0% | -$388.72 | 6 | 227 | yardstick |
+| 1 | follow_move | 187 | 114/187 | +0.6% | +$5.99 | 6 | 155 | too early |
+| 2 | sure_thing | 1256 | 1167/1256 | -0.4% | -$24.59 | 6 | 115 | too early |
+| 3 | safe_no_week | 304 | 286/304 | -1.9% | -$29.37 | 6 | 333 | too early |
+| 4 | sports_underdog | 988 | 226/988 | -14.7% | -$724.65 | 6 | 24 | too early |
+| 5 | fade_move | 208 | 63/208 | -23.8% | -$247.41 | 6 | 170 | too early |
+| 6 | weather_forecast | 286 | 143/286 | -25.4% | -$356.60 | 5 | 158 | too early |
+| 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
+| 8 | coin_flip | 1304 | 640/1304 | -6.0% | -$389.76 | 6 | 231 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-11 | -$4.19 | +$53.86 | -$2.79 | -$89.65 | +$1.91 | -$37.56 | -$51.97 |
+| 2026-11-11 | -$4.19 | +$54.11 | -$2.79 | -$99.65 | +$1.91 | -$37.56 | -$53.01 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
@@ -41,22 +41,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-11 follow_move: Will the price of Ethereum be between $1,900 and $2,000 on November 16? -> No at 0.821 ($5.00)
-- 2026-11-11 sure_thing: Will Meta (META) close above $630 on November 11? -> Yes at 0.942 ($5.00)
-- 2026-11-11 safe_no_week: Will the highest temperature in Miami be between 84-85°F on November 13? -> No at 0.971 ($5.00)
-- 2026-11-11 sports_underdog: Spread: Vietnam (-1.5) -> Chinese Taipei at 0.280 ($5.00)
-- 2026-11-11 fade_move: Will the price of Bitcoin be between $70,000 and $72,000 on November 16? -> Yes at 0.201 ($5.00)
-- 2026-11-11 weather_forecast: Will the highest temperature in Shenzhen be 27°C on November 13? -> No at 0.701 ($5.00)
-- 2026-11-11 coin_flip: Ethereum Up or Down - November 11, 7:15AM-7:20AM ET -> Up at 0.527 ($5.00)
-- 2026-11-11 follow_move: Will the price of Bitcoin be between $70,000 and $72,000 on November 16? -> No at 0.830 ($5.00)
-- 2026-11-11 sure_thing: DAX (DAX) Up or Down on November 11? -> Up at 0.922 ($5.00)
-- 2026-11-11 safe_no_week: Will the highest temperature in Chengdu be 17°C on November 13? -> No at 0.924 ($5.00)
-- 2026-11-11 sports_underdog: Counter-Strike: Nexus vs MOUZ NXT (BO3) - CCT Europe Group Stage -> MOUZ NXT at 0.249 ($5.00)
-- 2026-11-11 fade_move: Will Amedeo Modigliani's “Tête” sell for at least $43m at auction? -> Yes at 0.218 ($5.00)
+- 2026-11-11 follow_move: Will Zelenskyy post 80-99 posts from November 10 to November 17, 2026? -> Yes at 0.492 ($5.00)
+- 2026-11-11 sure_thing: Bitcoin above 73,400 on November 11, 6AM ET? -> Yes at 0.972 ($5.00)
+- 2026-11-11 safe_no_week: Will Scharo win the GMGN GGC Season 1 Grand Final? -> No at 0.954 ($5.00)
+- 2026-11-11 sports_underdog: Dota 2: HULIGANI vs PuckChamp (BO3) - DreamLeague Division 2 Group B -> PuckChamp at 0.177 ($5.00)
+- 2026-11-11 fade_move: Will MOUZ Win the BLAST Rivals Hong Kong 2026? -> No at 0.720 ($5.00)
+- 2026-11-11 weather_forecast: Will the lowest temperature in Shanghai be 15°C on November 13? -> No at 0.681 ($5.00)
+- 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
+- 2026-11-11 coin_flip: Dogecoin Up or Down - November 12, 2:10AM-2:15AM ET -> Down at 0.527 ($5.00)
+- 2026-11-11 follow_move: Will MOUZ Win the BLAST Rivals Hong Kong 2026? -> Yes at 0.331 ($5.00)
+- 2026-11-11 sure_thing: Will "Grand Theft Auto VI: Pre-Load Now" get between 5 and 10 million views on day 1? -> Yes at 0.971 ($5.00)
+- 2026-11-11 safe_no_week: Will the highest temperature in New York City be between 50-51°F on November 13? -> No at 0.943 ($5.00)
+- 2026-11-11 sports_underdog: Dota 2: InterActive Philippines vs Amaru Gaming (BO3) - DreamLeague Division 2 Group B -> Amaru Gaming at 0.310 ($5.00)
 
 ## Price gaps seen today
 
-4 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Japan GDP growth in Q3 2026 (QoQ Annualized)? (yes), 0.999 for a $1 payout.
+5 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Japan GDP growth in Q3 2026 (QoQ Annualized)? (yes), 0.994 for a $1 payout.
 
-Runs in the last 24 hours: 36 (36 with a problem).
+Runs in the last 24 hours: 37 (37 with a problem).
 Latest problem: 37 position(s) still open more than 3 days after their market ended
