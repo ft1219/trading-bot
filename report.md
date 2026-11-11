@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 15:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-11 16:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 192 | 118/192 | +1.8% | +$17.00 | 6 | 173 | too early |
-| 2 | sure_thing | 1284 | 1192/1284 | -0.5% | -$31.85 | 6 | 134 | too early |
-| 3 | safe_no_week | 311 | 293/311 | -1.8% | -$27.45 | 6 | 355 | too early |
-| 4 | sports_underdog | 998 | 229/998 | -14.5% | -$720.20 | 6 | 44 | too early |
-| 5 | fade_move | 214 | 64/214 | -23.7% | -$253.37 | 6 | 191 | too early |
-| 6 | weather_forecast | 293 | 146/293 | -25.6% | -$369.77 | 5 | 169 | too early |
+| 1 | follow_move | 193 | 119/193 | +1.9% | +$18.28 | 6 | 173 | too early |
+| 2 | sure_thing | 1285 | 1193/1285 | -0.5% | -$31.71 | 6 | 141 | too early |
+| 3 | safe_no_week | 312 | 293/312 | -2.1% | -$32.45 | 6 | 355 | too early |
+| 4 | sports_underdog | 1000 | 229/1000 | -14.7% | -$730.20 | 6 | 48 | too early |
+| 5 | fade_move | 215 | 64/215 | -24.0% | -$258.37 | 6 | 191 | too early |
+| 6 | weather_forecast | 293 | 146/293 | -25.6% | -$369.77 | 5 | 170 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1348 | 667/1348 | -5.2% | -$351.80 | 6 | 251 | yardstick |
+| 8 | coin_flip | 1355 | 671/1355 | -5.2% | -$348.88 | 6 | 252 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-11 | +$6.82 | +$46.84 | -$0.88 | -$95.20 | -$4.05 | -$50.72 | -$15.05 |
+| 2026-11-11 | +$8.10 | +$46.99 | -$5.88 | -$105.20 | -$9.05 | -$50.72 | -$12.13 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
@@ -41,22 +41,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-11 follow_move: S&P 500 (SPY) closes above $755 on November 11? -> Yes at 0.600 ($5.00)
-- 2026-11-11 sure_thing: Bitcoin above 74,000 on November 11, 11AM ET? -> No at 0.944 ($5.00)
-- 2026-11-11 safe_no_week: Will Tesla (TSLA) close above $370 on November 12? -> Yes at 0.973 ($5.00)
-- 2026-11-11 sports_underdog: Sopo: Irene Burillo Escorihuela vs Julia Grabher -> Irene Burillo Escorihuela at 0.270 ($5.00)
-- 2026-11-11 fade_move: Will Apple (AAPL) close above $350 on November 11? -> No at 0.162 ($5.00)
-- 2026-11-11 weather_forecast: Will the highest temperature in Qingdao be 16°C on November 13? -> No at 0.671 ($5.00)
+- 2026-11-11 follow_move: Will "Victorian Psycho" score at least 75 on the Rotten Tomatoes Tomatometer? -> No at 0.642 ($5.00)
+- 2026-11-11 sure_thing: Exact Score: Madagascar 0 - 0 Guinea-Bissau? -> No at 0.924 ($5.00)
+- 2026-11-11 safe_no_week: Will Target Q3 comparable sales growth be between 1% and 3%? -> No at 0.976 ($5.00)
+- 2026-11-11 sports_underdog: Counter-Strike: ex-Zero Tenacity vs Spirit Academy (BO3) - NODWIN Clutch Series Group Stage -> Spirit Academy at 0.310 ($5.00)
+- 2026-11-11 fade_move: WTI Crude Oil (WTI) Up or Down on November 11? -> Down at 0.139 ($5.00)
+- 2026-11-11 weather_forecast: Will the highest temperature in Moscow be 4°C on November 13? -> No at 0.616 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-11 coin_flip: Hyperliquid Up or Down - November 11, 11:20PM-11:25PM ET -> Down at 0.527 ($5.00)
-- 2026-11-11 follow_move: Will "Ghost Soldier" Opening Weekend Box Office be between 4m and 5m? -> Yes at 0.482 ($5.00)
-- 2026-11-11 sure_thing: Exact Score: Ghana 1 - 0 Somalia? -> No at 0.904 ($5.00)
-- 2026-11-11 safe_no_week: Will Google (GOOGL) close above $300 on November 12? -> No at 0.952 ($5.00)
-- 2026-11-11 sports_underdog: Counter-Strike: OLDBOYS- vs RoundsGG (BO1) - ESEA Advanced Europe Regular Season -> RoundsGG at 0.242 ($5.00)
+- 2026-11-11 coin_flip: Spread: Rotherham United FC (-5.5) -> Rotherham United FC at 0.557 ($5.00)
+- 2026-11-11 follow_move: S&P 500 (SPY) closes above $755 on November 11? -> Yes at 0.600 ($5.00)
+- 2026-11-11 sure_thing: Will the US national average gas price be less than $3.9200 on November 12? -> Yes at 0.971 ($5.00)
+- 2026-11-11 safe_no_week: Will Tesla (TSLA) close above $370 on November 12? -> Yes at 0.973 ($5.00)
+- 2026-11-11 sports_underdog: Lima: Tristan Boyer vs Ryo Tabata -> Ryo Tabata at 0.177 ($5.00)
 
 ## Price gaps seen today
 
 5 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Japan GDP growth in Q3 2026 (QoQ Annualized)? (yes), 0.994 for a $1 payout.
 
-Runs in the last 24 hours: 36 (36 with a problem).
-Latest problem: 37 position(s) still open more than 3 days after their market ended
+Runs in the last 24 hours: 37 (37 with a problem).
+Latest problem: 38 position(s) still open more than 3 days after their market ended
