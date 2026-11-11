@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 13:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-11 14:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 188 | 115/188 | +0.8% | +$7.75 | 6 | 165 | too early |
-| 2 | sure_thing | 1272 | 1181/1272 | -0.5% | -$31.01 | 6 | 125 | too early |
-| 3 | safe_no_week | 306 | 288/306 | -1.9% | -$28.65 | 6 | 346 | too early |
-| 4 | sports_underdog | 992 | 228/992 | -14.3% | -$704.44 | 6 | 30 | too early |
-| 5 | fade_move | 210 | 63/210 | -24.5% | -$257.41 | 6 | 179 | too early |
-| 6 | weather_forecast | 289 | 145/289 | -25.1% | -$357.00 | 5 | 170 | too early |
+| 1 | follow_move | 189 | 115/189 | +0.3% | +$2.75 | 6 | 172 | too early |
+| 2 | sure_thing | 1275 | 1183/1275 | -0.6% | -$35.41 | 6 | 129 | too early |
+| 3 | safe_no_week | 307 | 289/307 | -1.9% | -$28.57 | 6 | 351 | too early |
+| 4 | sports_underdog | 992 | 228/992 | -14.3% | -$704.44 | 6 | 38 | too early |
+| 5 | fade_move | 211 | 64/211 | -22.6% | -$238.37 | 6 | 186 | too early |
+| 6 | weather_forecast | 289 | 145/289 | -25.1% | -$357.00 | 5 | 172 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1335 | 659/1335 | -5.4% | -$362.63 | 6 | 240 | yardstick |
+| 8 | coin_flip | 1338 | 661/1338 | -5.4% | -$358.67 | 6 | 245 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-11 | -$2.43 | +$47.69 | -$2.08 | -$79.44 | -$8.09 | -$37.96 | -$25.88 |
+| 2026-11-11 | -$7.43 | +$43.28 | -$2.00 | -$79.44 | +$10.95 | -$37.96 | -$21.92 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
@@ -41,18 +41,18 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-11 follow_move: Amazon (AMZN) Up or Down on November 11? -> Up at 0.623 ($5.00)
-- 2026-11-11 sure_thing: Bitcoin above 74,200 on November 11, 9AM ET? -> No at 0.972 ($5.00)
-- 2026-11-11 safe_no_week: Will UK GDP growth in Q3 2026 be between 0.4% and 0.5%? -> No at 0.962 ($5.00)
-- 2026-11-11 sports_underdog: Will Czarni Sosnowiec vs. SK Brann end in a draw? -> Yes at 0.156 ($5.00)
-- 2026-11-11 fade_move: NVIDIA (NVDA) Up or Down on November 11? -> Down at 0.186 ($5.00)
-- 2026-11-11 weather_forecast: Will the highest temperature in Guangzhou be 25°C on November 13? -> No at 0.759 ($5.00)
+- 2026-11-11 follow_move: Will Apple (AAPL) close above $350 on November 11? -> No at 0.708 ($5.00)
+- 2026-11-11 sure_thing: Ethereum Up or Down - November 11, 9:05AM-9:10AM ET -> Down at 0.972 ($5.00)
+- 2026-11-11 safe_no_week: Will the highest temperature in Kuala Lumpur be 30°C on November 13? -> No at 0.943 ($5.00)
+- 2026-11-11 sports_underdog: Florida A&M Rattlers vs. Kansas City Roos -> Florida A&M Rattlers at 0.259 ($5.00)
+- 2026-11-11 fade_move: Meta (META) Up or Down on November 11? -> Down at 0.298 ($5.00)
+- 2026-11-11 weather_forecast: Will the highest temperature in Los Angeles be between 70-71°F on November 13? -> No at 0.632 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-11 coin_flip: Ethereum Up or Down - November 11, 8:50PM-8:55PM ET -> Up at 0.527 ($5.00)
-- 2026-11-11 follow_move: Will NVIDIA (NVDA) close above $180 on November 11? -> No at 0.806 ($5.00)
-- 2026-11-11 sure_thing: Ethereum Up or Down - November 11, 8:25AM-8:30AM ET -> Down at 0.944 ($5.00)
-- 2026-11-11 safe_no_week: Will the highest temperature in San Francisco be between 66-67°F on November 13? -> No at 0.943 ($5.00)
-- 2026-11-11 sports_underdog: Counter-Strike: RoundsGG vs Fire Flux Esports (BO1) - ESEA Advanced Europe Regular Season -> RoundsGG at 0.338 ($5.00)
+- 2026-11-11 coin_flip: BNB Up or Down - November 11, 9:35PM-9:40PM ET -> Up at 0.527 ($5.00)
+- 2026-11-11 follow_move: Will Meta (META) close above $640 on November 11? -> Yes at 0.757 ($5.00)
+- 2026-11-11 sure_thing: Dogecoin Up or Down - November 11, 9:05AM-9:10AM ET -> Down at 0.972 ($4.86)
+- 2026-11-11 safe_no_week: Will the highest temperature in Atlanta be between 56-57°F on November 13? -> No at 0.973 ($5.00)
+- 2026-11-11 sports_underdog: Will Fenerbahce Istanbul win on 2026-11-11? -> Yes at 0.167 ($5.00)
 
 ## Price gaps seen today
 
