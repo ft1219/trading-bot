@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 06:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-11 06:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 185 | 113/185 | +1.0% | +$8.86 | 6 | 150 | too early |
-| 2 | sure_thing | 1237 | 1148/1237 | -0.5% | -$31.05 | 6 | 109 | too early |
-| 3 | safe_no_week | 287 | 270/287 | -2.0% | -$28.73 | 6 | 323 | too early |
-| 4 | sports_underdog | 978 | 224/978 | -14.8% | -$717.62 | 6 | 19 | too early |
+| 2 | sure_thing | 1240 | 1151/1240 | -0.5% | -$30.33 | 6 | 111 | too early |
+| 3 | safe_no_week | 290 | 273/290 | -1.9% | -$27.81 | 6 | 322 | too early |
+| 4 | sports_underdog | 983 | 225/983 | -14.7% | -$719.72 | 6 | 15 | too early |
 | 5 | fade_move | 205 | 62/205 | -23.5% | -$240.86 | 6 | 167 | too early |
-| 6 | weather_forecast | 268 | 134/268 | -25.4% | -$335.45 | 5 | 147 | too early |
+| 6 | weather_forecast | 273 | 136/273 | -25.8% | -$346.35 | 5 | 145 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 0 | too early |
-| 8 | coin_flip | 1265 | 620/1265 | -6.1% | -$384.66 | 6 | 222 | yardstick |
+| 8 | coin_flip | 1277 | 624/1277 | -6.4% | -$407.01 | 6 | 218 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-11 | -$1.33 | +$47.64 | -$2.15 | -$92.62 | +$8.47 | -$16.41 | -$47.91 |
+| 2026-11-11 | -$1.33 | +$48.37 | -$1.24 | -$94.72 | +$8.47 | -$27.30 | -$70.26 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
@@ -42,21 +42,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-11 follow_move: Will NYC Mayor post 20-39 posts from November 10 to November 17, 2026? -> No at 0.223 ($5.00)
-- 2026-11-11 sure_thing: India leading at halftime? -> No at 0.904 ($5.00)
-- 2026-11-11 safe_no_week: Will the lowest temperature in Hong Kong be 23°C on November 12? -> No at 0.971 ($5.00)
-- 2026-11-11 sports_underdog: LoL: Ground Zero Gaming vs Frank Esports (BO5) - LCP Promotion Playoffs -> Frank Esports at 0.216 ($5.00)
+- 2026-11-11 sure_thing: Magic vs. Jazz: O/U 245.5 -> Under at 0.962 ($5.00)
+- 2026-11-11 safe_no_week: Will the highest temperature in London be 6°C on November 13? -> No at 0.952 ($5.00)
+- 2026-11-11 sports_underdog: Counter-Strike: MOUZ vs G2 (BO3) - BLAST Rivals Group B -> G2 at 0.239 ($5.00)
 - 2026-11-11 fade_move: Will NYC Mayor post 20-39 posts from November 10 to November 17, 2026? -> Yes at 0.818 ($5.00)
-- 2026-11-11 weather_forecast: Will the highest temperature in Busan be 19°C on November 13? -> No at 0.639 ($5.00)
-- 2026-11-11 coin_flip: Cerro Largo FC vs. CA Progreso: Cerro Largo FC O/U 1.5 -> Over at 0.492 ($5.00)
+- 2026-11-11 weather_forecast: Will the highest temperature in Taipei be 31°C on November 13? -> No at 0.622 ($5.00)
+- 2026-11-11 coin_flip: Thunder vs. Trail Blazers: O/U 226.5 -> Over at 0.532 ($5.00)
 - 2026-11-11 follow_move: Will "Ebenezer" Opening Weekend Box Office be between 19m and 22m? -> Yes at 0.351 ($5.00)
-- 2026-11-11 sure_thing: Bitcoin above 74,200 on November 11, 2AM ET? -> No at 0.953 ($5.00)
-- 2026-11-11 safe_no_week: Will the highest temperature in San Francisco be between 64-65°F on November 12? -> No at 0.962 ($5.00)
-- 2026-11-11 sports_underdog: Counter-Strike: 9INE Academy vs Teletubisie (BO3) - United21 Group A -> 9INE Academy at 0.170 ($5.00)
+- 2026-11-11 sure_thing: Ethereum above 2,050 on November 11, 2AM ET? -> Yes at 0.906 ($5.00)
+- 2026-11-11 safe_no_week: Will the lowest temperature in Paris be 7°C on November 12? -> No at 0.929 ($5.00)
+- 2026-11-11 sports_underdog: LoL: Ground Zero Gaming vs Frank Esports (BO5) - LCP Promotion Playoffs -> Frank Esports at 0.216 ($5.00)
 - 2026-11-11 fade_move: Will "Ebenezer" Opening Weekend Box Office be between 19m and 22m? -> No at 0.691 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 37 (37 with a problem).
+Runs in the last 24 hours: 36 (36 with a problem).
 Latest problem: 37 position(s) still open more than 3 days after their market ended
