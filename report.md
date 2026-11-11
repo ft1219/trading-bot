@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 22:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-11 22:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 222 | 137/222 | +1.8% | +$19.88 | 6 | 158 | too early |
-| 2 | sure_thing | 1352 | 1258/1352 | -0.3% | -$20.02 | 6 | 136 | too early |
-| 3 | safe_no_week | 346 | 324/346 | -2.4% | -$41.55 | 6 | 341 | too early |
-| 4 | sports_underdog | 1037 | 234/1037 | -15.3% | -$790.06 | 6 | 52 | too early |
-| 5 | fade_move | 249 | 73/249 | -24.1% | -$299.39 | 6 | 170 | too early |
-| 6 | weather_forecast | 315 | 158/315 | -25.3% | -$392.04 | 5 | 155 | too early |
+| 1 | follow_move | 222 | 137/222 | +1.8% | +$19.88 | 6 | 160 | too early |
+| 2 | sure_thing | 1352 | 1258/1352 | -0.3% | -$20.02 | 6 | 144 | too early |
+| 3 | safe_no_week | 349 | 326/349 | -2.6% | -$45.99 | 6 | 339 | too early |
+| 4 | sports_underdog | 1039 | 234/1039 | -15.5% | -$800.06 | 6 | 58 | too early |
+| 5 | fade_move | 249 | 73/249 | -24.1% | -$299.39 | 6 | 172 | too early |
+| 6 | weather_forecast | 319 | 159/319 | -25.9% | -$406.08 | 5 | 151 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1420 | 704/1420 | -5.2% | -$369.39 | 6 | 249 | yardstick |
+| 8 | coin_flip | 1425 | 707/1425 | -5.2% | -$366.10 | 6 | 252 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-11 | +$9.69 | +$58.68 | -$14.97 | -$165.06 | -$50.06 | -$73.00 | -$32.64 |
+| 2026-11-11 | +$9.69 | +$58.68 | -$19.41 | -$175.06 | -$50.06 | -$87.04 | -$29.35 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
 | 2026-11-08 | +$16.06 | -$52.70 | -$19.92 | -$262.85 | -$16.21 | -$34.20 | -$209.00 |
@@ -41,18 +41,18 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-11 follow_move: Bitcoin Up or Down on November 12? -> Up at 0.656 ($5.00)
-- 2026-11-11 sure_thing: Will AD Pasto win on 2026-11-12? -> No at 0.962 ($5.00)
-- 2026-11-11 safe_no_week: Will Cisco (CSCO) Q1 Networking revenue be above $10.4B? -> Yes at 0.962 ($5.00)
-- 2026-11-11 sports_underdog: Coppin State Eagles vs. Hofstra Pride (W) -> Coppin State Eagles at 0.270 ($5.00)
-- 2026-11-11 fade_move: Bitcoin Up or Down on November 12? -> Down at 0.386 ($5.00)
+- 2026-11-11 follow_move: Solana Up or Down on November 12? -> Down at 0.734 ($5.00)
+- 2026-11-11 sure_thing: Exact Score: Lithuania 0 - 0 Suriname? -> No at 0.904 ($5.00)
+- 2026-11-11 safe_no_week: Will "Victorian Psycho" Opening Weekend Box Office be less than 2.5m? -> Yes at 0.943 ($5.00)
+- 2026-11-11 sports_underdog: Massachusetts Minutemen vs. Harvard Crimson (W) -> Massachusetts Minutemen at 0.156 ($5.00)
+- 2026-11-11 fade_move: Solana Up or Down on November 12? -> Up at 0.325 ($5.00)
 - 2026-11-11 weather_forecast: Will the highest temperature in San Francisco be between 62-63°F on November 13? -> No at 0.498 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-11 coin_flip: ZCash Up or Down - November 12, 12:00PM-12:05PM ET -> Up at 0.527 ($5.00)
-- 2026-11-11 follow_move: Will NYC get 1.50" or more of rain November 12 to 15? -> No at 0.681 ($5.00)
-- 2026-11-11 sure_thing: Sudan leading at halftime? -> No at 0.962 ($5.00)
-- 2026-11-11 safe_no_week: Will "Choosin' Texas - Ella Langley" be the Billboard Hot 100 #2 song for the week of November 21? -> No at 0.985 ($5.00)
-- 2026-11-11 sports_underdog: Nuggets vs. Grizzlies: O/U 222.5 -> Under at 0.351 ($5.00)
+- 2026-11-11 coin_flip: Armenia vs. Cyprus: 1st Half O/U 1.5 -> Under at 0.711 ($5.00)
+- 2026-11-11 follow_move: Will Ted Cruz post 40-59 posts from November 10 to November 17, 2026? -> Yes at 0.448 ($5.00)
+- 2026-11-11 sure_thing: Dogecoin Up or Down - November 11, 4:00PM-8:00PM ET -> Down at 0.963 ($4.81)
+- 2026-11-11 safe_no_week: Will Cisco (CSCO) Q1 Networking revenue be above $10.4B? -> Yes at 0.962 ($5.00)
+- 2026-11-11 sports_underdog: Spread: Buffalo (-16.5) -> Buffalo at 0.156 ($5.00)
 
 ## Price gaps seen today
 
