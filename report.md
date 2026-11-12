@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 02:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 224 | 137/224 | +0.9% | +$9.88 | 7 | 164 | too early |
-| 2 | sure_thing | 1370 | 1274/1370 | -0.3% | -$21.68 | 7 | 164 | too early |
+| 1 | follow_move | 224 | 137/224 | +0.9% | +$9.88 | 7 | 165 | too early |
+| 2 | sure_thing | 1375 | 1279/1375 | -0.3% | -$20.47 | 7 | 167 | too early |
 | 3 | safe_no_week | 357 | 334/357 | -2.5% | -$44.12 | 7 | 337 | too early |
-| 4 | sports_underdog | 1056 | 240/1056 | -14.9% | -$781.42 | 7 | 71 | too early |
-| 5 | fade_move | 254 | 76/254 | -20.8% | -$263.82 | 7 | 173 | too early |
+| 4 | sports_underdog | 1059 | 240/1059 | -15.1% | -$796.42 | 7 | 68 | too early |
+| 5 | fade_move | 254 | 76/254 | -20.8% | -$263.82 | 7 | 174 | too early |
 | 6 | weather_forecast | 328 | 166/328 | -24.6% | -$397.49 | 6 | 144 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1451 | 719/1451 | -5.3% | -$386.29 | 7 | 266 | yardstick |
+| 8 | coin_flip | 1458 | 723/1458 | -5.3% | -$383.19 | 7 | 267 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$10.00 | -$2.19 | +$1.24 | +$16.99 | +$35.57 | -$0.53 | -$19.67 |
+| 2026-11-12 | -$10.00 | -$0.98 | +$1.24 | +$1.99 | +$35.57 | -$0.53 | -$16.57 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -42,16 +42,16 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-12 follow_move: Will "Reminders of Him" be the #2 US Netflix movie this week? -> Yes at 0.442 ($5.00)
-- 2026-11-12 sure_thing: Exact Score: Senegal 0 - 0 Sudan? -> No at 0.971 ($5.00)
+- 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
+- 2026-11-12 sure_thing: Spread: Sabres (-3.5) -> Blackhawks at 0.924 ($5.00)
 - 2026-11-12 safe_no_week: Will Ezra Frech be eliminated in week 10 of Dancing With The Stars: Season 35? -> No at 0.933 ($5.00)
 - 2026-11-12 sports_underdog: Counter-Strike: FURIA vs Vitality (BO3) - BLAST Rivals Group A -> FURIA at 0.331 ($5.00)
-- 2026-11-12 fade_move: Will "Reminders of Him" be the #2 US Netflix movie this week? -> No at 0.612 ($5.00)
+- 2026-11-12 fade_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> No at 0.798 ($5.00)
 - 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Hyperliquid Up or Down - November 12, 1:20PM-1:25PM ET -> Up at 0.527 ($5.00)
-- 2026-11-12 follow_move: Will "Taken: Natalee Holloway: Season 1" be the top US Netflix show this week? -> Yes at 0.837 ($5.00)
-- 2026-11-12 sure_thing: Armenia vs. Cyprus: Neither team to score first? -> No at 0.952 ($5.00)
+- 2026-11-12 coin_flip: Spread: EC Juventude (-2.5) -> EC Juventude at 0.259 ($5.00)
+- 2026-11-12 follow_move: Will "Reminders of Him" be the #2 US Netflix movie this week? -> Yes at 0.442 ($5.00)
+- 2026-11-12 sure_thing: Spread: Avalanche (-3.5) -> Senators at 0.943 ($5.00)
 - 2026-11-12 safe_no_week: NVIDIA (NVDA) Q3 adjusted gross margin 75% to 77%? -> No at 0.962 ($5.00)
 - 2026-11-12 sports_underdog: Brisbane 3: Carl Overbeck vs Juncheng Shang -> Carl Overbeck at 0.259 ($5.00)
 
@@ -59,5 +59,5 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (36 with a problem).
+Runs in the last 24 hours: 35 (35 with a problem).
 Latest problem: 37 position(s) still open more than 3 days after their market ended
