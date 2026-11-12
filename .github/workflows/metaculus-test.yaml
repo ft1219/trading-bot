@@ -1,9 +1,20 @@
 name: Metaculus - test on practice questions
 
 # Manual only. Forecasts on the unscored bot-testing-area tournament to check
-# the keys and models work end to end.
+# the keys and models work end to end. Practice questions use the main
+# tournament's model; the inputs below try another one, or fewer questions,
+# for one run without changing any setting.
 on:
   workflow_dispatch:
+    inputs:
+      model:
+        description: "Model to try (blank = the main tournament's model)"
+        required: false
+        default: ""
+      max_questions:
+        description: "How many practice questions (blank = the usual cap)"
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ github.workflow }}
@@ -40,16 +51,17 @@ jobs:
         env:
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ASKNEWS_CLIENT_ID: ${{ secrets.ASKNEWS_CLIENT_ID }}
           ASKNEWS_SECRET: ${{ secrets.ASKNEWS_SECRET }}
           ASKNEWS_API_KEY: ${{ secrets.ASKNEWS_API_KEY }}
           FORECAST_MODEL: ${{ vars.FORECAST_MODEL }}
-          TOURNAMENT_FORECAST_MODEL: ${{ vars.TOURNAMENT_FORECAST_MODEL }}
+          TOURNAMENT_FORECAST_MODEL: ${{ inputs.model || vars.TOURNAMENT_FORECAST_MODEL }}
           PARSER_MODEL: ${{ vars.PARSER_MODEL }}
           RESEARCHER: ${{ vars.RESEARCHER }}
           FORECAST_REASONING: ${{ vars.FORECAST_REASONING }}
           PREDICTIONS_PER_QUESTION: ${{ vars.PREDICTIONS_PER_QUESTION }}
-          MAX_QUESTIONS_PER_RUN: ${{ vars.MAX_QUESTIONS_PER_RUN }}
+          MAX_QUESTIONS_PER_RUN: ${{ inputs.max_questions || vars.MAX_QUESTIONS_PER_RUN }}
           MAX_COST_PER_RUN_USD: ${{ vars.MAX_COST_PER_RUN_USD }}
           MAX_LLM_CALLS_PER_RUN: ${{ vars.MAX_LLM_CALLS_PER_RUN }}
           QUESTIONS_IN_PARALLEL: ${{ vars.QUESTIONS_IN_PARALLEL }}

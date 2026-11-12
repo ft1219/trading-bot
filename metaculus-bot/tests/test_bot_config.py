@@ -8,7 +8,9 @@ from bot_config import (
     DEFAULT_TOURNAMENT_FORECAST_MODEL,
     DEFAULT_MAX_COST_PER_RUN_USD,
     DEFAULT_MAX_QUESTIONS_PER_RUN,
+    OPENAI_FORECAST_MODEL,
     SettingsError,
+    forecaster_kwargs,
     load_settings,
     pick_questions_to_forecast,
     reasoning_kwargs,
@@ -81,6 +83,50 @@ def test_reasoning_is_requested_only_for_openrouter_models():
     assert reasoning_kwargs(on, "gpt-4o") == {}
     assert reasoning_kwargs(other, DEFAULT_TOURNAMENT_FORECAST_MODEL) == {
         "extra_body": {"reasoning": {"enabled": True}}
+    }
+
+
+def test_openai_key_switches_minibench_to_gpt6_sol():
+    assert load_settings({"OPENAI_API_KEY": "sk-test"}).forecast_model == OPENAI_FORECAST_MODEL
+    assert load_settings({"OPENAI_API_KEY": "  "}).forecast_model == DEFAULT_FORECAST_MODEL
+    # An explicit FORECAST_MODEL still wins over the key.
+    chosen = load_settings({"OPENAI_API_KEY": "sk-test", "FORECAST_MODEL": "openrouter/x/y"})
+    assert chosen.forecast_model == "openrouter/x/y"
+    # The main tournament stays on Claude either way.
+    assert (
+        load_settings({"OPENAI_API_KEY": "sk-test"}).tournament_forecast_model
+        == DEFAULT_TOURNAMENT_FORECAST_MODEL
+    )
+
+
+def test_claude_gets_adaptive_thinking_and_no_temperature():
+    settings = load_settings({})
+    assert forecaster_kwargs(settings, DEFAULT_TOURNAMENT_FORECAST_MODEL) == {
+        "temperature": None,
+        "max_tokens": 16000,
+        "extra_body": {"reasoning": {"effort": "high"}},
+    }
+    # Turning reasoning off does not matter: Claude refuses a thinking budget
+    # and thinks adaptively anyway.
+    off = load_settings({"FORECAST_REASONING": "false"})
+    assert forecaster_kwargs(off, "anthropic/claude-sonnet-5.5")["temperature"] is None
+
+
+def test_openai_models_get_reasoning_effort_in_the_body():
+    settings = load_settings({})
+    assert forecaster_kwargs(settings, OPENAI_FORECAST_MODEL) == {
+        "temperature": None,
+        "extra_body": {"reasoning_effort": "high"},
+    }
+    off = load_settings({"FORECAST_REASONING": "false"})
+    assert forecaster_kwargs(off, OPENAI_FORECAST_MODEL) == {"temperature": None}
+
+
+def test_other_models_keep_temperature_and_openrouter_reasoning():
+    settings = load_settings({})
+    assert forecaster_kwargs(settings) == {
+        "temperature": 0.3,
+        "extra_body": {"reasoning": {"enabled": True}},
     }
 
 

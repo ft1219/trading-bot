@@ -13,7 +13,12 @@ from forecasting_tools import BinaryPrediction, BinaryQuestion
 from forecasting_tools.ai_models import general_llm
 
 import main
-from bot_config import load_settings
+from bot_config import (
+    DEFAULT_FORECAST_MODEL,
+    DEFAULT_TOURNAMENT_FORECAST_MODEL,
+    OPENAI_FORECAST_MODEL,
+    load_settings,
+)
 from budget import RunBudget, RunBudgetExceeded
 
 COST_PER_CALL = 0.01
@@ -75,8 +80,8 @@ def test_build_llms_turns_on_reasoning_for_the_forecaster():
 def test_forecaster_waits_up_to_300_seconds_and_no_summary_is_made():
     budget = RunBudget(1.0, 100)
     assert main.build_llms(load_settings({}), budget)["default"].litellm_kwargs["timeout"] == 300
-    gemini = main.build_llms(load_settings({}), budget, "openrouter/google/gemini-3.7-flash")
-    assert gemini["default"].litellm_kwargs["timeout"] == 300
+    claude = main.build_llms(load_settings({}), budget, DEFAULT_TOURNAMENT_FORECAST_MODEL)
+    assert claude["default"].litellm_kwargs["timeout"] == 300
     bot = main.make_bot(load_settings({}), budget, publish=True)
     assert bot.enable_summarize_research is False
     assert bot.publish_reports_to_metaculus is True
@@ -110,14 +115,41 @@ def test_tournament_questions_use_the_stronger_model_and_minibench_the_cheap_one
     )
     assert not not_attempted
     assert not [r for r in reports if isinstance(r, BaseException)]
-    forecaster_models = [k["model"] for k in fake_model["kwargs"] if "extra_body" in k]
-    assert forecaster_models.count("openrouter/google/gemini-3.7-flash") == 10
-    assert forecaster_models.count("openrouter/deepseek/deepseek-v3.2") == 5
-    assert all(
-        k["extra_body"] == {"reasoning": {"enabled": True}}
-        for k in fake_model["kwargs"]
-        if "extra_body" in k
+    forecaster_calls = [k for k in fake_model["kwargs"] if "extra_body" in k]
+    forecaster_models = [k["model"] for k in forecaster_calls]
+    assert forecaster_models.count(DEFAULT_TOURNAMENT_FORECAST_MODEL) == 10
+    assert forecaster_models.count(DEFAULT_FORECAST_MODEL) == 5
+    for k in forecaster_calls:
+        if k["model"] == DEFAULT_TOURNAMENT_FORECAST_MODEL:
+            # Claude Sonnet 5.5 refuses a temperature and a thinking budget.
+            assert k["extra_body"] == {"reasoning": {"effort": "high"}}
+            assert k.get("temperature") is None
+            assert k["max_tokens"] == 16000
+        else:
+            assert k["extra_body"] == {"reasoning": {"enabled": True}}
+            assert k["temperature"] == 0.3
+
+
+def test_openai_key_moves_minibench_to_gpt6_sol(fake_model):
+    settings = load_settings({"OPENAI_API_KEY": "sk-test"})
+    assert settings.forecast_model == OPENAI_FORECAST_MODEL
+    budget = RunBudget(settings.max_cost_per_run_usd, settings.max_llm_calls_per_run)
+    reports = asyncio.run(
+        _bot(settings, budget).forecast_questions(_questions(1), return_exceptions=True)
     )
+    assert not [r for r in reports if isinstance(r, BaseException)]
+    forecaster_calls = [k for k in fake_model["kwargs"] if k["model"] == OPENAI_FORECAST_MODEL]
+    assert len(forecaster_calls) == 5
+    for k in forecaster_calls:
+        assert k["extra_body"] == {"reasoning_effort": "high"}
+        assert k.get("temperature") is None
+
+
+def test_gpt6_sol_calls_are_priced():
+    cost = litellm.completion_cost(
+        model=OPENAI_FORECAST_MODEL, prompt="x" * 400, completion="y" * 400
+    )
+    assert cost > 0
 
 
 def test_spent_budget_leaves_minibench_for_the_next_run(fake_model):

@@ -8,8 +8,8 @@ run budget before the call (raising RunBudgetExceeded, which does reach the
 bot) and records the call's real cost afterwards.
 
 A few questions are forecast at a time, so a run can overshoot the limit by
-the calls already in flight when it is reached: about 30 cents with five
-main-tournament questions on Gemini. The parser that reads those
+the calls already in flight when it is reached: about a dollar with five
+main-tournament questions on Claude Sonnet 5.5. The parser that reads those
 forecasts' answers is exempt from the spending limit (it costs a fraction of
 a cent and only reads answers already paid for), so a run that crosses the
 limit still publishes the forecasts it paid for. The season-wide hard cap is
@@ -17,7 +17,30 @@ the OpenRouter key's own limit.
 """
 from __future__ import annotations
 
+import litellm
 from forecasting_tools import GeneralLlm
+
+# litellm 1.80 has no prices for these newer models. OpenRouter reports each
+# call's cost itself, but OpenAI does not, so without these the run budget
+# and the "AI cost this run" line would count GPT-6 calls as free.
+# US dollars per million tokens (input, output), from OpenRouter's price list
+# on 2026-11-12, which matches OpenAI's own prices.
+EXTRA_PRICES_PER_MILLION_TOKENS = {"gpt-6-sol": (2.0, 10.0)}
+
+
+def register_extra_prices() -> None:
+    for name, (input_price, output_price) in EXTRA_PRICES_PER_MILLION_TOKENS.items():
+        entry = {
+            "input_cost_per_token": input_price / 1_000_000,
+            "output_cost_per_token": output_price / 1_000_000,
+            "litellm_provider": "openai",
+            "mode": "chat",
+            "supports_reasoning": True,
+        }
+        litellm.register_model({name: entry, f"openai/{name}": entry})
+
+
+register_extra_prices()
 
 
 class RunBudgetExceeded(RuntimeError):
