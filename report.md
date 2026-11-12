@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 06:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 06:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 226 | 138/226 | +0.6% | +$7.01 | 7 | 164 | too early |
-| 2 | sure_thing | 1412 | 1314/1412 | -0.3% | -$18.62 | 7 | 170 | too early |
-| 3 | safe_no_week | 365 | 342/365 | -2.3% | -$42.19 | 7 | 339 | too early |
-| 4 | sports_underdog | 1108 | 249/1108 | -15.7% | -$864.73 | 7 | 25 | too early |
+| 1 | follow_move | 226 | 138/226 | +0.6% | +$7.01 | 7 | 165 | too early |
+| 2 | sure_thing | 1413 | 1315/1413 | -0.3% | -$18.47 | 7 | 177 | too early |
+| 3 | safe_no_week | 369 | 346/369 | -2.2% | -$41.03 | 7 | 337 | too early |
+| 4 | sports_underdog | 1110 | 249/1110 | -15.8% | -$874.73 | 7 | 25 | too early |
 | 5 | fade_move | 256 | 77/256 | -20.3% | -$259.58 | 7 | 174 | too early |
-| 6 | weather_forecast | 332 | 169/332 | -24.4% | -$398.49 | 6 | 141 | too early |
+| 6 | weather_forecast | 337 | 173/337 | -23.6% | -$391.93 | 6 | 142 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1505 | 748/1505 | -4.8% | -$361.03 | 7 | 260 | yardstick |
+| 8 | coin_flip | 1514 | 751/1514 | -5.0% | -$377.60 | 7 | 259 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$12.86 | +$0.87 | +$3.16 | -$66.32 | +$39.81 | -$1.53 | +$5.59 |
+| 2026-11-12 | -$12.86 | +$1.02 | +$4.33 | -$76.32 | +$39.81 | +$5.04 | -$10.97 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -42,22 +42,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-12 follow_move: Will "The Gospel of Christmas" be the top US Netflix movie this week? -> Yes at 0.711 ($5.00)
-- 2026-11-12 sure_thing: Chambéry Savoie Football leading at halftime? -> No at 0.943 ($5.00)
-- 2026-11-12 safe_no_week: Will Rob McNelley (guitar) win Musician of the Year at the 2026 CMA Awards? -> No at 0.982 ($5.00)
-- 2026-11-12 sports_underdog: Counter-Strike: Phantom vs ILLYRIANS (BO3) - NODWIN Clutch Series Group Stage -> ILLYRIANS at 0.229 ($5.00)
+- 2026-11-12 follow_move: Will "Black Doves: Season 2" be the #2 global Netflix show this week? -> Yes at 0.642 ($5.00)
+- 2026-11-12 sure_thing: Czechia to win the second half? -> No at 0.914 ($5.00)
+- 2026-11-12 safe_no_week: Will Khamenei post 0-4 posts from November 10 to November 17, 2026? -> Yes at 0.962 ($5.00)
+- 2026-11-12 sports_underdog: Counter-Strike: Ducks vs DNK (BO3) - Exort Fiesta Closed Qualifier: Series #4 Group D -> DNK at 0.333 ($4.29)
 - 2026-11-12 fade_move: Will "The Body: Season 1" be the #2 global Netflix show this week? -> Yes at 0.177 ($5.00)
-- 2026-11-12 weather_forecast: Will the highest temperature in Warsaw be 6°C on November 14? -> Yes at 0.210 ($5.00)
+- 2026-11-12 weather_forecast: Will the highest temperature in Wellington be 20°C on November 14? -> No at 0.808 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: BNB Up or Down - November 12, 3:00PM-3:05PM ET -> Down at 0.527 ($5.00)
-- 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
-- 2026-11-12 sure_thing: Exact Score: Czechia 0 - 1 Spain? -> No at 0.924 ($5.00)
-- 2026-11-12 safe_no_week: Will Cody Johnson win Entertainer of the Year at the 2026 CMA Awards? -> No at 0.986 ($5.00)
-- 2026-11-12 sports_underdog: Counter-Strike: TheChampionGG vs NAVI Junior (BO3) - United21 Group C -> TheChampionGG at 0.321 ($5.00)
+- 2026-11-12 coin_flip: Will the price of Bitcoin be above $74,000 on November 12? -> No at 0.687 ($5.00)
+- 2026-11-12 follow_move: Will "The Gospel of Christmas" be the top US Netflix movie this week? -> Yes at 0.711 ($5.00)
+- 2026-11-12 sure_thing: Dota 2: PARIVISION vs DO KONCA (BO3) - 1win Essence Group A -> PARIVISION at 0.904 ($5.00)
+- 2026-11-12 safe_no_week: Will Nvidia (NVDA) beat quarterly earnings? -> Yes at 0.971 ($5.00)
+- 2026-11-12 sports_underdog: Counter-Strike: Spirit vs G2 (BO3) - BLAST Rivals Group B -> G2 at 0.280 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 35 (35 with a problem).
+Runs in the last 24 hours: 36 (36 with a problem).
 Latest problem: 37 position(s) still open more than 3 days after their market ended
