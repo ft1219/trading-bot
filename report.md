@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 00:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 01:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 223 | 137/223 | +1.3% | +$14.88 | 7 | 161 | too early |
-| 2 | sure_thing | 1363 | 1268/1363 | -0.3% | -$21.33 | 7 | 155 | too early |
-| 3 | safe_no_week | 356 | 333/356 | -2.5% | -$44.48 | 7 | 335 | too early |
-| 4 | sports_underdog | 1051 | 239/1051 | -14.8% | -$772.40 | 7 | 70 | too early |
-| 5 | fade_move | 252 | 74/252 | -24.0% | -$302.75 | 7 | 171 | too early |
+| 1 | follow_move | 224 | 137/224 | +0.9% | +$9.88 | 7 | 163 | too early |
+| 2 | sure_thing | 1367 | 1271/1367 | -0.3% | -$22.71 | 7 | 159 | too early |
+| 3 | safe_no_week | 357 | 334/357 | -2.5% | -$44.12 | 7 | 337 | too early |
+| 4 | sports_underdog | 1054 | 240/1054 | -14.7% | -$771.42 | 7 | 72 | too early |
+| 5 | fade_move | 254 | 76/254 | -20.8% | -$263.82 | 7 | 172 | too early |
 | 6 | weather_forecast | 328 | 166/328 | -24.6% | -$397.49 | 6 | 144 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1441 | 715/1441 | -5.2% | -$374.20 | 7 | 260 | yardstick |
+| 8 | coin_flip | 1445 | 717/1445 | -5.2% | -$375.25 | 7 | 264 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$5.00 | -$1.84 | +$0.88 | +$26.01 | -$3.36 | -$0.53 | -$7.58 |
+| 2026-11-12 | -$10.00 | -$3.22 | +$1.24 | +$26.99 | +$35.57 | -$0.53 | -$8.63 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -42,22 +42,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-12 follow_move: Dogecoin Up or Down on November 12? -> Down at 0.802 ($5.00)
-- 2026-11-12 sure_thing: Overwatch: T1 vs MURASH GAMING (BO5) - OCS Asia Stage 3 Group A -> T1 at 0.962 ($5.00)
-- 2026-11-12 safe_no_week: Will "Adin Ross's Team" win Nozempic 2? -> Yes at 0.982 ($5.00)
-- 2026-11-12 sports_underdog: Matsuyama: Rei Sakamoto vs Kasidit Samrej -> Kasidit Samrej at 0.156 ($5.00)
-- 2026-11-12 fade_move: Dogecoin Up or Down on November 12? -> Up at 0.284 ($5.00)
+- 2026-11-12 follow_move: Will "Taken: Natalee Holloway: Season 1" be the top US Netflix show this week? -> Yes at 0.837 ($5.00)
+- 2026-11-12 sure_thing: Will Antigua and Barbuda win on 2026-11-12? -> No at 0.914 ($5.00)
+- 2026-11-12 safe_no_week: Will Ezra Frech be eliminated in week 10 of Dancing With The Stars: Season 35? -> No at 0.933 ($5.00)
+- 2026-11-12 sports_underdog: Brisbane 3: Carl Overbeck vs Juncheng Shang -> Carl Overbeck at 0.259 ($5.00)
+- 2026-11-12 fade_move: Will "Taken: Natalee Holloway: Season 1" be the top global Netflix show this week? -> No at 0.382 ($5.00)
 - 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Exeter City FC vs. Cheltenham Town FC: O/U 3.5 -> Under at 0.750 ($5.00)
-- 2026-11-11 follow_move: BNB Up or Down on November 12? -> Down at 0.792 ($5.00)
-- 2026-11-12 sure_thing: Spread: CSD Mixco (-1.5) -> Aurora FC at 0.914 ($5.00)
-- 2026-11-12 safe_no_week: Will "Heartland" be the #2 US Netflix movie this week? -> No at 0.933 ($5.00)
-- 2026-11-12 sports_underdog: Colorado Buffaloes vs. San Diego State Aztecs (W) -> San Diego State Aztecs at 0.361 ($1.81)
+- 2026-11-12 coin_flip: ZCash Up or Down - November 12, 6:40AM-6:45AM ET -> Up at 0.527 ($5.00)
+- 2026-11-12 follow_move: Will "Taken: Natalee Holloway: Season 1" be the #2 US Netflix show this week? -> No at 0.827 ($5.00)
+- 2026-11-12 sure_thing: Bitcoin Up or Down - November 11, 8PM ET -> Down at 0.972 ($5.00)
+- 2026-11-12 safe_no_week: NVIDIA (NVDA) Q3 adjusted gross margin 75% to 77%? -> No at 0.962 ($5.00)
+- 2026-11-12 sports_underdog: Penguins vs. Sharks: O/U 4.5 -> Under at 0.167 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 35 (35 with a problem).
-Latest problem: 38 position(s) still open more than 3 days after their market ended
+Runs in the last 24 hours: 36 (36 with a problem).
+Latest problem: 37 position(s) still open more than 3 days after their market ended
