@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 04:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 04:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 224 | 137/224 | +0.9% | +$9.88 | 7 | 165 | too early |
-| 2 | sure_thing | 1387 | 1291/1387 | -0.2% | -$15.77 | 7 | 171 | too early |
-| 3 | safe_no_week | 361 | 338/361 | -2.4% | -$43.05 | 7 | 335 | too early |
-| 4 | sports_underdog | 1086 | 244/1086 | -16.0% | -$863.71 | 7 | 45 | too early |
+| 2 | sure_thing | 1396 | 1298/1396 | -0.3% | -$23.92 | 7 | 170 | too early |
+| 3 | safe_no_week | 361 | 338/361 | -2.4% | -$43.05 | 7 | 336 | too early |
+| 4 | sports_underdog | 1096 | 247/1096 | -15.4% | -$840.39 | 7 | 35 | too early |
 | 5 | fade_move | 254 | 76/254 | -20.8% | -$263.82 | 7 | 174 | too early |
 | 6 | weather_forecast | 330 | 167/330 | -24.7% | -$400.64 | 6 | 142 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1474 | 732/1474 | -5.1% | -$371.81 | 7 | 267 | yardstick |
+| 8 | coin_flip | 1486 | 740/1486 | -4.7% | -$349.12 | 7 | 263 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$10.00 | +$3.72 | +$2.31 | -$65.30 | +$35.57 | -$3.68 | -$5.19 |
+| 2026-11-12 | -$10.00 | -$4.43 | +$2.31 | -$41.98 | +$35.57 | -$3.68 | +$17.50 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -43,21 +43,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
-- 2026-11-12 sure_thing: Spread: SV Meppen 1912 (-1.5) -> Arminia Bielefeld at 0.962 ($5.00)
-- 2026-11-12 safe_no_week: Will Mark Rothko's “Untitled” sell for at least $6.5m at auction? -> No at 0.962 ($5.00)
+- 2026-11-12 sure_thing: Karpaty Lviv vs. Veres Rivne: O/U 0.5 -> Over at 0.971 ($5.00)
+- 2026-11-12 safe_no_week: Will the lowest temperature in Paris be 4°C on November 13? -> No at 0.962 ($5.00)
 - 2026-11-12 sports_underdog: Counter-Strike: FUT Esports vs MOUZ (BO3) - BLAST Rivals Group B -> FUT Esports at 0.177 ($5.00)
 - 2026-11-12 fade_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> No at 0.798 ($5.00)
 - 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Bitcoin Up or Down - November 12, 10:45PM-10:50PM ET -> Down at 0.517 ($5.00)
+- 2026-11-12 coin_flip: Solana Up or Down - November 12, 8:15PM-8:20PM ET -> Up at 0.527 ($5.00)
 - 2026-11-12 follow_move: Will "Reminders of Him" be the #2 US Netflix movie this week? -> Yes at 0.442 ($5.00)
-- 2026-11-12 sure_thing: Spread: AA Ponte Preta (-1.5) -> Operário Ferroviário EC at 0.952 ($5.00)
-- 2026-11-12 safe_no_week: Will "Allen" be the #2 global Netflix movie this week? -> No at 0.924 ($5.00)
+- 2026-11-12 sure_thing: Exact Score: São Bernardo FC 0 - 0 Athletic Club? -> No at 0.933 ($5.00)
+- 2026-11-12 safe_no_week: Will Mark Rothko's “Untitled” sell for at least $6.5m at auction? -> No at 0.962 ($5.00)
 - 2026-11-12 sports_underdog: Games Total: O/U 4.5 -> Over at 0.202 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
-Runs in the last 24 hours: 36 (36 with a problem).
+Runs in the last 24 hours: 35 (35 with a problem).
 Latest problem: 37 position(s) still open more than 3 days after their market ended
