@@ -1,5 +1,5 @@
 import check_keys
-from check_keys import BAD, OK, UNSURE
+from check_keys import BAD, LOW, OK, UNSURE
 
 
 def _answer(status, body=None):
@@ -74,6 +74,9 @@ def test_asknews_skipped_when_another_researcher_is_used(capsys, monkeypatch):
     monkeypatch.setattr(check_keys, "check_metaculus", lambda token: (OK, "m"))
     monkeypatch.setattr(check_keys, "check_forecast_data", lambda token: (OK, "f"))
     monkeypatch.setattr(check_keys, "check_openrouter", lambda key: (OK, "o"))
+    monkeypatch.setattr(check_keys, "check_openrouter_credit", lambda key: (LOW, "c"))
+    monkeypatch.setattr(check_keys, "check_openai", lambda key: (OK, "g"))
+    # Running low is a warning, not a failed check.
     assert check_keys.main() == 0
     assert "AskNews keys are not needed" in capsys.readouterr().out
 
@@ -87,6 +90,8 @@ def test_one_crashing_check_does_not_hide_the_others(capsys, monkeypatch):
     monkeypatch.setattr(check_keys, "check_metaculus", boom)
     monkeypatch.setattr(check_keys, "check_forecast_data", lambda token: (OK, "f"))
     monkeypatch.setattr(check_keys, "check_openrouter", lambda key: (OK, "o"))
+    monkeypatch.setattr(check_keys, "check_openrouter_credit", lambda key: (OK, "c"))
+    monkeypatch.setattr(check_keys, "check_openai", lambda key: (OK, "g"))
     monkeypatch.setattr(check_keys, "check_asknews", lambda *a: (OK, "a"))
     check_keys.main()
     out = capsys.readouterr().out
@@ -96,8 +101,44 @@ def test_one_crashing_check_does_not_hide_the_others(capsys, monkeypatch):
 def test_secrets_never_appear_in_output(capsys, monkeypatch):
     monkeypatch.setenv("METACULUS_TOKEN", "secret-token-123")
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-secret-456")
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-proj-secret-789")
     monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
     monkeypatch.setattr(check_keys, "http", lambda *a, **k: (401, None))
     assert check_keys.main() == 1
     out = capsys.readouterr().out
     assert "secret-token-123" not in out and "sk-or-secret-456" not in out
+    assert "sk-proj-secret-789" not in out
+
+
+def _credits(total, used):
+    return _answer(200, {"data": {"total_credits": total, "total_usage": used}})
+
+
+def test_openrouter_credit_balance():
+    verdict, message = check_keys.check_openrouter_credit("k", _credits(30, 7.78))
+    assert verdict == OK and "$22.22 left of $30.00" in message
+    verdict, message = check_keys.check_openrouter_credit("k", _credits(10, 7.78))
+    assert verdict == LOW and "$2.22" in message
+    verdict, message = check_keys.check_openrouter_credit("k", _credits(10, 9.9))
+    assert verdict == BAD and "used up" in message
+    assert check_keys.check_openrouter_credit("k", _answer(500))[0] == UNSURE
+    assert check_keys.check_openrouter_credit("k", _answer(200, {"data": {"total_credits": "x"}}))[0] == UNSURE
+    assert check_keys.check_openrouter_credit(None)[0] == UNSURE
+
+
+def test_openai_key_is_optional():
+    verdict, message = check_keys.check_openai(None)
+    assert verdict == OK and "DeepSeek" in message
+    seen = []
+
+    def get(url, headers, *rest):
+        seen.append(url)
+        return 200, {"id": "gpt-6-sol"}
+
+    verdict, message = check_keys.check_openai("k", get)
+    assert verdict == OK and "gpt-6-sol" in message
+    assert seen == ["https://api.openai.com/v1/models/gpt-6-sol"]
+    assert check_keys.check_openai("k", _answer(401))[0] == BAD
+    verdict, message = check_keys.check_openai("k", _answer(404))
+    assert verdict == BAD and "cannot use gpt-6-sol" in message
+    assert check_keys.check_openai("k", _answer(None))[0] == UNSURE

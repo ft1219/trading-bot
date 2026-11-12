@@ -9,20 +9,21 @@ Based on Metaculus's official [metac-bot-template](https://github.com/Metaculus/
 - `budget.py`: the per-run spending and call limits. forecasting-tools' own `MonetaryCostManager` cannot stop a call (litellm swallows the exception its callback raises), so `BudgetedLlm` checks the budget before every model call and records each call's real cost once. Calls that fail after being sent still count toward the call limit. The parser, which only reads answers already paid for, keeps working past the spending limit so those forecasts are not thrown away.
 - `precheck.py`: standard-library check run before installing anything. When no open question is waiting for a first forecast from the bot, the scheduled job ends early. Errors and unfamiliar responses count as "something to forecast", so it can never cause a missed question.
 - `timer_setup.py`: creates or updates the two cron-job.org jobs that start the forecasting workflow every 40 minutes through its dispatch endpoint, because GitHub's own `schedule` trigger fired hours late and irregularly for this repository. Run it with the **Metaculus - set up the outside timer** workflow.
+- `check_keys.py`: the **Check my keys** workflow. Also reports the OpenRouter credit left (the key limit is not the money) and whether the optional `OPENAI_API_KEY` can use GPT-6 Sol.
 - `bot_helpers.py`: the setup check also requires `OPENROUTER_API_KEY` and AskNews keys, so the bot never falls back to a different, unbudgeted provider. Blank key variables (GitHub's value for a secret that was never created) are removed at startup; a blank `ASKNEWS_API_KEY` would otherwise override a valid client ID and secret.
 
 ## Settings
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `TOURNAMENT_FORECAST_MODEL` | `openrouter/google/gemini-3.7-flash` | Model that writes the forecasts for the main tournament and the practice run. Scores about 11.8 on Metaculus's FutureEval model leaderboard against 6.9 for DeepSeek 3.2, for about $0.065 a question (measured on 11 practice questions). |
-| `FORECAST_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that writes the forecasts for MiniBench and the Metaculus Cup. With AskNews this matches Metaculus's `metac-deepseek-3-2-reasoning+asknews` baseline (5th of the Metaculus baselines, Spring 2026). |
-| `FORECAST_REASONING` | `true` | Turns on the model's reasoning mode on OpenRouter. |
+| `TOURNAMENT_FORECAST_MODEL` | `openrouter/anthropic/claude-sonnet-5.5` | Model that writes the forecasts for the main tournament and the practice run. Metaculus's `claude-sonnet-5-5-high` reference bot ranked 33rd of 456 in this tournament on 10 November 2026 (+470), against 312th (-459) for DeepSeek 3.2 reasoning. Sent with adaptive thinking at `effort: high` and no temperature, which Claude refuses. |
+| `FORECAST_MODEL` | `openai/gpt-6-sol` when `OPENAI_API_KEY` is set, else `openrouter/deepseek/deepseek-v3.2` | Model that writes the forecasts for MiniBench and the Metaculus Cup. GPT-6 Sol's reference bot ranked 129th (+169); it is called directly at OpenAI with `reasoning_effort: high`, paid from OpenAI credit. |
+| `FORECAST_REASONING` | `true` | Turns on the model's reasoning mode (OpenRouter's `reasoning`, OpenAI's `reasoning_effort`). Claude always thinks. |
 | `PARSER_MODEL` | `openrouter/deepseek/deepseek-v3.2` | Model that turns the forecast text into numbers. |
 | `RESEARCHER` | `asknews/news-summaries` | News research for each question. |
 | `PREDICTIONS_PER_QUESTION` | `5` | Forecasts averaged per question. |
 | `MAX_QUESTIONS_PER_RUN` | `12` | Questions handled per run; the rest wait for the next run. |
-| `MAX_COST_PER_RUN_USD` | `2.00` | AI spending limit per run, checked before every call. Must be above 0. |
+| `MAX_COST_PER_RUN_USD` | `3.00` | AI spending limit per run, checked before every call. Must be above 0. |
 | `MAX_LLM_CALLS_PER_RUN` | `400` | Backstop limit on AI calls per run, for models whose price litellm does not know. |
 | `QUESTIONS_IN_PARALLEL` | `5` | Questions forecast at once. Calls already in flight when the limit is reached still finish, so this bounds the overshoot. |
 

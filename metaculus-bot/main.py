@@ -13,7 +13,7 @@ from bot_config import (
     BotSettings,
     load_settings,
     pick_questions_to_forecast,
-    reasoning_kwargs,
+    forecaster_kwargs,
 )
 from bot_helpers import (
     check_environment,
@@ -704,14 +704,13 @@ def build_llms(
         "default": BudgetedLlm(
             model=forecast_model,
             budget=budget,
-            temperature=0.3,
             # The timeout caps a whole call, not a silence. DeepSeek V3.2 with
             # reasoning takes 1.5 to 3 minutes on OpenRouter's cheaper hosts,
             # so 180 s failed whole questions on 2026-10-19. Metaculus runs
             # its own DeepSeek V3.2 reasoning bot with 300 s.
             timeout=300,
             allowed_tries=2,
-            **reasoning_kwargs(settings, forecast_model),
+            **forecaster_kwargs(settings, forecast_model),
         ),
         "summarizer": BudgetedLlm(
             model=settings.parser_model, budget=budget, temperature=0.3

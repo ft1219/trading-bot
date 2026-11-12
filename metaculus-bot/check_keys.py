@@ -2,8 +2,9 @@
 Checks the keys saved as GitHub secrets, without printing them.
 
 Run it from the Actions tab ("Check my keys"). It tells you, in plain words,
-which keys are missing, which ones the services accept, and whether the
-OpenRouter key has a spending limit. Standard library only.
+which keys are missing, which ones the services accept, whether the
+OpenRouter key has a spending limit, and how much OpenRouter credit is left.
+Standard library only.
 """
 from __future__ import annotations
 
@@ -18,7 +19,13 @@ import urllib.request
 import bot_config
 import precheck
 
-OK, BAD, UNSURE = "OK", "PROBLEM", "COULD NOT CONFIRM"
+OK, BAD, UNSURE, LOW = "OK", "PROBLEM", "COULD NOT CONFIRM", "RUNNING LOW"
+
+# Below this much OpenRouter credit the check warns: about a day of main
+# tournament questions on Claude Sonnet 5.5.
+LOW_CREDIT_USD = 5.0
+# Below this the bot stops partway through a run.
+EMPTY_CREDIT_USD = 0.5
 
 
 def http(url: str, headers: dict, data: bytes | None = None, timeout: float = 20):
@@ -114,6 +121,58 @@ def check_openrouter(key: str | None, get=None) -> tuple[str, str]:
     return UNSURE, f"OpenRouter did not answer normally (HTTP {status})."
 
 
+def check_openrouter_credit(key: str | None, get=None) -> tuple[str, str]:
+    """
+    The key's limit is not the money: an account with $2 of credit stops
+    forecasting long before a $30 key limit is reached.
+    """
+    get = get or http
+    if not key:
+        return UNSURE, "Skipped the OpenRouter credit check because OPENROUTER_API_KEY is missing."
+    status, body = get("https://openrouter.ai/api/v1/credits", {"Authorization": f"Bearer {key}"})
+    data = body.get("data") if isinstance(body, dict) else None
+    if status != 200 or not isinstance(data, dict):
+        return UNSURE, f"Could not read the OpenRouter credit balance (HTTP {status})."
+    try:
+        total, used = float(data.get("total_credits") or 0), float(data.get("total_usage") or 0)
+    except (TypeError, ValueError):
+        return UNSURE, "Could not read the OpenRouter credit balance."
+    left = total - used
+    if left < EMPTY_CREDIT_USD:
+        return BAD, (
+            f"OpenRouter credit is used up (${left:.2f} left of ${total:.2f} bought), so the bot cannot "
+            "forecast. Add credit at openrouter.ai under Settings > Credits."
+        )
+    if left < LOW_CREDIT_USD:
+        return LOW, (
+            f"Only ${left:.2f} of OpenRouter credit is left (${total:.2f} bought). "
+            "Add credit at openrouter.ai under Settings > Credits soon."
+        )
+    return OK, f"OpenRouter credit: ${left:.2f} left of ${total:.2f} bought."
+
+
+def check_openai(key: str | None, get=None) -> tuple[str, str]:
+    """OPENAI_API_KEY is optional: without it MiniBench uses DeepSeek through OpenRouter."""
+    get = get or http
+    if not key:
+        return OK, "OPENAI_API_KEY is not set, so MiniBench uses DeepSeek through OpenRouter (that is fine)."
+    model = bot_config.OPENAI_FORECAST_MODEL.split("/", 1)[1]
+    status, _ = get(f"https://api.openai.com/v1/models/{model}", {"Authorization": f"Bearer {key}"})
+    if status == 200:
+        return OK, (
+            f"OPENAI_API_KEY works and can use {model}. OpenAI does not show the credit balance to keys, "
+            "so check it at platform.openai.com under Settings > Billing."
+        )
+    if status == 401:
+        return BAD, "OpenAI does not accept OPENAI_API_KEY. Create a new key and save it again."
+    if status in (403, 404):
+        return BAD, (
+            f"OPENAI_API_KEY works but cannot use {model} (HTTP {status}). Check the key's project "
+            "permissions at platform.openai.com, or delete the secret to go back to DeepSeek."
+        )
+    return UNSURE, f"OpenAI did not answer normally (HTTP {status}). Try again later."
+
+
 def check_asknews(client_id: str | None, secret: str | None, api_key: str | None, post=None) -> tuple[str, str]:
     post = post or http
     if api_key and not (client_id and secret):
@@ -146,12 +205,15 @@ def _safely(check, *args) -> tuple[str, str]:
 def main() -> int:
     # The bot trims spaces and line breaks from these too (bot_helpers.drop_blank_env_vars).
     env = {k: (os.getenv(k) or "").strip() or None for k in (
-        "METACULUS_TOKEN", "OPENROUTER_API_KEY", "ASKNEWS_CLIENT_ID", "ASKNEWS_SECRET", "ASKNEWS_API_KEY")}
+        "METACULUS_TOKEN", "OPENROUTER_API_KEY", "ASKNEWS_CLIENT_ID", "ASKNEWS_SECRET", "ASKNEWS_API_KEY",
+        "OPENAI_API_KEY")}
     researcher = (os.getenv("RESEARCHER") or "").strip() or bot_config.DEFAULT_RESEARCHER
     results = [
         _safely(check_metaculus, env["METACULUS_TOKEN"]),
         _safely(check_forecast_data, env["METACULUS_TOKEN"]),
         _safely(check_openrouter, env["OPENROUTER_API_KEY"]),
+        _safely(check_openrouter_credit, env["OPENROUTER_API_KEY"]),
+        _safely(check_openai, env["OPENAI_API_KEY"]),
     ]
     if researcher.startswith("asknews/"):
         results.append(_safely(check_asknews, env["ASKNEWS_CLIENT_ID"], env["ASKNEWS_SECRET"], env["ASKNEWS_API_KEY"]))
