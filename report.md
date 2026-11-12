@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 04:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 05:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 224 | 137/224 | +0.9% | +$9.88 | 7 | 165 | too early |
-| 2 | sure_thing | 1396 | 1298/1396 | -0.3% | -$23.92 | 7 | 170 | too early |
-| 3 | safe_no_week | 361 | 338/361 | -2.4% | -$43.05 | 7 | 336 | too early |
-| 4 | sports_underdog | 1096 | 247/1096 | -15.4% | -$840.39 | 7 | 35 | too early |
-| 5 | fade_move | 254 | 76/254 | -20.8% | -$263.82 | 7 | 174 | too early |
-| 6 | weather_forecast | 330 | 167/330 | -24.7% | -$400.64 | 6 | 142 | too early |
+| 1 | follow_move | 226 | 138/226 | +0.6% | +$7.01 | 7 | 164 | too early |
+| 2 | sure_thing | 1405 | 1307/1405 | -0.3% | -$20.87 | 7 | 169 | too early |
+| 3 | safe_no_week | 364 | 341/364 | -2.3% | -$42.30 | 7 | 339 | too early |
+| 4 | sports_underdog | 1102 | 248/1102 | -15.6% | -$854.80 | 7 | 29 | too early |
+| 5 | fade_move | 256 | 77/256 | -20.3% | -$259.58 | 7 | 174 | too early |
+| 6 | weather_forecast | 331 | 168/331 | -24.6% | -$399.68 | 6 | 141 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1486 | 740/1486 | -4.7% | -$349.12 | 7 | 263 | yardstick |
+| 8 | coin_flip | 1497 | 746/1497 | -4.5% | -$339.40 | 7 | 260 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$10.00 | -$4.43 | +$2.31 | -$41.98 | +$35.57 | -$3.68 | +$17.50 |
+| 2026-11-12 | -$12.86 | -$1.38 | +$3.06 | -$56.39 | +$39.81 | -$2.72 | +$27.22 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -42,17 +42,17 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
-- 2026-11-12 sure_thing: Karpaty Lviv vs. Veres Rivne: O/U 0.5 -> Over at 0.971 ($5.00)
-- 2026-11-12 safe_no_week: Will the lowest temperature in Paris be 4°C on November 13? -> No at 0.962 ($5.00)
+- 2026-11-12 follow_move: Will "The Gospel of Christmas" be the top US Netflix movie this week? -> Yes at 0.711 ($5.00)
+- 2026-11-12 sure_thing: Spread: Timberwolves (-20.5) -> Mavericks at 0.896 ($5.00)
+- 2026-11-12 safe_no_week: Will Cody Johnson win Entertainer of the Year at the 2026 CMA Awards? -> No at 0.986 ($5.00)
 - 2026-11-12 sports_underdog: Counter-Strike: FUT Esports vs MOUZ (BO3) - BLAST Rivals Group B -> FUT Esports at 0.177 ($5.00)
-- 2026-11-12 fade_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> No at 0.798 ($5.00)
+- 2026-11-12 fade_move: Will "The Body: Season 1" be the #2 global Netflix show this week? -> Yes at 0.177 ($5.00)
 - 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Solana Up or Down - November 12, 8:15PM-8:20PM ET -> Up at 0.527 ($5.00)
-- 2026-11-12 follow_move: Will "Reminders of Him" be the #2 US Netflix movie this week? -> Yes at 0.442 ($5.00)
-- 2026-11-12 sure_thing: Exact Score: São Bernardo FC 0 - 0 Athletic Club? -> No at 0.933 ($5.00)
-- 2026-11-12 safe_no_week: Will Mark Rothko's “Untitled” sell for at least $6.5m at auction? -> No at 0.962 ($5.00)
+- 2026-11-12 coin_flip: Mozambique vs. Ethiopia: Draw at halftime? -> No at 0.602 ($5.00)
+- 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
+- 2026-11-12 sure_thing: Will UK GDP growth in Q3 2026 be between 0.4% and 0.5%? -> No at 0.971 ($5.00)
+- 2026-11-12 safe_no_week: Will “Choosin' Texas” by Ella Langley win Song of the Year at the 2026 CMA Awards? -> Yes at 0.933 ($5.00)
 - 2026-11-12 sports_underdog: Games Total: O/U 4.5 -> Over at 0.202 ($5.00)
 
 ## Price gaps seen today
