@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 09:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 10:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 227 | 139/227 | +0.9% | +$10.70 | 7 | 166 | too early |
-| 2 | sure_thing | 1419 | 1318/1419 | -0.5% | -$32.16 | 7 | 201 | too early |
-| 3 | safe_no_week | 378 | 354/378 | -2.4% | -$44.45 | 7 | 348 | too early |
-| 4 | sports_underdog | 1118 | 253/1118 | -15.3% | -$851.97 | 7 | 29 | too early |
+| 2 | sure_thing | 1423 | 1322/1423 | -0.4% | -$30.84 | 7 | 204 | too early |
+| 3 | safe_no_week | 378 | 354/378 | -2.4% | -$44.45 | 7 | 356 | too early |
+| 4 | sports_underdog | 1121 | 256/1121 | -14.9% | -$832.49 | 7 | 29 | too early |
 | 5 | fade_move | 257 | 77/257 | -20.6% | -$264.58 | 7 | 175 | too early |
-| 6 | weather_forecast | 349 | 179/349 | -21.9% | -$376.72 | 6 | 151 | too early |
+| 6 | weather_forecast | 349 | 179/349 | -21.9% | -$376.72 | 6 | 153 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1529 | 757/1529 | -5.2% | -$394.84 | 7 | 276 | yardstick |
+| 8 | coin_flip | 1533 | 759/1533 | -5.2% | -$395.70 | 7 | 280 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$9.17 | -$12.67 | +$0.90 | -$53.56 | +$34.81 | +$20.24 | -$28.22 |
+| 2026-11-12 | -$9.17 | -$11.35 | +$0.90 | -$34.08 | +$34.81 | +$20.24 | -$29.08 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -43,21 +43,21 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-12 follow_move: Will "The Gospel of Christmas" be the top global Netflix movie this week? -> Yes at 0.522 ($5.00)
-- 2026-11-12 sure_thing: Will Apple (AAPL) close above $350 on November 12? -> Yes at 0.942 ($5.00)
-- 2026-11-12 safe_no_week: Will Aleksandar Repić win the 2026 Ljubljana mayoral election? -> No at 0.970 ($5.00)
-- 2026-11-12 sports_underdog: Will Karpaty Lviv win on 2026-11-12? -> No at 0.361 ($5.00)
+- 2026-11-12 sure_thing: Will Meta (META) close above $650 on November 12? -> No at 0.962 ($5.00)
+- 2026-11-12 safe_no_week: Will the highest temperature in Chicago be between 48-49°F on November 14? -> No at 0.933 ($5.00)
+- 2026-11-12 sports_underdog: Games Total: O/U 2.5 -> Over at 0.305 ($5.00)
 - 2026-11-12 fade_move: Will "The Gospel of Christmas" be the top global Netflix movie this week? -> No at 0.512 ($5.00)
-- 2026-11-12 weather_forecast: Will the lowest temperature in Tokyo be 11°C on November 14? -> No at 0.837 ($5.00)
+- 2026-11-12 weather_forecast: Will the highest temperature in Ankara be 18°C or higher on November 14? -> No at 0.680 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Dogecoin Up or Down - November 12, 10:05PM-10:10PM ET -> Down at 0.527 ($5.00)
+- 2026-11-12 coin_flip: Bitcoin Up or Down - November 12, 1:15PM-1:20PM ET -> Down at 0.517 ($5.00)
 - 2026-11-12 follow_move: Will NYC Mayor post 20-39 posts from November 6 to November 13, 2026? -> Yes at 0.701 ($5.00)
-- 2026-11-12 sure_thing: S&P 500 (SPX) Opens Up or Down on November 12? -> Down at 0.913 ($5.00)
-- 2026-11-12 safe_no_week: Will the highest temperature in Madrid be 13°C on November 14? -> No at 0.971 ($5.00)
-- 2026-11-12 sports_underdog: Will Gornik Zabrze win on 2026-11-12? -> No at 0.198 ($4.18)
+- 2026-11-12 sure_thing: Croatia to win the second half? -> No at 0.904 ($5.00)
+- 2026-11-12 safe_no_week: Will the highest temperature in Dallas be between 66-67°F on November 14? -> No at 0.981 ($5.00)
+- 2026-11-12 sports_underdog: Monastir: Marvin Moeller vs Aziz Ouakaa -> Aziz Ouakaa at 0.280 ($5.00)
 
 ## Price gaps seen today
 
 No near-gaps today.
 
 Runs in the last 24 hours: 35 (35 with a problem).
-Latest problem: 37 position(s) still open more than 3 days after their market ended
+Latest problem: 35 position(s) still open more than 3 days after their market ended
