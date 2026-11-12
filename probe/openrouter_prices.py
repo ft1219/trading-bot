@@ -2,8 +2,8 @@
 might switch to. No key needed."""
 import json, urllib.request
 
-WANT = ("gemini-3.7-flash", "gemini-3.8-flash", "claude-sonnet-5", "claude-opus-5",
-        "claude-fable", "deepseek-v3.2", "deepseek-v4", "gemini-4")
+WANT = ("openai/gpt-6", "openai/o", "gemini-3.8-flash", "claude-sonnet-5.5",
+        )
 req = urllib.request.Request("https://openrouter.ai/api/v1/models", headers={"Accept": "application/json"})
 with urllib.request.urlopen(req, timeout=60) as r:
     data = json.load(r)["data"]
