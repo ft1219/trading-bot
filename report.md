@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-12 05:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 06:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 226 | 138/226 | +0.6% | +$7.01 | 7 | 164 | too early |
-| 2 | sure_thing | 1405 | 1307/1405 | -0.3% | -$20.87 | 7 | 169 | too early |
-| 3 | safe_no_week | 364 | 341/364 | -2.3% | -$42.30 | 7 | 339 | too early |
-| 4 | sports_underdog | 1102 | 248/1102 | -15.6% | -$854.80 | 7 | 29 | too early |
+| 2 | sure_thing | 1412 | 1314/1412 | -0.3% | -$18.62 | 7 | 170 | too early |
+| 3 | safe_no_week | 365 | 342/365 | -2.3% | -$42.19 | 7 | 339 | too early |
+| 4 | sports_underdog | 1108 | 249/1108 | -15.7% | -$864.73 | 7 | 25 | too early |
 | 5 | fade_move | 256 | 77/256 | -20.3% | -$259.58 | 7 | 174 | too early |
-| 6 | weather_forecast | 331 | 168/331 | -24.6% | -$399.68 | 6 | 141 | too early |
+| 6 | weather_forecast | 332 | 169/332 | -24.4% | -$398.49 | 6 | 141 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1497 | 746/1497 | -4.5% | -$339.40 | 7 | 260 | yardstick |
+| 8 | coin_flip | 1505 | 748/1505 | -4.8% | -$361.03 | 7 | 260 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-12 | -$12.86 | -$1.38 | +$3.06 | -$56.39 | +$39.81 | -$2.72 | +$27.22 |
+| 2026-11-12 | -$12.86 | +$0.87 | +$3.16 | -$66.32 | +$39.81 | -$1.53 | +$5.59 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -43,17 +43,17 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 ## Latest pretend buys (newest of each strategy first)
 
 - 2026-11-12 follow_move: Will "The Gospel of Christmas" be the top US Netflix movie this week? -> Yes at 0.711 ($5.00)
-- 2026-11-12 sure_thing: Spread: Timberwolves (-20.5) -> Mavericks at 0.896 ($5.00)
-- 2026-11-12 safe_no_week: Will Cody Johnson win Entertainer of the Year at the 2026 CMA Awards? -> No at 0.986 ($5.00)
-- 2026-11-12 sports_underdog: Counter-Strike: FUT Esports vs MOUZ (BO3) - BLAST Rivals Group B -> FUT Esports at 0.177 ($5.00)
+- 2026-11-12 sure_thing: Chambéry Savoie Football leading at halftime? -> No at 0.943 ($5.00)
+- 2026-11-12 safe_no_week: Will Rob McNelley (guitar) win Musician of the Year at the 2026 CMA Awards? -> No at 0.982 ($5.00)
+- 2026-11-12 sports_underdog: Counter-Strike: Phantom vs ILLYRIANS (BO3) - NODWIN Clutch Series Group Stage -> ILLYRIANS at 0.229 ($5.00)
 - 2026-11-12 fade_move: Will "The Body: Season 1" be the #2 global Netflix show this week? -> Yes at 0.177 ($5.00)
-- 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
+- 2026-11-12 weather_forecast: Will the highest temperature in Warsaw be 6°C on November 14? -> Yes at 0.210 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-12 coin_flip: Mozambique vs. Ethiopia: Draw at halftime? -> No at 0.602 ($5.00)
+- 2026-11-12 coin_flip: BNB Up or Down - November 12, 3:00PM-3:05PM ET -> Down at 0.527 ($5.00)
 - 2026-11-12 follow_move: Will MrBeast's next video get between 35 and 40 million views on day 1? -> Yes at 0.259 ($5.00)
-- 2026-11-12 sure_thing: Will UK GDP growth in Q3 2026 be between 0.4% and 0.5%? -> No at 0.971 ($5.00)
-- 2026-11-12 safe_no_week: Will “Choosin' Texas” by Ella Langley win Song of the Year at the 2026 CMA Awards? -> Yes at 0.933 ($5.00)
-- 2026-11-12 sports_underdog: Games Total: O/U 4.5 -> Over at 0.202 ($5.00)
+- 2026-11-12 sure_thing: Exact Score: Czechia 0 - 1 Spain? -> No at 0.924 ($5.00)
+- 2026-11-12 safe_no_week: Will Cody Johnson win Entertainer of the Year at the 2026 CMA Awards? -> No at 0.986 ($5.00)
+- 2026-11-12 sports_underdog: Counter-Strike: TheChampionGG vs NAVI Junior (BO3) - United21 Group C -> TheChampionGG at 0.321 ($5.00)
 
 ## Price gaps seen today
 
