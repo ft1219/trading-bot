@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-11 23:27 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-12 00:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 1 | follow_move | 222 | 137/222 | +1.8% | +$19.88 | 6 | 161 | too early |
-| 2 | sure_thing | 1353 | 1259/1353 | -0.3% | -$19.49 | 6 | 151 | too early |
-| 3 | safe_no_week | 352 | 329/352 | -2.6% | -$45.36 | 6 | 337 | too early |
-| 4 | sports_underdog | 1042 | 235/1042 | -15.4% | -$798.41 | 6 | 63 | too early |
-| 5 | fade_move | 249 | 73/249 | -24.1% | -$299.39 | 6 | 173 | too early |
-| 6 | weather_forecast | 322 | 162/322 | -25.1% | -$396.96 | 5 | 150 | too early |
+| 1 | follow_move | 223 | 137/223 | +1.3% | +$14.88 | 7 | 161 | too early |
+| 2 | sure_thing | 1362 | 1268/1362 | -0.2% | -$16.33 | 7 | 150 | too early |
+| 3 | safe_no_week | 355 | 332/355 | -2.5% | -$44.79 | 7 | 335 | too early |
+| 4 | sports_underdog | 1047 | 236/1047 | -15.6% | -$811.20 | 7 | 66 | too early |
+| 5 | fade_move | 252 | 74/252 | -24.0% | -$302.75 | 7 | 171 | too early |
+| 6 | weather_forecast | 326 | 165/326 | -24.6% | -$394.94 | 6 | 146 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1427 | 708/1427 | -5.2% | -$366.62 | 6 | 258 | yardstick |
+| 8 | coin_flip | 1437 | 713/1437 | -5.2% | -$373.35 | 7 | 256 | yardstick |
 
 What each one does:
 
@@ -32,6 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
+| 2026-11-12 | -$5.00 | +$3.16 | +$0.57 | -$12.78 | -$3.36 | +$2.03 | -$6.72 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
 | 2026-11-09 | +$11.06 | +$1.64 | -$5.28 | -$181.99 | -$67.00 | -$76.41 | +$26.49 |
@@ -41,22 +42,22 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 ## Latest pretend buys (newest of each strategy first)
 
-- 2026-11-11 follow_move: BNB Up or Down on November 12? -> Down at 0.792 ($5.00)
-- 2026-11-11 sure_thing: Exact Score: Cerro Largo FC 0 - 0 CA Progreso? -> No at 0.933 ($5.00)
-- 2026-11-11 safe_no_week: Will the price of XRP be between $0.80 and $0.90 on November 18? -> No at 0.981 ($5.00)
-- 2026-11-11 sports_underdog: Stephen F. Austin Lumberjacks vs. Abilene Christian Wildcats -> Abilene Christian Wildcats at 0.310 ($5.00)
-- 2026-11-11 fade_move: BNB Up or Down on November 12? -> Up at 0.284 ($5.00)
+- 2026-11-12 follow_move: Dogecoin Up or Down on November 12? -> Down at 0.802 ($5.00)
+- 2026-11-12 sure_thing: Capitals vs. Devils: O/U 9.5 -> Under at 0.943 ($5.00)
+- 2026-11-12 safe_no_week: Will "Heartland" be the #2 US Netflix movie this week? -> No at 0.933 ($5.00)
+- 2026-11-12 sports_underdog: Flyers vs. Oilers: O/U 4.5 -> Under at 0.229 ($5.00)
+- 2026-11-12 fade_move: Dogecoin Up or Down on November 12? -> Up at 0.284 ($5.00)
 - 2026-11-11 weather_forecast: Will the lowest temperature in Ankara be 9°C or higher on November 13? -> No at 0.635 ($5.00)
 - 2026-11-11 price_gap: All Yes on: Japan GDP growth in Q3 2026 (QoQ Annualized)? at 0.995 ($15.92)
-- 2026-11-11 coin_flip: Hyperliquid Up or Down - November 12, 5:00AM-5:05AM ET -> Up at 0.527 ($5.00)
-- 2026-11-11 follow_move: Solana Up or Down on November 12? -> Down at 0.734 ($5.00)
-- 2026-11-11 sure_thing: Spread: Athletic Club (-1.5) -> São Bernardo FC at 0.933 ($5.00)
-- 2026-11-11 safe_no_week: Will "Victorian Psycho" Opening Weekend Box Office be less than 2.5m? -> Yes at 0.943 ($5.00)
-- 2026-11-11 sports_underdog: Magic vs. Jazz: O/U 223.5 -> Over at 0.341 ($5.00)
+- 2026-11-12 coin_flip: Dogecoin Up or Down - November 12, 3:15PM-3:30PM ET -> Down at 0.527 ($5.00)
+- 2026-11-11 follow_move: BNB Up or Down on November 12? -> Down at 0.792 ($5.00)
+- 2026-11-12 sure_thing: Will Senegal vs. Sudan end in a draw? -> No at 0.914 ($5.00)
+- 2026-11-11 safe_no_week: Will the price of XRP be between $0.80 and $0.90 on November 18? -> No at 0.981 ($5.00)
+- 2026-11-12 sports_underdog: Spread: Deportes Quindio (-1.5) -> Deportes Quindio at 0.254 ($5.00)
 
 ## Price gaps seen today
 
-5 near-gaps recorded (full sets within a few cents of their payout). Cheapest: Japan GDP growth in Q3 2026 (QoQ Annualized)? (yes), 0.994 for a $1 payout.
+No near-gaps today.
 
 Runs in the last 24 hours: 35 (35 with a problem).
-Latest problem: weather: Open-Meteo failed for KORD, no more forecasts fetched this run: https://ensemble-api.open-meteo.com/v1/ensemble?latitude=41.96017&longitude=-87.93161&models=ecmwf_ifs025%2Cgfs_seamless&timezo
+Latest problem: 38 position(s) still open more than 3 days after their market ended
