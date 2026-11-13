@@ -1,19 +1,19 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-13 02:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-13 02:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
 | # | Strategy | Finished | Won | Per $1 | Profit | Days | Open | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 1 | follow_move | 254 | 158/254 | +1.8% | +$23.25 | 8 | 139 | too early |
-| 2 | sure_thing | 1588 | 1478/1588 | -0.3% | -$27.60 | 8 | 58 | too early |
+| 2 | sure_thing | 1593 | 1483/1593 | -0.3% | -$25.91 | 8 | 53 | too early |
 | 3 | safe_no_week | 440 | 413/440 | -2.1% | -$46.75 | 8 | 310 | too early |
 | 4 | fade_move | 284 | 87/284 | -11.9% | -$168.96 | 8 | 148 | too early |
 | 5 | sports_underdog | 1164 | 266/1164 | -14.9% | -$861.96 | 8 | 4 | too early |
 | 6 | weather_forecast | 397 | 199/397 | -23.6% | -$462.95 | 7 | 109 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1680 | 828/1680 | -5.2% | -$438.85 | 8 | 157 | yardstick |
+| 8 | coin_flip | 1686 | 833/1686 | -4.9% | -$407.99 | 8 | 151 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | fade_move | sports_underdog | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-13 | -$1.76 | -$0.70 | +$1.42 | -$15.00 | +$3.98 | -$14.77 | -$11.99 |
+| 2026-11-13 | -$1.76 | +$0.99 | +$1.42 | -$15.00 | +$3.98 | -$14.77 | +$18.87 |
 | 2026-11-12 | +$5.13 | -$7.41 | -$2.81 | +$145.43 | -$67.52 | -$51.23 | -$60.24 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$50.06 | -$173.41 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$1.13 | +$61.94 | -$101.16 | -$214.60 |
@@ -61,4 +61,4 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 No near-gaps today.
 
 Runs in the last 24 hours: 36 (36 with a problem).
-Latest problem: events: 7 slice reads failed, Gamma seems down: https://gamma-api.polymarket.com/events?active=true&closed=false&limit=100&offset=0&end_date_min=2026-11-14T14%3A07%3A21Z&end_date_max=2026-11-14T20%3A0
+Latest problem: events: 7 slice reads failed, Gamma seems down: https://gamma-api.polymarket.com/events?active=true&closed=false&limit=100&offset=0&end_date_min=2026-11-14T14%3A47%3A22Z&end_date_max=2026-11-14T20%3A4
