@@ -1,19 +1,19 @@
 {
- "runs_24h": 36,
- "runs_with_problems_24h": 36,
+ "runs_24h": 37,
+ "runs_with_problems_24h": 37,
  "strategies": {
   "coin_flip": {
    "active": true,
-   "break_even_rate": 0.5173,
+   "break_even_rate": 0.5172,
    "days": 8,
    "days_running": 8.6,
-   "open": 114,
-   "open_cost": 570.0,
-   "p_luck": 0.9530240471845235,
-   "pnl": -376.71,
-   "roi": -0.043870594156424615,
-   "settled": 1723,
-   "staked": 8586.95,
+   "open": 113,
+   "open_cost": 565.0,
+   "p_luck": 0.9550308966581048,
+   "pnl": -381.71,
+   "roi": -0.04442700396558723,
+   "settled": 1724,
+   "staked": 8591.95,
    "trades": 1837,
    "verdict": "yardstick",
    "wins": 857
@@ -68,19 +68,19 @@
   },
   "safe_no_week": {
    "active": true,
-   "break_even_rate": 0.9588,
+   "break_even_rate": 0.9587,
    "days": 8,
    "days_running": 8.6,
-   "open": 285,
-   "open_cost": 1424.9,
-   "p_luck": 0.9934193393212536,
-   "pnl": -57.64,
-   "roi": -0.024796474597922395,
-   "settled": 465,
-   "staked": 2324.65,
+   "open": 281,
+   "open_cost": 1404.9,
+   "p_luck": 0.9923927962531884,
+   "pnl": -56.55,
+   "roi": -0.024119808434060124,
+   "settled": 469,
+   "staked": 2344.65,
    "trades": 750,
    "verdict": "too early",
-   "wins": 435
+   "wins": 439
   },
   "sports_underdog": {
    "active": true,
@@ -116,20 +116,20 @@
   },
   "weather_forecast": {
    "active": true,
-   "break_even_rate": 0.5949,
+   "break_even_rate": 0.5956,
    "days": 7,
    "days_running": 8.6,
-   "open": 88,
-   "open_cost": 436.15,
-   "p_luck": 0.9999455532984249,
-   "pnl": -483.97,
-   "roi": -0.23460891645990778,
-   "settled": 418,
-   "staked": 2062.9,
+   "open": 83,
+   "open_cost": 411.15,
+   "p_luck": 0.9999468222450658,
+   "pnl": -484.67,
+   "roi": -0.23213192625872606,
+   "settled": 423,
+   "staked": 2087.9,
    "trades": 506,
    "verdict": "too early",
-   "wins": 210
+   "wins": 213
   }
  },
- "updated": 1794581248
+ "updated": 1794583643
 }
