@@ -7,16 +7,16 @@
    "break_even_rate": 0.517,
    "days": 8,
    "days_running": 8.3,
-   "open": 122,
-   "open_cost": 610.0,
-   "p_luck": 0.9596713778075797,
-   "pnl": -390.54,
-   "roi": -0.04569393990760106,
-   "settled": 1715,
-   "staked": 8546.95,
+   "open": 120,
+   "open_cost": 600.0,
+   "p_luck": 0.9554348753807848,
+   "pnl": -381.49,
+   "roi": -0.044582649685597525,
+   "settled": 1717,
+   "staked": 8556.95,
    "trades": 1837,
    "verdict": "yardstick",
-   "wins": 851
+   "wins": 853
   },
   "fade_move": {
    "active": true,
@@ -131,5 +131,5 @@
    "wins": 206
   }
  },
- "updated": 1794554843
+ "updated": 1794557243
 }
