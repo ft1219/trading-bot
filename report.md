@@ -1,6 +1,6 @@
 # Polymarket strategy lab (pretend money)
 
-Updated 2026-11-13 18:07 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
+Updated 2026-11-13 18:47 UTC. Each pretend trade is $5, bought at the real asking price plus fees, held to the result. Pretend money is unlimited, so the dollar columns show the size of the test, not what a small real account would make; compare strategies by "Per $1".
 
 ## Scoreboard (finished trades only)
 
@@ -13,7 +13,7 @@ Updated 2026-11-13 18:07 UTC. Each pretend trade is $5, bought at the real askin
 | 5 | fade_move | 305 | 91/305 | -16.0% | -$244.17 | 8 | 127 | too early |
 | 6 | weather_forecast | 436 | 219/436 | -23.5% | -$505.67 | 7 | 70 | too early |
 | 7 | price_gap | 0 | - | - | +$0.00 | 0 | 1 | too early |
-| 8 | coin_flip | 1727 | 858/1727 | -4.5% | -$389.96 | 8 | 110 | yardstick |
+| 8 | coin_flip | 1729 | 859/1729 | -4.5% | -$390.47 | 8 | 108 | yardstick |
 
 What each one does:
 
@@ -32,7 +32,7 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 
 | Day | follow_move | sure_thing | safe_no_week | sports_underdog | fade_move | weather_forecast | coin_flip |
 |---|---|---|---|---|---|---|---|
-| 2026-11-13 | +$43.57 | -$14.31 | -$23.94 | +$3.98 | -$90.21 | -$57.48 | +$36.90 |
+| 2026-11-13 | +$43.57 | -$14.31 | -$23.94 | +$3.98 | -$90.21 | -$57.48 | +$36.39 |
 | 2026-11-12 | +$5.13 | -$7.41 | -$2.81 | -$67.52 | +$145.43 | -$51.23 | -$60.24 |
 | 2026-11-11 | +$9.69 | +$59.21 | -$18.78 | -$173.41 | -$50.06 | -$77.92 | -$29.87 |
 | 2026-11-10 | +$55.84 | -$15.92 | -$2.64 | +$61.94 | +$1.13 | -$101.16 | -$214.60 |
@@ -61,4 +61,4 @@ Pass rule (fixed in advance): a strategy is judged once, on the first run after 
 No near-gaps today.
 
 Runs in the last 24 hours: 37 (37 with a problem).
-Latest problem: events: 7 slice reads failed, Gamma seems down: https://gamma-api.polymarket.com/events?active=true&closed=false&limit=100&offset=0&end_date_min=2026-11-15T06%3A07%3A23Z&end_date_max=2026-11-15T12%3A0
+Latest problem: events: 7 slice reads failed, Gamma seems down: https://gamma-api.polymarket.com/events?active=true&closed=false&limit=100&offset=0&end_date_min=2026-11-15T06%3A47%3A21Z&end_date_max=2026-11-15T12%3A4

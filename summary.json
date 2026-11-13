@@ -4,19 +4,19 @@
  "strategies": {
   "coin_flip": {
    "active": true,
-   "break_even_rate": 0.5175,
+   "break_even_rate": 0.5174,
    "days": 8,
    "days_running": 8.8,
-   "open": 110,
-   "open_cost": 550.0,
-   "p_luck": 0.9595131174656512,
-   "pnl": -389.96,
-   "roi": -0.045307166060359554,
-   "settled": 1727,
-   "staked": 8606.95,
+   "open": 108,
+   "open_cost": 540.0,
+   "p_luck": 0.9586522159572138,
+   "pnl": -390.47,
+   "roi": -0.04531449409592821,
+   "settled": 1729,
+   "staked": 8616.95,
    "trades": 1837,
    "verdict": "yardstick",
-   "wins": 858
+   "wins": 859
   },
   "fade_move": {
    "active": true,
@@ -131,5 +131,5 @@
    "wins": 219
   }
  },
- "updated": 1794593243
+ "updated": 1794595641
 }
